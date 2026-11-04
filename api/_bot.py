@@ -35,10 +35,16 @@ HELP = (
     "• EV — eng yaxshi koeffitsiyentning adolatli narxdan farqi. Musbat bo'lsa, koeffitsiyent \"qimmat\".\n"
     "• Arbitraj — barcha natijalarga tikkanda foyda qoladigan holat.\n"
     "• Kutilgan gollar — koeffitsiyentlardan Puasson modeli orqali hisoblangan.\n\n"
-    "Har bir liga yoki turnir so'rovi 1 API kredit, \"Signallar\" 3 kredit sarflaydi. "
-    "\"Natijalar\" kredit sarflamaydi — bot har kuni prognozlarni yozib, o'yindan keyin tekshiradi.\n\n"
+    "Har bir liga yoki turnir so'rovi 1 API kredit. \"Signallar\" va \"Natijalar\" kunlik saqlangan ma'lumotni ko'rsatadi (0 kredit), "
+    "\"🔄 Hozir qayta tekshirish\" — 3 kredit. Betfair/Matchbook narxlari komissiya chegirilgan holda. "
+    "Bot har kuni prognozlarni yozib, o'yindan keyin tekshiradi.\n\n"
     "⚠️ Bu statistikani o'rganish vositasi. Musbat EV yutishni kafolatlamaydi."
 )
+
+
+def my_bookies():
+    """Siz o'ynaydigan bukmekerlar (Vercel/GitHub'da MY_BOOKIES, vergul bilan). Standart: 1xBet."""
+    return [x.strip() for x in (os.environ.get("MY_BOOKIES") or "1xBet").split(",") if x.strip()]
 
 
 def env(name):
@@ -84,15 +90,34 @@ def analysed(league, limit=None):
     return res
 
 
+def is_signal(a):
+    return any(b["ev"] > MIN_EV for b in a["best"])
+
+
 def signals_text(leagues=SIGNAL_LEAGUES):
+    """Jonli tekshiruv (har liga 1 kredit). Faqat MY_BOOKIES koeffitsiyentlari baholanadi."""
     found = []
     for lg in leagues:
-        for a in analysed(lg):
-            if a["arb"] < 1 or any(b["ev"] > MIN_EV for b in a["best"]):
+        events, _ = fetch(env("ODDS_API_KEY"), lg, REGION)
+        for e in events:
+            a = analyse(e, only=my_bookies())
+            if a and is_signal(a):
                 found.append(f"[{LEAGUES.get(lg, lg)}]\n" + report(a))
     if not found:
         return ""
-    return f"🔔 {len(found)} ta signal:\n\n" + "\n\n".join(found)
+    return f"🔔 {len(found)} ta signal ({', '.join(my_bookies())}):\n\n" + "\n\n".join(found)
+
+
+def saved_signals():
+    """Kunlik kuzatuv saqlagan signallar — kredit sarflamaydi."""
+    st = load_stats()
+    sig = st.get("signals") if st else None
+    if sig is None:
+        return "Saqlangan signallar hali yo'q (kunlik kuzatuv har kuni 12:37 da yangilanadi)."
+    when = fmt_time(st.get("updated", ""))
+    if not sig:
+        return f"🔕 {when} holatiga {', '.join(my_bookies())} bo'yicha signal yo'q edi."
+    return f"🔔 {len(sig)} ta signal ({when} holati, {', '.join(my_bookies())}):\n\n" + "\n\n".join(sig)
 
 
 BOOKIES = ["1xBet", "Marathon Bet", "Pinnacle", "Betfair", "William Hill",
@@ -157,8 +182,13 @@ def format_stats(st):
         out.append(f"  {b['lo']*100:.0f}–{b['hi']*100:.0f}%: kutilgan {b['p']/b['n']*100:.0f}%, "
                    f"haqiqatda {b['hit']/b['n']*100:.0f}% ({b['n']} ta)")
     out.append(f"\nBrier ko'rsatkichi: {st['brier']} (qancha kichik bo'lsa, shuncha aniq)")
-    out.append("\n💡 Virtual tikish (1 birlikdan, pul tikilmagan):")
-    out.append(f"  Har doim favoritga: {f['profit']:+.1f} birlik (ROI {f['profit']/f['n']*100:+.1f}%)")
+    bk = ", ".join(st.get("bookies") or my_bookies())
+    out.append(f"\n💡 Virtual tikish ({bk} narxida, 1 birlikdan, pul tikilmagan):")
+    nb = f.get("bets", 0)
+    if nb:
+        out.append(f"  Har doim favoritga: {f['profit']:+.1f} birlik (ROI {f['profit']/nb*100:+.1f}%, {nb} ta)")
+    else:
+        out.append(f"  {bk} narxi bor o'yinlar hali yakunlanmagan")
     if v["n"]:
         out.append(f"  Faqat ✅ signallarga: {v['hit']}/{v['n']} yutdi, {v['profit']:+.1f} birlik "
                    f"(ROI {v['profit']/v['n']*100:+.1f}%)")
@@ -223,9 +253,8 @@ def handle_text(chat, text):
     elif "liga" in t:
         send(chat, "Ligani tanlang:", league_buttons())
     elif "signal" in t:
-        send(chat, "⏳ Tekshiryapman...")
-        send(chat, signals_text() or
-             f"Hozircha signal yo'q (EV > {MIN_EV*100:.0f}% yoki arbitraj topilmadi).")
+        send(chat, saved_signals(),
+             [[{"text": "🔄 Hozir qayta tekshirish (3 kredit)", "callback_data": "live_signals"}]])
     elif "natija" in t:
         send(chat, format_stats(load_stats()))
     elif "kredit" in t:
@@ -242,6 +271,11 @@ def handle_callback(cb):
     chat = cb["message"]["chat"]["id"]
     data = cb.get("data", "")
     tg("answerCallbackQuery", callback_query_id=cb["id"])
+    if data == "live_signals":
+        send(chat, "⏳ Tekshiryapman...")
+        send(chat, signals_text() or
+             f"Hozircha {', '.join(my_bookies())} bo'yicha signal yo'q (EV > {MIN_EV*100:.0f}%).")
+        return
     if data.startswith("bm:"):
         i = int(data[3:])
         send(chat, f"🏦 {BOOKIES[i]} tanlandi. Ligani tanlang:", bookie_league_buttons(i))

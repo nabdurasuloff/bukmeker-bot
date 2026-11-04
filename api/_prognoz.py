@@ -101,8 +101,20 @@ def implied_lambdas(p1, p2):
     return best
 
 
-def analyse(event):
-    """3 natijali (futbol: 1-X-2) yoki 2 natijali (tennis, basketbol: 1-2) bozorni tahlil qiladi."""
+# Birjalar yutuqdan komissiya oladi — koeffitsiyent shunga qarab kamaytiriladi
+COMMISSION = {"betfair": 0.05, "matchbook": 0.02, "smarkets": 0.02}
+
+
+def net_odds(name, odd):
+    c = next((v for k, v in COMMISSION.items() if k in name.lower()), 0)
+    return round(1 + (odd - 1) * (1 - c), 3) if c else odd
+
+
+def analyse(event, only=None):
+    """3 natijali (futbol: 1-X-2) yoki 2 natijali (tennis, basketbol: 1-2) bozorni tahlil qiladi.
+
+    only — faqat shu bukmekerlar (nomidagi so'z bo'yicha) koeffitsiyentlari "eng yaxshi" deb olinadi.
+    """
     home, away = event["home_team"], event["away_team"]
     has_draw = any(o.get("name") == "Draw"
                    for b in event.get("bookmakers", []) for mk in b.get("markets", [])
@@ -116,10 +128,11 @@ def analyse(event):
                 continue
             prices = {o["name"]: o["price"] for o in mk.get("outcomes", [])}
             if all(k in prices and prices[k] > 1 for k in keys):
-                odds = [prices[k] for k in keys]
+                name = b.get("title", "?")
+                odds = [net_odds(name, prices[k]) for k in keys]
                 inv = [1 / o for o in odds]
                 over = sum(inv)
-                books.append({"name": b.get("title", "?"), "odds": odds,
+                books.append({"name": name, "odds": odds,
                               "fair": [x / over for x in inv], "margin": over - 1})
     if not books:
         return None
@@ -132,9 +145,14 @@ def analyse(event):
         fair = [sum(b["fair"][i] for b in books) / len(books) for i in range(n)]
         source = f"{len(books)} ta bukmeker o'rtachasi"
 
+    pool = books
+    if only:
+        pool = [b for b in books if any(o.lower() in b["name"].lower() for o in only)]
+        if not pool:
+            return None
     best = []
     for i in range(n):
-        top = max(books, key=lambda b: b["odds"][i])
+        top = max(pool, key=lambda b: b["odds"][i])
         odd = top["odds"][i]
         best.append({"odds": odd, "book": top["name"], "ev": fair[i] * odd - 1})
     arb_sum = sum(1 / x["odds"] for x in best)
@@ -173,7 +191,7 @@ def report(a):
                + "  ".join(f"{lbl[i]}: {a['fair'][i]*100:.1f}%" for i in range(n)))
     out.append("Adolatli koeffitsiyent: "
                + "  ".join(f"{lbl[i]}: {1/a['fair'][i]:.2f}" for i in range(n)))
-    out.append("Eng yaxshi koeffitsiyent:")
+    out.append("Eng yaxshi koeffitsiyent (birjalar komissiyasi chegirilgan):")
     for i, b in enumerate(a["best"]):
         flag = "  ← musbat EV" if b["ev"] > 0 else ""
         out.append(f"   {lbl[i]}: {b['odds']:.2f} ({b['book']})  EV {b['ev']*100:+.1f}%{flag}")

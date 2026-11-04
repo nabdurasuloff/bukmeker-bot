@@ -17,7 +17,7 @@ import requests
 
 ROOT = os.path.join(os.path.dirname(__file__), "..")
 sys.path.insert(0, os.path.join(ROOT, "api"))
-from _bot import LEAGUES, MIN_EV, env, format_stats, send  # noqa: E402
+from _bot import LEAGUES, MIN_EV, env, format_stats, is_signal, my_bookies, send  # noqa: E402
 from _prognoz import API, analyse, fetch, fmt_time, report  # noqa: E402
 
 # Kuzatiladigan ligalar (har biri kuniga ~1 kredit + natija uchun ~2 kredit)
@@ -60,8 +60,9 @@ def snapshot(preds, key):
             a = analyse(e)
             if not a:
                 continue
-            if a["arb"] < 1 or any(b["ev"] > MIN_EV for b in a["best"]):
-                signals.append(f"[{LEAGUES.get(lg, lg)}]\n" + report(a))
+            mine = analyse(e, only=my_bookies())
+            if mine and is_signal(mine):
+                signals.append(f"[{LEAGUES.get(lg, lg)}]\n" + report(mine))
             preds[e["id"]] = {
                 "lg": lg, "home": a["home"], "away": a["away"], "time": a["time"],
                 "draw": a["draw"], "src": a["source"],
@@ -106,7 +107,16 @@ def settle(preds, key):
     return newly
 
 
-def compute_stats(preds):
+def my_odds(p):
+    """Sizning bukmekerlaringizdagi eng yaxshi koeffitsiyent (yo'q bo'lsa — None)."""
+    mine = [o for name, o in p.get("books", {}).items()
+            if any(m.lower() in name.lower() for m in my_bookies())]
+    if not mine:
+        return None
+    return [max(o[i] for o in mine) for i in range(len(p["fair"]))]
+
+
+def compute_stats(preds, signals=None):
     done = [p for p in preds.values() if isinstance(p.get("result"), int)]
     buckets = [[0, .4], [.4, .5], [.5, .6], [.6, .7], [.7, .8], [.8, 1.01]]
     bstat = [{"lo": lo, "hi": min(hi, 1), "n": 0, "p": 0.0, "hit": 0} for lo, hi in buckets]
@@ -124,19 +134,24 @@ def compute_stats(preds):
                     b["hit"] += 1 if i == res else 0
                     break
         k = max(range(len(fair)), key=lambda i: fair[i])
+        mo = my_odds(p)
         fav["n"] += 1
         fav["p"] += fair[k]
         win = k == res
         fav["hit"] += win
-        fav["profit"] += (best[k][0] - 1) if win else -1
-        for i, q in enumerate(fair):
-            if q * best[i][0] - 1 > MIN_EV:
-                val["n"] += 1
-                val["hit"] += i == res
-                val["profit"] += (best[i][0] - 1) if i == res else -1
+        if mo:  # virtual tikish faqat sizning bukmekeringiz narxida
+            fav["bets"] = fav.get("bets", 0) + 1
+            fav["profit"] += (mo[k] - 1) if win else -1
+            for i, q in enumerate(fair):
+                if q * mo[i] - 1 > MIN_EV:
+                    val["n"] += 1
+                    val["hit"] += i == res
+                    val["profit"] += (mo[i] - 1) if i == res else -1
     recent = sorted(done, key=lambda p: p["time"], reverse=True)[:8]
     return {
         "updated": NOW.isoformat(timespec="minutes"),
+        "bookies": my_bookies(),
+        "signals": signals or [],
         "matches": len(done),
         "pending": sum(1 for p in preds.values() if p.get("result") is None),
         "brier": round(brier / len(done), 4) if done else None,
@@ -163,7 +178,7 @@ def main():
     newly = settle(preds, key)
     signals = snapshot(preds, key)
     save(preds)
-    st = compute_stats(preds)
+    st = compute_stats(preds, signals)
     with open(STATS_PY, "w") as f:
         f.write("# Avtomatik yaratiladi (scripts/track.py). Qo'lda o'zgartirmang.\n")
         f.write("STATS = " + pprint.pformat(st, width=100, sort_dicts=False) + "\n")
