@@ -1,0 +1,22 @@
+name: Avto signal
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"   # har 6 soatda
+  workflow_dispatch:
+
+jobs:
+  signal:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests
+      - name: Signallarni yuborish
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+        run: python scripts/signal.py

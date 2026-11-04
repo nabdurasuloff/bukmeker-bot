@@ -1,5 +1,3 @@
-functions/venv/
-functions/.env
 __pycache__/
-*.json.key
-sa.json
+.vercel
+.env

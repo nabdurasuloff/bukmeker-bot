@@ -1,72 +1,27 @@
-# Koeffitsiyent tahlilchi Telegram bot (Firebase + GitHub)
+# Koeffitsiyent tahlilchi Telegram bot (Vercel + GitHub Actions, bepul)
 
-Bot Firebase Cloud Functions'da 24/7 ishlaydi. Kodni GitHub'ga yuklasangiz,
-GitHub Actions uni avtomatik ravishda Firebase'ga joylaydi va Telegram webhook'ni ulaydi.
-
-```
-Telegram ──► Cloud Function "telegram" ──► The Odds API
-                     │                         │
-                     └── Firestore (kesh, obunachilar, kredit)
-Cloud Scheduler (har 6 soat) ──► Cloud Function "avto" ──► obunachilarga signal
-```
+- **Vercel** (bepul Hobby tarifi, karta kerak emas) — bot: tugmalar, ligalar, signallar, kredit
+- **GitHub Actions** — har 6 soatda avto signal sizning Telegramingizga
 
 ## Fayllar
-- `functions/main.py`: bot va avto signal funksiyalari
-- `functions/prognoz.py`: hisob-kitoblar (marja, EV, arbitraj, Puasson)
-- `.github/workflows/deploy.yml`: avtomatik deploy
-- `firebase.json`: Firebase sozlamasi
+- `api/telegram.py` — Telegram webhook (Vercel funksiyasi)
+- `api/setup.py` — webhook'ni bir marta ulash sahifasi
+- `api/_bot.py` — bot mantiqi
+- `api/_prognoz.py` — hisob-kitoblar (marja, EV, arbitraj, Puasson)
+- `scripts/signal.py` + `.github/workflows/signal.yml` — avto signal
 
-## O'rnatish (bir marta)
+## O'rnatish
+1. **vercel.com** → *Continue with GitHub* → **Add New → Project** → `bukmeker-bot` reposini **Import**.
+2. **Environment Variables** bo'limiga 3 ta qiymat qo'shing: `BOT_TOKEN`, `ODDS_API_KEY`, `TG_SECRET`. Keyin **Deploy**.
+3. Deploy tugagach, brauzerda oching: `https://<loyiha-nomi>.vercel.app/api/setup?key=<TG_SECRET>`
+   "✅ Webhook ulandi" chiqsa, Telegramda botga `/start` yozing.
+4. Avto signal uchun: bot `/start` javobida chat ID ingizni ko'rsatadi. GitHub → Settings → Secrets → Actions'ga
+   `CHAT_ID` (shu raqam), `BOT_TOKEN`, `ODDS_API_KEY` qo'shing. Sinash: Actions → **Avto signal** → Run workflow.
 
-### 1. Firestore yoqish
-Firebase Console → loyihangiz → **Build → Firestore Database → Create database**.
-Joylashuv uchun `eur3` yoki `europe-west`, rejim uchun **Production** ni tanlang.
+Kodni GitHub'ga yuklasangiz, Vercel o'zi yangilaydi.
 
-### 2. Service account va kalitsiz ulanish
-Google Cloud Console → **IAM & Admin → Service Accounts** → (eslatma: endi bot `bilyard-klub` loyihasida, `bukmeker` codebase ichida) service account yarating
-(JSON kalit kerak emas).
-
-Keyin Google Cloud Console'da yuqori o'ngdagi **Cloud Shell** (>_) tugmasini bosing va
-`setup_github_auth.sh` faylining matnini u yerga joylab, Enter bosing. Skript rollarni beradi,
-GitHub uchun kalitsiz ulanishni (Workload Identity Federation) sozlaydi va oxirida
-`projects/.../providers/github-provider` qatorini chiqaradi. Uni `WIF_PROVIDER` secret'iga kiritasiz.
-
-### 3. GitHub repo
-Yangi **Private** repo yarating, masalan `bukmeker-bot`, va shu papkadagi barcha fayllarni yuklang.
-`.github/workflows/deploy.yml` ham bo'lishi shart. Brauzerda yuklashda ko'rinmay qolsa,
-uni **Add file → Create new file** orqali yarating: nomiga `.github/workflows/deploy.yml` deb yozib, ichiga faylning matnini qo'ying.
-
-### 4. GitHub Secrets
-Repo → **Settings → Secrets and variables → Actions → New repository secret**:
-
-| Nomi | Qiymati |
-|---|---|
-| `FIREBASE_PROJECT_ID` | Firebase loyiha ID si (Project settings'da ko'rinadi) |
-| `WIF_PROVIDER` | 2-qadamdagi skript chiqargan `projects/.../providers/github-provider` qatori |
-| `BOT_TOKEN` | @BotFather bergan token |
-| `ODDS_API_KEY` | the-odds-api.com kaliti |
-| `TG_SECRET` | o'zingiz o'ylab topgan uzun so'z, faqat harf, raqam, `_` va `-` (masalan `MeningBotim_2026_xK9q`) |
-
-### 5. Ishga tushirish
-Repo → **Actions → "Firebase'ga joylash" → Run workflow**.
-Jarayon 3–5 daqiqa davom etadi. Oxirgi qadamda `"ok":true` ko'rinsa, webhook ulangan bo'ladi.
-Telegramda botingizga `/start` yozing.
-
-Keyin `main` branch'ga har safar o'zgarish yuklaganingizda bot o'zi yangilanadi.
-
-## Sozlamalar (`functions/main.py` boshida)
-- `CACHE_MIN = 30`: bir liga ma'lumoti necha daqiqa saqlanadi (API kreditini tejaydi)
-- `MIN_EV = 0.02`: signal chegarasi (2%)
-- `AUTO_LEAGUES`: avto signal tekshiradigan ligalar
-- Avto signal oralig'i `avto` funksiyasidagi `schedule="every 6 hours"` qatorida
-
-## Narx
-Bunday kichik bot uchun Cloud Functions, Firestore va Scheduler odatda bepul limit ichida qoladi.
-Ehtiyot uchun Google Cloud → **Billing → Budgets & alerts** bo'limida masalan $5 lik ogohlantirish qo'ying.
-
-## Muammo bo'lsa
-- **Deploy "permission denied" desa:** xatoda ko'rsatilgan rolni service account'ga qo'shing.
-- **Bot javob bermasa:** Firebase Console → Functions → `telegram` → **Logs** bo'limini tekshiring.
-- **Kredit tugasa:** API 401/429 qaytaradi va bot "o'yin topilmadi" deydi. Oy boshida kredit tiklanadi.
+## Kredit sarfi
+Har bir liga tugmasi = 1 kredit, "Signallar" = 3 kredit, avto signal kuniga 4 × 3 = 12 kredit (oyiga ~360).
+Bepul tarifda oyiga 500 kredit bor. Kerak bo'lsa `signal.yml` dagi oraliqni `*/12` ga o'zgartiring.
 
 ⚠️ Bu statistikani o'rganish vositasi. Musbat EV yutishni kafolatlamaydi.
