@@ -37,8 +37,13 @@ class handler(BaseHTTPRequestHandler):
         key = parse_qs(u.query).get("key", [""])[0]
         if not key:
             return self._reply(200, "Bot ishlayapti ✅\nWebhook ulash uchun manzil oxiriga ?key=TG_SECRET qo'shing.")
-        if not env("TG_SECRET") or key != env("TG_SECRET"):
-            return self._reply(403, "❌ key noto'g'ri. Manzil oxiriga ?key=TG_SECRET qiymatini yozing.")
+        sec = env("TG_SECRET")
+        if not sec:
+            return self._reply(500, "❌ Serverda TG_SECRET topilmadi. Vercel → Settings → Environment Variables'da "
+                                    "TG_SECRET borligini tekshiring va Redeploy qiling.")
+        if key.strip() != sec:
+            return self._reply(403, f"❌ key mos emas. Serverdagi TG_SECRET {len(sec)} belgidan iborat, "
+                                    f"'{sec[0]}' bilan boshlanadi; siz yozgan key {len(key.strip())} belgi.")
         if not env("BOT_TOKEN") or not env("ODDS_API_KEY"):
             return self._reply(500, "❌ Vercel'da BOT_TOKEN yoki ODDS_API_KEY kiritilmagan.")
         host = self.headers.get("x-forwarded-host") or self.headers.get("host")
