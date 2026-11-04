@@ -39,20 +39,33 @@ jobs:
             echo "TG_SECRET=${{ secrets.TG_SECRET }}"
           } > functions/.env
 
-      - name: Provider qiymatini tozalash
+      - name: Kirish usulini aniqlash
         id: wif
         env:
           RAW: ${{ secrets.WIF_PROVIDER || secrets.GCP_SA_KEY }}
         run: |
-          P=$(printf '%s' "$RAW" | grep -oE 'projects/[0-9]+/locations/global/workloadIdentityPools/[A-Za-z0-9_-]+/providers/[A-Za-z0-9_-]+' | head -1)
-          if [ -z "$P" ]; then echo "Uzunlik: ${#RAW}, boshi: $(printf '%s' "$RAW" | head -c 12 | sed 's/[0-9]/#/g'), '/' soni: $(printf '%s' "$RAW" | tr -cd '/' | wc -c)"; echo "::error::WIF_PROVIDER secret'ida projects/.../providers/... qatori topilmadi"; exit 1; fi
-          echo "provider=$P" >> "$GITHUB_OUTPUT"
+          P=$(printf '%s' "$RAW" | grep -oE 'projects/[0-9]+/locations/global/workloadIdentityPools/[A-Za-z0-9_-]+/providers/[A-Za-z0-9_-]+' | head -1 || true)
+          if [ -n "$P" ]; then
+            echo "mode=wif" >> "$GITHUB_OUTPUT"; echo "provider=$P" >> "$GITHUB_OUTPUT"; echo "Usul: kalitsiz (WIF)"
+          elif printf '%s' "$RAW" | grep -q '"private_key"'; then
+            echo "mode=json" >> "$GITHUB_OUTPUT"; echo "Usul: JSON kalit"
+          else
+            echo "::error::WIF_PROVIDER yoki GCP_SA_KEY secret'i noto'g'ri"; exit 1
+          fi
 
       - name: Google hisobiga kirish (kalitsiz)
+        if: steps.wif.outputs.mode == 'wif'
         uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: ${{ steps.wif.outputs.provider }}
           service_account: bukmeker-bot@${{ secrets.FIREBASE_PROJECT_ID }}.iam.gserviceaccount.com
+          create_credentials_file: true
+
+      - name: Google hisobiga kirish (JSON kalit)
+        if: steps.wif.outputs.mode == 'json'
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
           create_credentials_file: true
 
       - name: Deploy
