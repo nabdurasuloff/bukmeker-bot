@@ -3,7 +3,7 @@ import os
 
 import requests
 
-from _prognoz import analyse, report, fetch, fmt_time
+from _prognoz import analyse, report, fetch, fmt_time, verdict_core
 from _model import elo_info, load as load_elo
 
 REGION = "eu"
@@ -186,6 +186,23 @@ def format_stats(st):
                 f"o'yinlar tugagach natija shu yerda chiqadi. (Kutilmoqda: {pend})" + (f"\n\n{h}" if h else ""))
     f, v = st["fav"], st["value"]
     out = [f"📊 Prognozlar natijasi — {st['matches']} ta o'yin (kutilmoqda: {st['pending']})", ""]
+    vd = st.get("verdicts")
+    if vd:
+        out.append("🎯 Bot xulosalari qanchalik to'g'ri chiqdi:")
+        a = vd["fav"]
+        if a["n"]:
+            out.append(f"  Prognoz (kim yutadi): {a['ok']}/{a['n']} to'g'ri — {a['ok']/a['n']*100:.0f}% "
+                       f"(bot kutgani {a['p']/a['n']*100:.0f}%)")
+        b = vd["value"]
+        if b["n"]:
+            out.append(f"  Qiymatli tikishlar: {b['ok']}/{b['n']} yutdi, natija {b['profit']:+.1f} birlik "
+                       f"(ROI {b['profit']/b['n']*100:+.1f}%)")
+        c = vd["total"]
+        if c["n"]:
+            out.append(f"  Total (2.5): {c['ok']}/{c['n']} to'g'ri — {c['ok']/c['n']*100:.0f}%")
+        if vd["skip"]:
+            out.append(f"  O'tkazib yuborilgan: {vd['skip']} ta")
+        out.append("")
     out.append(f"🎯 Favorit (eng yuqori ehtimolli natija) {f['hit']}/{f['n']} marta to'g'ri chiqdi: "
                f"{f['hit']/f['n']*100:.0f}% (bot kutgani: {f['p']/f['n']*100:.0f}%)")
     out.append("\nEhtimollar to'g'riligi (kalibrovka):")
@@ -293,18 +310,14 @@ def analysis_item(lg, m, elo):
     if ei and (ei["fh"] or ei["fa"]):
         out.append(f"• Forma: {ei['h']} {ei['fh'] or '—'} | {ei['a']} {ei['fa'] or '—'}")
     mine = m.get("mine")
-    if mine and pm:
-        evs = [pm[i] * mine[i][0] - 1 for i in range(n)]
-        j = max(range(n), key=lambda i: evs[i])
-        if evs[j] > 0.02:
-            out.append(f"• ✅ 1xBet'da foydali narx: {names[j]} — {mine[j][0]:.2f} (+{evs[j]*100:.1f}%)")
-        else:
-            out.append("• 1xBet: " + " / ".join(f"{x[0]:.2f}" for x in mine) + " — foydali narx yo'q")
+    mo = [x[0] for x in mine] if mine else None
+    out.append("• 1xBet: " + (" / ".join(f"{o:.2f}" for o in mo) if mo else "koeffitsiyent yo'q"))
     if pe and pm:
         diff = max(abs(pe[i] - pm[i]) for i in range(3))
         if diff >= 0.08:
             j = max(range(3), key=lambda i: pe[i] - pm[i])
             out.append(f"• ⚠️ Model va bozor farq qiladi: model {names[j]}ga {diff*100:.0f}% ko'proq ishonadi")
+    out.append(verdict_core(comb, pm or comb, names, mo if pm else None, m.get("o25"))["text"])
     return "\n".join(out)
 
 
@@ -324,7 +337,7 @@ def analysis_text(lg, live=False, limit=10):
                 continue
             mine = analyse(e, only=my_bookies())
             items.append({"home": a["home"], "away": a["away"], "time": a["time"], "draw": a["draw"],
-                          "fair": a["fair"],
+                          "fair": a["fair"], "o25": a.get("over25"),
                           "mine": [[b["odds"], b["book"]] for b in mine["best"]] if mine else None})
         src = "(jonli, 1 kredit)"
     if not items:

@@ -18,7 +18,7 @@ import requests
 ROOT = os.path.join(os.path.dirname(__file__), "..")
 sys.path.insert(0, os.path.join(ROOT, "api"))
 from _bot import LEAGUES, MIN_EV, env, format_stats, is_signal, my_bookies, send  # noqa: E402
-from _prognoz import API, analyse, fetch, fmt_time, report  # noqa: E402
+from _prognoz import API, analyse, check_verdict, fetch, fmt_time, report, verdict  # noqa: E402
 from _model import elo_info, load as load_elo  # noqa: E402
 
 # Kuzatiladigan ligalar (har biri kuniga ~1 kredit + natija uchun ~2 kredit)
@@ -72,6 +72,7 @@ def snapshot(preds, key):
                 print(f"Elo nomi topilmadi: {lg}: {a['home']} / {a['away']}")
             up.append({"home": a["home"], "away": a["away"], "time": a["time"], "draw": a["draw"],
                        "fair": [round(x, 4) for x in a["fair"]],
+                       "o25": round(a["over25"], 4) if a.get("over25") is not None else None,
                        "mine": [[b["odds"], b["book"]] for b in mine["best"]] if mine else None,
                        "elo": [round(x, 4) for x in ei["p"]] if ei else None})
             if not (t <= NOW + timedelta(hours=36)):
@@ -81,6 +82,9 @@ def snapshot(preds, key):
             rec["sig"] = old.get("sig")
             if ei:
                 rec["elo"] = [round(x, 4) for x in ei["p"]]
+            vd = verdict(a)
+            vd.pop("text", None)
+            rec["verdict"] = vd  # o'yin boshlanishiga eng yaqin xulosa saqlanadi
             if mine and is_signal(mine):
                 signals.append(f"[{LEAGUES.get(lg, lg)}]\n" + report(mine))
                 if not rec["sig"]:
@@ -223,6 +227,26 @@ def compute_stats(preds, signals=None):
             for p in preds.values() if p.get("sig") and p.get("closed")]
     clv = {"n": len(clvs), "avg": round(sum(clvs) / len(clvs), 4) if clvs else None,
            "pos": sum(1 for c in clvs if c > 0)}
+    vs = {"fav": {"n": 0, "ok": 0, "p": 0.0}, "value": {"n": 0, "ok": 0, "profit": 0.0},
+          "total": {"n": 0, "ok": 0}, "skip": 0}
+    for p in done:
+        v = p.get("verdict")
+        if not v:
+            continue
+        ok, tok = check_verdict(v, p["result"], p.get("score"))
+        if v["type"] == "fav":
+            vs["fav"]["n"] += 1
+            vs["fav"]["ok"] += bool(ok)
+            vs["fav"]["p"] += v["p"]
+        elif v["type"] == "value":
+            vs["value"]["n"] += 1
+            vs["value"]["ok"] += bool(ok)
+            vs["value"]["profit"] += (v["odds"] - 1) if ok else -1
+        else:
+            vs["skip"] += 1
+        if tok is not None:
+            vs["total"]["n"] += 1
+            vs["total"]["ok"] += bool(tok)
     eb = [p for p in done if p.get("elo")]
     def brier_of(pr, res):
         return sum((pr[i] - (1 if i == res else 0)) ** 2 for i in range(len(pr)))
@@ -239,7 +263,7 @@ def compute_stats(preds, signals=None):
         "matches": len(done),
         "pending": sum(1 for p in preds.values() if p.get("result") is None),
         "brier": round(brier / len(done), 4) if done else None,
-        "fav": fav, "value": val, "kelly": kelly, "clv": clv, "elo": elo_cmp,
+        "fav": fav, "value": val, "kelly": kelly, "clv": clv, "elo": elo_cmp, "verdicts": vs,
         "upcoming": UPCOMING, "upcoming_at": META["upcoming_at"],
         "buckets": [b for b in bstat if b["n"]],
         "recent": [{"m": f"{p['home']} — {p['away']}", "score": p.get("score"),
@@ -249,10 +273,26 @@ def compute_stats(preds, signals=None):
 
 
 def result_line(p):
-    k = max(range(len(p["fair"])), key=lambda i: p["fair"][i])
     names = [p["home"], "Durang", p["away"]] if p["draw"] else [p["home"], p["away"]]
-    ok = "✅" if k == p["result"] else "❌"
-    return f"{ok} {p['home']} — {p['away']} {p.get('score')} | prognoz: {names[k]} {max(p['fair'])*100:.0f}%"
+    head = f"{p['home']} — {p['away']} {p.get('score')}"
+    v = p.get("verdict")
+    if not v:
+        k = max(range(len(p["fair"])), key=lambda i: p["fair"][i])
+        return f"{'✅' if k == p['result'] else '❌'} {head} | prognoz: {names[k]} {max(p['fair'])*100:.0f}%"
+    ok, tok = check_verdict(v, p["result"], p.get("score"))
+    parts = []
+    if v["type"] == "value":
+        win = v["odds"] - 1 if ok else -1
+        parts.append(f"{'✅ to‘g‘ri' if ok else '❌ xato'} — qiymatli tikish {names[v['i']]} @{v['odds']:.2f} "
+                     f"({'+' if ok else ''}{win:.2f} birlik)")
+    elif v["type"] == "fav":
+        parts.append(f"{'✅ to‘g‘ri' if ok else '❌ xato'} — prognoz: {names[v['i']]} ({v['p']*100:.0f}%)")
+    else:
+        parts.append("⏭ o'tkazib yuborilgan")
+    if tok is not None:
+        t = v["total"]
+        parts.append(f"total {'kam' if t['side'] == 'under' else 'ko‘p'}: {'✅' if tok else '❌'}")
+    return f"{head}\n   Xulosa: " + "; ".join(parts)
 
 
 def write_stats(preds, signals):
