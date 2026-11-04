@@ -1,0 +1,13 @@
+name: probe
+on: workflow_dispatch
+jobs:
+  p:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          for u in mmz4281/2627/E0.csv mmz4281/2526/E0.csv mmz4281/2627/SP1.csv fixtures.csv; do
+            echo "=== $u"; curl -sL -A "Mozilla/5.0" "https://www.football-data.co.uk/$u" -o f.csv -w "HTTP %{http_code} %{size_download}\n"
+            head -c 700 f.csv | cat -v; echo; wc -l f.csv; tail -2 f.csv | cut -c1-200
+          done
+          curl -sL -A "Mozilla/5.0" https://www.football-data.co.uk/fixtures.csv | cut -d, -f1-6 | sort | uniq -c | sort -rn | head -5
+          curl -sL -A "Mozilla/5.0" https://www.football-data.co.uk/fixtures.csv | cut -d, -f1 | sort | uniq -c
