@@ -1,0 +1,56 @@
+name: Firebase'ga joylash
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+      REGION: europe-west1
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Python kutubxonalarini o'rnatish
+        run: |
+          python -m venv functions/venv
+          functions/venv/bin/pip install -r functions/requirements.txt
+
+      - name: Maxfiy qiymatlarni .env ga yozish
+        run: |
+          {
+            echo "BOT_TOKEN=${{ secrets.BOT_TOKEN }}"
+            echo "ODDS_API_KEY=${{ secrets.ODDS_API_KEY }}"
+            echo "TG_SECRET=${{ secrets.TG_SECRET }}"
+          } > functions/.env
+
+      - name: Google hisobiga kirish
+        env:
+          SA_KEY: ${{ secrets.GCP_SA_KEY }}
+        run: |
+          printf '%s' "$SA_KEY" > "$RUNNER_TEMP/sa.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/sa.json" >> "$GITHUB_ENV"
+
+      - name: Deploy
+        run: npx -y firebase-tools@latest deploy --only functions --project "$PROJECT_ID" --non-interactive --force
+
+      - name: Telegram webhook ulash
+        run: |
+          URL="https://${REGION}-${PROJECT_ID}.cloudfunctions.net/telegram"
+          curl -s "https://api.telegram.org/bot${{ secrets.BOT_TOKEN }}/setWebhook" \
+            -d "url=${URL}" \
+            -d "secret_token=${{ secrets.TG_SECRET }}" \
+            -d 'allowed_updates=["message","callback_query"]'
+          echo
+          curl -s "https://api.telegram.org/bot${{ secrets.BOT_TOKEN }}/getWebhookInfo" | sed 's/bot[0-9]*:[A-Za-z0-9_-]*/bot***/g'
