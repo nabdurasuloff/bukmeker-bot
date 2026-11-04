@@ -84,8 +84,16 @@ def league_buttons():
     return [[{"text": n, "callback_data": f"lg:{k}"}] for k, n in LEAGUES.items()]
 
 
+def upcoming_only(events):
+    """Boshlanib ketgan o'yinlarni olib tashlaydi (ularning narxi eskirgan)."""
+    from datetime import datetime, timezone
+    now = datetime.now(timezone.utc).isoformat()[:19]
+    return [e for e in events if (e.get("commence_time") or "")[:19] > now]
+
+
 def analysed(league, limit=None):
     events, _ = fetch(env("ODDS_API_KEY"), league, REGION)
+    events = upcoming_only(events)
     events = sorted(events, key=lambda e: e.get("commence_time", ""))[:limit]
     res = [a for a in (analyse(e) for e in events) if a]
     res.sort(key=lambda a: a["time"])
@@ -101,7 +109,7 @@ def signals_text(leagues=SIGNAL_LEAGUES):
     found = []
     for lg in leagues:
         events, _ = fetch(env("ODDS_API_KEY"), lg, REGION)
-        for e in events:
+        for e in upcoming_only(events):
             a = analyse(e, only=my_bookies())
             if a and is_signal(a):
                 found.append(f"[{LEAGUES.get(lg, lg)}]\n" + report(a))
@@ -138,6 +146,7 @@ def bookie_report(i, league, top_n=10):
     """Tanlangan bukmeker koeffitsiyentlarini ehtimoli yuqoridan pastga saralaydi."""
     bname = BOOKIES[i]
     events, _ = fetch(env("ODDS_API_KEY"), league, REGION)
+    events = upcoming_only(events)
     rows = []
     for e in events:
         a = analyse(e)
@@ -313,7 +322,7 @@ def analysis_text(lg, live=False, limit=10):
     else:
         events, _ = fetch(env("ODDS_API_KEY"), lg, REGION)
         items = []
-        for e in sorted(events, key=lambda e: e.get("commence_time", "")):
+        for e in sorted(upcoming_only(events), key=lambda e: e.get("commence_time", "")):
             a = analyse(e)
             if not a:
                 continue
@@ -325,6 +334,11 @@ def analysis_text(lg, live=False, limit=10):
     if not items:
         return f"{LEAGUES.get(lg, lg)}: yaqin o'yinlar topilmadi."
     elo = load_elo()
+    from datetime import datetime, timezone
+    now = datetime.now(timezone.utc).isoformat()[:19]
+    items = [m for m in items if m["time"][:19] > now]
+    if not items:
+        return f"{LEAGUES.get(lg, lg)}: yaqin o'yinlar topilmadi (saqlanganlari boshlanib bo'lgan)."
     items = sorted(items, key=lambda m: m["time"])[:limit]
     head = [f"🧠 {LEAGUES.get(lg, lg)} — {len(items)} ta o'yin {src}",
             "Model = Elo reytingi (oxirgi 3 mavsum), Bozor = Pinnacle (marjasiz).", ""]
