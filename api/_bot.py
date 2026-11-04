@@ -4,6 +4,7 @@ import os
 import requests
 
 from _prognoz import analyse, report, fetch, fmt_time
+from _model import elo_info, load as load_elo
 
 REGION = "eu"
 MIN_EV = 0.02
@@ -21,7 +22,8 @@ LEAGUES = {
 }
 SIGNAL_LEAGUES = ["soccer_epl", "soccer_spain_la_liga", "soccer_italy_serie_a", "basketball_nba"]
 
-MAIN_KB = {"keyboard": [[{"text": "📋 Ligalar"}, {"text": "🎾 Tennis"}],
+MAIN_KB = {"keyboard": [[{"text": "🧠 Tahlil: kim yutadi?"}],
+                        [{"text": "📋 Ligalar"}, {"text": "🎾 Tennis"}],
                         [{"text": "🏦 Mening bukmekerim"}],
                         [{"text": "🔔 Signallar"}, {"text": "📊 Natijalar"}],
                         [{"text": "💳 Kredit"}, {"text": "🆔 Mening ID"}],
@@ -171,8 +173,9 @@ def format_stats(st):
     """Kuzatuv statistikasini o'qiladigan matnga aylantiradi."""
     if not st or not st.get("matches"):
         pend = st.get("pending", 0) if st else 0
+        h = elo_history()
         return ("📊 Hali yakunlangan o'yinlar yo'q. Bot har kuni prognozlarni yozib boradi, "
-                f"o'yinlar tugagach natija shu yerda chiqadi. (Kutilmoqda: {pend})")
+                f"o'yinlar tugagach natija shu yerda chiqadi. (Kutilmoqda: {pend})" + (f"\n\n{h}" if h else ""))
     f, v = st["fav"], st["value"]
     out = [f"📊 Prognozlar natijasi — {st['matches']} ta o'yin (kutilmoqda: {st['pending']})", ""]
     out.append(f"🎯 Favorit (eng yuqori ehtimolli natija) {f['hit']}/{f['n']} marta to'g'ri chiqdi: "
@@ -209,6 +212,14 @@ def format_stats(st):
                        f"{c['pos']}/{c['n']} tasida yaxshi. Musbat CLV — haqiqiy ustunlik belgisi.")
         else:
             out.append("📈 CLV: signal berilgan o'yinlar boshlanishi bilan hisoblanadi")
+    e = st.get("elo")
+    if e and e.get("n"):
+        better = "Model" if e["brier_elo"] < e["brier_mkt"] else "Bozor"
+        out.append(f"\n🧠 Elo modeli vs bozor ({e['n']} ta futbol o'yini): favoritni topdi {e['hit_elo']} vs "
+                   f"{e['hit_mkt']}; Brier {e['brier_elo']} vs {e['brier_mkt']} → aniqroq: {better}")
+    ev = elo_history()
+    if ev:
+        out.append(ev)
     if st.get("recent"):
         out.append("\nOxirgi o'yinlar:")
         for r in st["recent"]:
@@ -218,12 +229,109 @@ def format_stats(st):
     return "\n".join(out)
 
 
+def elo_history():
+    """Elo modelining tarixiy sinovi (o'tgan mavsumlar) — model qurilganda hisoblanadi."""
+    L = (load_elo().get("leagues") or {})
+    ev = [v["eval"] for v in L.values() if v.get("eval")]
+    if not ev:
+        return ""
+    n = sum(x["n"] for x in ev)
+    ae = sum(x["acc_elo"] * x["n"] for x in ev) / n
+    am = sum(x["acc_mkt"] * x["n"] for x in ev) / n
+    le = sum(x["ll_elo"] * x["n"] for x in ev) / n
+    lm = sum(x["ll_mkt"] * x["n"] for x in ev) / n
+    return (f"📚 Tarixiy sinov ({n} ta o'yin, {len(ev)} liga): favorit to'g'ri — model {ae*100:.0f}%, bozor {am*100:.0f}%; "
+            f"log-loss {le:.3f} vs {lm:.3f} (kichigi aniqroq)")
+
+
 def load_stats():
     try:
         from _stats import STATS
         return STATS
     except Exception:
         return {}
+
+
+ANALYSIS_LEAGUES = ["soccer_epl", "soccer_spain_la_liga", "soccer_italy_serie_a",
+                    "soccer_germany_bundesliga", "soccer_france_ligue_one", "soccer_uefa_champs_league",
+                    "basketball_nba"]
+
+
+def analysis_buttons():
+    return [[{"text": LEAGUES[k], "callback_data": f"an:{k}"}] for k in ANALYSIS_LEAGUES]
+
+
+def pct(p):
+    return f"{p*100:.0f}%"
+
+
+def analysis_item(lg, m, elo):
+    """Bitta o'yin tahlili: Elo modeli + bozor + forma -> kim yutishi ehtimoli ko'proq."""
+    draw = m["draw"]
+    lbl = ["1", "X", "2"] if draw else ["1", "2"]
+    names = [m["home"], "Durang", m["away"]] if draw else [m["home"], m["away"]]
+    ei = elo_info(lg, m["home"], m["away"], elo) if draw else None
+    pe = ei["p"] if ei else None
+    pm = m.get("fair")
+    if pe and pm:
+        comb = [(pe[i] + pm[i]) / 2 for i in range(3)]
+    else:
+        comb = pe or pm
+    icon = "⚽" if draw else "🏀"
+    out = [f"{icon} {m['home']} — {m['away']} · {fmt_time(m['time'])}"]
+    if pe:
+        out.append(f"   🧠 Model: " + " · ".join(f"{lbl[i]} {pct(pe[i])}" for i in range(3))
+                   + f"  (reyting {ei['rh']} / {ei['ra']})")
+    if pm:
+        out.append(f"   📈 Bozor: " + " · ".join(f"{lbl[i]} {pct(pm[i])}" for i in range(len(pm))))
+    if ei and (ei["fh"] or ei["fa"]):
+        out.append(f"   Forma: {ei['fh'] or '—'} | {ei['fa'] or '—'}")
+    mine = m.get("mine")
+    if mine and pm:
+        out.append("   " + ", ".join(f"{lbl[i]}: {mine[i][0]:.2f}" for i in range(len(mine)))
+                   + f" ({mine[0][1]})")
+    k = max(range(len(comb)), key=lambda i: comb[i])
+    if names[k] == "Durang":
+        out.append(f"   👉 Eng ehtimolli: durang ({pct(comb[k])})")
+    else:
+        out.append(f"   👉 Yutish ehtimoli ko'proq: {names[k]} ({pct(comb[k])})")
+    if pe and pm:
+        diff = max(abs(pe[i] - pm[i]) for i in range(3))
+        if diff >= 0.08:
+            j = max(range(3), key=lambda i: pe[i] - pm[i])
+            out.append(f"   ⚠️ Model bozordan farq qiladi: {names[j]} uchun +{diff*100:.0f}%")
+    return "\n".join(out)
+
+
+def analysis_text(lg, live=False, limit=10):
+    st = load_stats()
+    cache = (st.get("upcoming") or {}).get(lg) if not live else None
+    src = ""
+    if cache:
+        items = cache
+        src = f"(ma'lumot {fmt_time(st.get('upcoming_at', ''))} holatiga, 0 kredit)"
+    else:
+        events, _ = fetch(env("ODDS_API_KEY"), lg, REGION)
+        items = []
+        for e in sorted(events, key=lambda e: e.get("commence_time", "")):
+            a = analyse(e)
+            if not a:
+                continue
+            mine = analyse(e, only=my_bookies())
+            items.append({"home": a["home"], "away": a["away"], "time": a["time"], "draw": a["draw"],
+                          "fair": a["fair"],
+                          "mine": [[b["odds"], b["book"]] for b in mine["best"]] if mine else None})
+        src = "(jonli, 1 kredit)"
+    if not items:
+        return f"{LEAGUES.get(lg, lg)}: yaqin o'yinlar topilmadi."
+    elo = load_elo()
+    items = sorted(items, key=lambda m: m["time"])[:limit]
+    head = [f"🧠 {LEAGUES.get(lg, lg)} — {len(items)} ta o'yin {src}",
+            "Model = Elo reytingi (oxirgi 3 mavsum), Bozor = Pinnacle (marjasiz).", ""]
+    foot = ["", "ℹ️ Forma: ✅ g'alaba, ➖ durang, ❌ mag'lubiyat (oxirgi 5). "
+                "Ehtimol — kafolat emas: 60% degani 10 tadan ~4 tasi boshqacha tugaydi."]
+    return ("\n".join(head[:2]) + "\n\n" + "\n\n".join(analysis_item(lg, m, elo) for m in items)
+            + "\n\n" + foot[1])
 
 
 def tennis_buttons():
@@ -260,6 +368,8 @@ def handle_text(chat, text):
         send(chat, "Salom! Men koeffitsiyent tahlilchi botman 📊\n"
                    "Ligani tanlang yoki signallarni ko'ring.\n\n"
                    f"Sizning chat ID: {chat}", keyboard=MAIN_KB)
+    elif "tahlil" in t or "kim yutadi" in t:
+        send(chat, "Qaysi ligani tahlil qilaylik?", analysis_buttons())
     elif "bukmeker" in t:
         send(chat, "Qaysi bukmekerda o'ynaysiz?", bookie_buttons())
     elif "tennis" in t:
@@ -286,6 +396,12 @@ def handle_callback(cb):
     chat = cb["message"]["chat"]["id"]
     data = cb.get("data", "")
     tg("answerCallbackQuery", callback_query_id=cb["id"])
+    if data.startswith("an:") or data.startswith("anl:"):
+        live = data.startswith("anl:")
+        lg = data.split(":", 1)[1]
+        send(chat, analysis_text(lg, live=live),
+             [[{"text": "🔄 Jonli yangilash (1 kredit)", "callback_data": f"anl:{lg}"}]] if not live else None)
+        return
     if data == "live_signals":
         send(chat, "⏳ Tekshiryapman...")
         send(chat, signals_text() or

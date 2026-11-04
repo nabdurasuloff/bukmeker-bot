@@ -26,10 +26,12 @@ jobs:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
           MY_BOOKIES: ${{ secrets.MY_BOOKIES }}
-        run: python scripts/track.py ${{ github.event.schedule == '10 * * * *' && 'closing' || 'daily' }}
+        run: |
+          if [ "${{ github.event.schedule }}" != "10 * * * *" ]; then python scripts/elo_build.py; fi
+          python scripts/track.py ${{ github.event.schedule == '10 * * * *' && 'closing' || 'daily' }}
       - name: Natijalarni saqlash
         run: |
           git config user.name "bukmeker-bot"
           git config user.email "bukmeker-bot@users.noreply.github.com"
-          git add data/predictions.json api/_stats.py
+          git add data/predictions.json api/_stats.py api/_elo.py
           git diff --cached --quiet && echo "O'zgarish yo'q" || (git commit -m "Prognoz/natija yangilanishi" && git pull --rebase -q && git push)

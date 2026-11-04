@@ -19,12 +19,15 @@ ROOT = os.path.join(os.path.dirname(__file__), "..")
 sys.path.insert(0, os.path.join(ROOT, "api"))
 from _bot import LEAGUES, MIN_EV, env, format_stats, is_signal, my_bookies, send  # noqa: E402
 from _prognoz import API, analyse, fetch, fmt_time, report  # noqa: E402
+from _model import elo_info, load as load_elo  # noqa: E402
 
 # Kuzatiladigan ligalar (har biri kuniga ~1 kredit + natija uchun ~2 kredit)
 TRACK = ["soccer_epl", "soccer_spain_la_liga", "soccer_italy_serie_a", "basketball_nba"]
 DATA = os.path.join(ROOT, "data", "predictions.json")
 STATS_PY = os.path.join(ROOT, "api", "_stats.py")
 NOW = datetime.now(timezone.utc)
+UPCOMING = {}
+META = {"upcoming_at": None}
 
 
 def parse(t):
@@ -48,22 +51,36 @@ def save(preds):
 def snapshot(preds, key):
     """Yaqin o'yinlar prognozini yozadi, signallarni qaytaradi."""
     signals = []
+    elo = load_elo()
     for lg in TRACK:
         events, _ = fetch(key, lg, "eu")
+        up = UPCOMING.setdefault(lg, [])
+        META["upcoming_at"] = NOW.isoformat(timespec="minutes")
         for e in events:
             try:
                 t = parse(e["commence_time"])
             except Exception:
                 continue
-            if not (NOW < t <= NOW + timedelta(hours=36)):
+            if not (NOW < t <= NOW + timedelta(days=7)):
                 continue
             a = analyse(e)
             if not a:
                 continue
             mine = analyse(e, only=my_bookies())
+            ei = elo_info(lg, a["home"], a["away"], elo) if a["draw"] else None
+            if ei is None and a["draw"]:
+                print(f"Elo nomi topilmadi: {lg}: {a['home']} / {a['away']}")
+            up.append({"home": a["home"], "away": a["away"], "time": a["time"], "draw": a["draw"],
+                       "fair": [round(x, 4) for x in a["fair"]],
+                       "mine": [[b["odds"], b["book"]] for b in mine["best"]] if mine else None,
+                       "elo": [round(x, 4) for x in ei["p"]] if ei else None})
+            if not (t <= NOW + timedelta(hours=36)):
+                continue
             old = preds.get(e["id"], {})
             rec = record(lg, a)
             rec["sig"] = old.get("sig")
+            if ei:
+                rec["elo"] = [round(x, 4) for x in ei["p"]]
             if mine and is_signal(mine):
                 signals.append(f"[{LEAGUES.get(lg, lg)}]\n" + report(mine))
                 if not rec["sig"]:
@@ -206,6 +223,14 @@ def compute_stats(preds, signals=None):
             for p in preds.values() if p.get("sig") and p.get("closed")]
     clv = {"n": len(clvs), "avg": round(sum(clvs) / len(clvs), 4) if clvs else None,
            "pos": sum(1 for c in clvs if c > 0)}
+    eb = [p for p in done if p.get("elo")]
+    def brier_of(pr, res):
+        return sum((pr[i] - (1 if i == res else 0)) ** 2 for i in range(len(pr)))
+    elo_cmp = {"n": len(eb),
+               "brier_elo": round(sum(brier_of(p["elo"], p["result"]) for p in eb) / len(eb), 4) if eb else None,
+               "brier_mkt": round(sum(brier_of(p["fair"], p["result"]) for p in eb) / len(eb), 4) if eb else None,
+               "hit_elo": sum(max(range(3), key=lambda i: p["elo"][i]) == p["result"] for p in eb),
+               "hit_mkt": sum(max(range(3), key=lambda i: p["fair"][i]) == p["result"] for p in eb)}
     recent = sorted(done, key=lambda p: p["time"], reverse=True)[:8]
     return {
         "updated": NOW.isoformat(timespec="minutes"),
@@ -214,7 +239,8 @@ def compute_stats(preds, signals=None):
         "matches": len(done),
         "pending": sum(1 for p in preds.values() if p.get("result") is None),
         "brier": round(brier / len(done), 4) if done else None,
-        "fav": fav, "value": val, "kelly": kelly, "clv": clv,
+        "fav": fav, "value": val, "kelly": kelly, "clv": clv, "elo": elo_cmp,
+        "upcoming": UPCOMING, "upcoming_at": META["upcoming_at"],
         "buckets": [b for b in bstat if b["n"]],
         "recent": [{"m": f"{p['home']} — {p['away']}", "score": p.get("score"),
                     "fav": max(range(len(p["fair"])), key=lambda i: p["fair"][i]),
@@ -235,6 +261,15 @@ def write_stats(preds, signals):
         f.write("# Avtomatik yaratiladi (scripts/track.py). Qo'lda o'zgartirmang.\n")
         f.write("STATS = " + pprint.pformat(st, width=100, sort_dicts=False) + "\n")
     return st
+
+
+def previous(key, default):
+    try:
+        sys.path.insert(0, os.path.join(ROOT, "api"))
+        from _stats import STATS
+        return STATS.get(key, default)
+    except Exception:
+        return default
 
 
 def previous_signals():
@@ -258,7 +293,9 @@ def main():
         print(f"Yopilish narxi yozildi: {n}")
         if n:
             save(preds)
-            write_stats(preds, previous_signals())
+            UPCOMING.update(previous("upcoming", {}))
+            META["upcoming_at"] = previous("upcoming_at", None)
+            st = write_stats(preds, previous_signals())
         return
 
     newly = settle(preds, key)
