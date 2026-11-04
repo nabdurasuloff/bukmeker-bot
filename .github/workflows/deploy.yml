@@ -39,10 +39,19 @@ jobs:
             echo "TG_SECRET=${{ secrets.TG_SECRET }}"
           } > functions/.env
 
+      - name: Provider qiymatini tozalash
+        id: wif
+        env:
+          RAW: ${{ secrets.WIF_PROVIDER || secrets.GCP_SA_KEY }}
+        run: |
+          P=$(printf '%s' "$RAW" | grep -oE 'projects/[0-9]+/locations/global/workloadIdentityPools/[A-Za-z0-9_-]+/providers/[A-Za-z0-9_-]+' | head -1)
+          if [ -z "$P" ]; then echo "::error::WIF_PROVIDER secret'ida projects/.../providers/... qatori topilmadi"; exit 1; fi
+          echo "provider=$P" >> "$GITHUB_OUTPUT"
+
       - name: Google hisobiga kirish (kalitsiz)
         uses: google-github-actions/auth@v2
         with:
-          workload_identity_provider: ${{ secrets.WIF_PROVIDER || secrets.GCP_SA_KEY }}
+          workload_identity_provider: ${{ steps.wif.outputs.provider }}
           service_account: bukmeker-bot@${{ secrets.FIREBASE_PROJECT_ID }}.iam.gserviceaccount.com
           create_credentials_file: true
 
