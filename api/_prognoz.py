@@ -183,33 +183,35 @@ def fmt_time(iso):
         return iso
 
 
-def report(a):
-    lbl = ["1", "X", "2"] if a.get("draw", True) else ["1", "2"]
-    icon = "⚽" if a.get("draw", True) else "🏟"
-    n = len(lbl)
-    out = [f"{icon} {a['home']} — {a['away']}  ({fmt_time(a['time'])}, Toshkent)"]
-    out.append(f"Adolatli ehtimollar ({a['source']}): "
-               + "  ".join(f"{lbl[i]}: {a['fair'][i]*100:.1f}%" for i in range(n)))
-    out.append("Adolatli koeffitsiyent: "
-               + "  ".join(f"{lbl[i]}: {1/a['fair'][i]:.2f}" for i in range(n)))
-    out.append("Eng yaxshi koeffitsiyent (birjalar komissiyasi chegirilgan):")
-    for i, b in enumerate(a["best"]):
-        flag = "  ← musbat EV" if b["ev"] > 0 else ""
-        out.append(f"   {lbl[i]}: {b['odds']:.2f} ({b['book']})  EV {b['ev']*100:+.1f}%{flag}")
-    margins = ", ".join(f"{b['name']} {b['margin']*100:.1f}%" for b in a["books"][:6])
-    if len(a["books"]) > 6:
-        margins += f" (+{len(a['books'])-6})"
-    out.append(f"Marjalar: {margins}")
-    if a["arb"] < 1:
-        out.append(f"🔔 Arbitraj: eng yaxshi koeffitsiyentlar yig'indisi {a['arb']*100:.1f}% "
-                   f"→ nazariy foyda {(1/a['arb']-1)*100:.2f}%")
+def report(a, mine="1xBet"):
+    """Sodda ko'rinish: kim yutadi, hisoblar, total, 1xBet narxi."""
+    draw = a.get("draw", True)
+    fair = a["fair"]
+    names = [a["home"], "Durang", a["away"]] if draw else [a["home"], a["away"]]
+    icon = "⚽" if draw else "🏟"
+    k = max(range(len(fair)), key=lambda i: fair[i])
+    rest = ", ".join(f"{'durang' if names[i] == 'Durang' else names[i]} {fair[i]*100:.0f}%"
+                     for i in range(len(fair)) if i != k)
+    out = [f"{icon} {a['home']} — {a['away']} · {fmt_time(a['time'])}"]
+    if names[k] == "Durang":
+        out.append(f"• Eng ehtimolli: durang, {fair[k]*100:.0f}%. ({rest})")
     else:
-        out.append(f"Arbitraj yo'q (yig'indi {a['arb']*100:.1f}%)")
+        out.append(f"• Kim yutadi: {names[k]}, {fair[k]*100:.0f}%. ({rest})")
     if a.get("lam"):
-        lh, la = a["lam"]
-        out.append(f"Kutilgan gollar (koeffitsiyentdan): {lh:.2f} — {la:.2f}")
-        out.append("Ehtimolli hisoblar: " + ", ".join(f"{i}:{j} {p*100:.1f}%" for i, j, p in a["top"]))
-        out.append(f"Total 2.5+: {a['over25']*100:.1f}%   Ikkala jamoa uradi: {a['btts']*100:.1f}%")
+        out.append("• Eng ehtimolli hisoblar: " + ", ".join(f"{i}:{j} ({p*100:.0f}%)" for i, j, p in a["top"][:2]))
+        out.append(f"• Total 2.5: kam — {(1-a['over25'])*100:.0f}%, ko'p — {a['over25']*100:.0f}%. "
+                   f"Ikkala jamoa uradi — {a['btts']*100:.0f}%")
+    mb = next((b for b in a["books"] if mine.lower() in b["name"].lower()), None)
+    if not mb:
+        out.append(f"• {mine} bu o'yinga koeffitsiyent bermagan")
+    else:
+        evs = [fair[i] * mb["odds"][i] - 1 for i in range(len(fair))]
+        j = max(range(len(evs)), key=lambda i: evs[i])
+        odds = " / ".join(f"{o:.2f}" for o in mb["odds"])
+        if evs[j] > 0.02:
+            out.append(f"• ✅ {mine}'da foydali narx: {names[j]} — {mb['odds'][j]:.2f} (+{evs[j]*100:.1f}%)")
+        else:
+            out.append(f"• {mine}: {odds} — foydali narx yo'q")
     return "\n".join(out)
 
 

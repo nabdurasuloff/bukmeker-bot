@@ -274,40 +274,37 @@ def pct(p):
 
 
 def analysis_item(lg, m, elo):
-    """Bitta o'yin tahlili: Elo modeli + bozor + forma -> kim yutishi ehtimoli ko'proq."""
+    """Sodda tahlil: model + bozor -> kim yutadi, forma, 1xBet narxi."""
     draw = m["draw"]
-    lbl = ["1", "X", "2"] if draw else ["1", "2"]
     names = [m["home"], "Durang", m["away"]] if draw else [m["home"], m["away"]]
     ei = elo_info(lg, m["home"], m["away"], elo) if draw else None
-    pe = ei["p"] if ei else None
-    pm = m.get("fair")
-    if pe and pm:
-        comb = [(pe[i] + pm[i]) / 2 for i in range(3)]
+    pe, pm = (ei["p"] if ei else None), m.get("fair")
+    comb = [(pe[i] + pm[i]) / 2 for i in range(3)] if (pe and pm) else (pe or pm)
+    n = len(comb)
+    k = max(range(n), key=lambda i: comb[i])
+    rest = ", ".join(f"{'durang' if names[i] == 'Durang' else names[i]} {pct(comb[i])}"
+                     for i in range(n) if i != k)
+    src = f" (model {pct(pe[k])}, bozor {pct(pm[k])})" if (pe and pm) else ""
+    out = [f"{'⚽' if draw else '🏀'} {m['home']} — {m['away']} · {fmt_time(m['time'])}"]
+    if names[k] == "Durang":
+        out.append(f"• Eng ehtimolli: durang, {pct(comb[k])}{src}. ({rest})")
     else:
-        comb = pe or pm
-    icon = "⚽" if draw else "🏀"
-    out = [f"{icon} {m['home']} — {m['away']} · {fmt_time(m['time'])}"]
-    if pe:
-        out.append(f"   🧠 Model: " + " · ".join(f"{lbl[i]} {pct(pe[i])}" for i in range(3))
-                   + f"  (reyting {ei['rh']} / {ei['ra']})")
-    if pm:
-        out.append(f"   📈 Bozor: " + " · ".join(f"{lbl[i]} {pct(pm[i])}" for i in range(len(pm))))
+        out.append(f"• Kim yutadi: {names[k]}, {pct(comb[k])}{src}. ({rest})")
     if ei and (ei["fh"] or ei["fa"]):
-        out.append(f"   Forma: {ei['fh'] or '—'} | {ei['fa'] or '—'}")
+        out.append(f"• Forma: {ei['h']} {ei['fh'] or '—'} | {ei['a']} {ei['fa'] or '—'}")
     mine = m.get("mine")
     if mine and pm:
-        out.append("   " + ", ".join(f"{lbl[i]}: {mine[i][0]:.2f}" for i in range(len(mine)))
-                   + f" ({mine[0][1]})")
-    k = max(range(len(comb)), key=lambda i: comb[i])
-    if names[k] == "Durang":
-        out.append(f"   👉 Eng ehtimolli: durang ({pct(comb[k])})")
-    else:
-        out.append(f"   👉 Yutish ehtimoli ko'proq: {names[k]} ({pct(comb[k])})")
+        evs = [pm[i] * mine[i][0] - 1 for i in range(n)]
+        j = max(range(n), key=lambda i: evs[i])
+        if evs[j] > 0.02:
+            out.append(f"• ✅ 1xBet'da foydali narx: {names[j]} — {mine[j][0]:.2f} (+{evs[j]*100:.1f}%)")
+        else:
+            out.append("• 1xBet: " + " / ".join(f"{x[0]:.2f}" for x in mine) + " — foydali narx yo'q")
     if pe and pm:
         diff = max(abs(pe[i] - pm[i]) for i in range(3))
         if diff >= 0.08:
             j = max(range(3), key=lambda i: pe[i] - pm[i])
-            out.append(f"   ⚠️ Model bozordan farq qiladi: {names[j]} uchun +{diff*100:.0f}%")
+            out.append(f"• ⚠️ Model va bozor farq qiladi: model {names[j]}ga {diff*100:.0f}% ko'proq ishonadi")
     return "\n".join(out)
 
 
@@ -339,10 +336,8 @@ def analysis_text(lg, live=False, limit=10):
     if not items:
         return f"{LEAGUES.get(lg, lg)}: yaqin o'yinlar topilmadi (saqlanganlari boshlanib bo'lgan)."
     items = sorted(items, key=lambda m: m["time"])[:limit]
-    head = [f"🧠 {LEAGUES.get(lg, lg)} — {len(items)} ta o'yin {src}",
-            "Model = Elo reytingi (oxirgi 3 mavsum), Bozor = Pinnacle (marjasiz).", ""]
-    foot = ["", "ℹ️ Forma: ✅ g'alaba, ➖ durang, ❌ mag'lubiyat (oxirgi 5). "
-                "Ehtimol — kafolat emas: 60% degani 10 tadan ~4 tasi boshqacha tugaydi."]
+    head = [f"🧠 {LEAGUES.get(lg, lg)} — {len(items)} ta o'yin {src}", "", ""]
+    foot = ["", "ℹ️ Forma — oxirgi 5 o'yin: ✅ g'alaba, ➖ durang, ❌ mag'lubiyat. Ehtimol — kafolat emas."]
     return ("\n".join(head[:2]) + "\n\n" + "\n\n".join(analysis_item(lg, m, elo) for m in items)
             + "\n\n" + foot[1])
 
