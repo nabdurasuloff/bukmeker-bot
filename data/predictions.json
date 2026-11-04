@@ -3,7 +3,7 @@
 "away": "Atlanta Hawks",
 "best": [
 [
-2.372,
+2.352,
 "Matchbook"
 ],
 [
@@ -65,7 +65,7 @@
 1.66
 ],
 "Matchbook": [
-2.372,
+2.352,
 1.696
 ],
 "MyBookie.ag": [
@@ -121,7 +121,8 @@
 "home": "Washington Wizards",
 "lg": "basketball_nba",
 "result": null,
-"snap": "2026-11-04T20:17+00:00",
+"sig": null,
+"snap": "2026-11-04T20:38+00:00",
 "src": "Pinnacle",
 "time": "2026-11-05T00:10:00Z"
 },
@@ -159,8 +160,8 @@
 2.57
 ],
 "Betfair": [
-1.494,
-2.786
+1.503,
+2.729
 ],
 "Betsson": [
 1.48,
@@ -191,8 +192,8 @@
 2.68
 ],
 "Matchbook": [
-1.51,
-2.842
+1.519,
+2.803
 ],
 "MyBookie.ag": [
 1.49,
@@ -247,7 +248,8 @@
 "home": "New Orleans Pelicans",
 "lg": "basketball_nba",
 "result": null,
-"snap": "2026-11-04T20:17+00:00",
+"sig": null,
+"snap": "2026-11-04T20:38+00:00",
 "src": "Pinnacle",
 "time": "2026-11-05T01:10:00Z"
 },
@@ -255,8 +257,8 @@
 "away": "Milwaukee Bucks",
 "best": [
 [
-1.22,
-"William Hill"
+1.21,
+"BetOnline.ag"
 ],
 [
 5.41,
@@ -269,8 +271,8 @@
 4.8
 ],
 "888sport": [
-1.22,
-4.2
+1.2,
+4.5
 ],
 "BetAnything": [
 1.2,
@@ -301,8 +303,8 @@
 4.6
 ],
 "GTbets": [
-1.2,
-4.8
+1.19,
+4.85
 ],
 "LeoVegas (SE)": [
 1.19,
@@ -330,15 +332,15 @@
 ],
 "Pinnacle": [
 1.2,
-4.96
+5.09
 ],
 "Tipico": [
-1.17,
-4.8
+1.16,
+5.0
 ],
 "Unibet (FR)": [
-1.17,
-3.75
+1.16,
+3.9
 ],
 "Unibet (NL)": [
 1.2,
@@ -349,27 +351,28 @@
 4.75
 ],
 "William Hill": [
-1.22,
-4.2
+1.2,
+4.5
 ],
 "Winamax (DE)": [
-1.22,
-4.6
+1.21,
+4.9
 ],
 "Winamax (FR)": [
-1.18,
-4.0
+1.17,
+4.2
 ]
 },
 "draw": false,
 "fair": [
-0.8052,
-0.1948
+0.8092,
+0.1908
 ],
 "home": "Boston Celtics",
 "lg": "basketball_nba",
 "result": null,
-"snap": "2026-11-04T20:17+00:00",
+"sig": null,
+"snap": "2026-11-04T20:38+00:00",
 "src": "Pinnacle",
 "time": "2026-11-05T00:40:00Z"
 },
@@ -443,8 +446,8 @@
 1.186
 ],
 "MyBookie.ag": [
-5.0,
-1.17
+5.3,
+1.15
 ],
 "Nordic Bet": [
 5.0,
@@ -495,7 +498,8 @@
 "home": "Sacramento Kings",
 "lg": "basketball_nba",
 "result": null,
-"snap": "2026-11-04T20:17+00:00",
+"sig": null,
+"snap": "2026-11-04T20:38+00:00",
 "src": "Pinnacle",
 "time": "2026-11-05T03:10:00Z"
 },
@@ -534,7 +538,7 @@
 ],
 "Betfair": [
 1.437,
-2.947
+2.995
 ],
 "Betsson": [
 1.42,
@@ -582,7 +586,7 @@
 ],
 "Pinnacle": [
 1.43,
-3.05
+3.04
 ],
 "Tipico": [
 1.37,
@@ -615,13 +619,14 @@
 },
 "draw": false,
 "fair": [
-0.6808,
-0.3192
+0.6801,
+0.3199
 ],
 "home": "Memphis Grizzlies",
 "lg": "basketball_nba",
 "result": null,
-"snap": "2026-11-04T20:17+00:00",
+"sig": null,
+"snap": "2026-11-04T20:38+00:00",
 "src": "Pinnacle",
 "time": "2026-11-05T01:10:00Z"
 },
@@ -633,8 +638,8 @@
 "Matchbook"
 ],
 [
-2.411,
-"Matchbook"
+2.42,
+"Pinnacle"
 ]
 ],
 "books": {
@@ -659,12 +664,12 @@
 2.3
 ],
 "Betfair": [
-1.646,
+1.636,
 2.368
 ],
 "Betsson": [
-1.6,
-2.3
+1.58,
+2.33
 ],
 "Codere (IT)": [
 1.61,
@@ -683,8 +688,8 @@
 2.35
 ],
 "LeoVegas (SE)": [
-1.62,
-2.28
+1.61,
+2.3
 ],
 "Marathon Bet": [
 1.64,
@@ -699,16 +704,16 @@
 2.3
 ],
 "Nordic Bet": [
-1.6,
-2.3
+1.58,
+2.33
 ],
 "PMU (FR)": [
-1.56,
-2.18
+1.55,
+2.2
 ],
 "Pinnacle": [
 1.65,
-2.39
+2.42
 ],
 "Tipico": [
 1.57,
@@ -719,12 +724,12 @@
 2.15
 ],
 "Unibet (NL)": [
-1.64,
-2.3
+1.63,
+2.33
 ],
 "Unibet (SE)": [
-1.64,
-2.3
+1.63,
+2.33
 ],
 "William Hill": [
 1.57,
@@ -741,13 +746,14 @@
 },
 "draw": false,
 "fair": [
-0.5916,
-0.4084
+0.5946,
+0.4054
 ],
 "home": "Oklahoma City Thunder",
 "lg": "basketball_nba",
 "result": null,
-"snap": "2026-11-04T20:17+00:00",
+"sig": null,
+"snap": "2026-11-04T20:38+00:00",
 "src": "Pinnacle",
 "time": "2026-11-05T01:00:00Z"
 },
@@ -873,7 +879,8 @@
 "home": "Denver Nuggets",
 "lg": "basketball_nba",
 "result": null,
-"snap": "2026-11-04T20:17+00:00",
+"sig": null,
+"snap": "2026-11-04T20:38+00:00",
 "src": "Pinnacle",
 "time": "2026-11-05T02:00:00Z"
 },
@@ -891,8 +898,8 @@
 ],
 "books": {
 "1xBet": [
-1.18,
-5.32
+1.17,
+5.48
 ],
 "888sport": [
 1.15,
@@ -912,7 +919,7 @@
 ],
 "Betfair": [
 1.19,
-5.56
+5.655
 ],
 "Betsson": [
 1.15,
@@ -932,7 +939,7 @@
 ],
 "GTbets": [
 1.17,
-5.35
+5.4
 ],
 "LeoVegas (SE)": [
 1.18,
@@ -960,7 +967,7 @@
 ],
 "Pinnacle": [
 1.18,
-5.44
+5.49
 ],
 "Tipico": [
 1.14,
@@ -993,13 +1000,14 @@
 },
 "draw": false,
 "fair": [
-0.8218,
-0.1782
+0.8231,
+0.1769
 ],
 "home": "San Antonio Spurs",
 "lg": "basketball_nba",
 "result": null,
-"snap": "2026-11-04T20:17+00:00",
+"sig": null,
+"snap": "2026-11-04T20:38+00:00",
 "src": "Pinnacle",
 "time": "2026-11-05T02:30:00Z"
 },
@@ -1037,7 +1045,7 @@
 1.54
 ],
 "Betfair": [
-2.444,
+2.425,
 1.608
 ],
 "Betsson": [
@@ -1070,7 +1078,7 @@
 ],
 "Matchbook": [
 2.49,
-1.627
+1.637
 ],
 "MyBookie.ag": [
 2.33,
@@ -1125,7 +1133,8 @@
 "home": "Brooklyn Nets",
 "lg": "basketball_nba",
 "result": null,
-"snap": "2026-11-04T20:17+00:00",
+"sig": null,
+"snap": "2026-11-04T20:38+00:00",
 "src": "Pinnacle",
 "time": "2026-11-05T00:30:00Z"
 },
@@ -1164,7 +1173,7 @@
 ],
 "Betfair": [
 2.786,
-1.494
+1.484
 ],
 "Betsson": [
 2.65,
@@ -1196,7 +1205,7 @@
 ],
 "Matchbook": [
 2.862,
-1.51
+1.5
 ],
 "MyBookie.ag": [
 2.66,
@@ -1211,7 +1220,7 @@
 1.36
 ],
 "Pinnacle": [
-2.81,
+2.83,
 1.49
 ],
 "Tipico": [
@@ -1245,13 +1254,14 @@
 },
 "draw": false,
 "fair": [
-0.3465,
-0.6535
+0.3449,
+0.6551
 ],
 "home": "Los Angeles Clippers",
 "lg": "basketball_nba",
 "result": null,
-"snap": "2026-11-04T20:17+00:00",
+"sig": null,
+"snap": "2026-11-04T20:38+00:00",
 "src": "Pinnacle",
 "time": "2026-11-05T03:40:00Z"
 },
@@ -1377,7 +1387,8 @@
 "home": "New York Knicks",
 "lg": "basketball_nba",
 "result": null,
-"snap": "2026-11-04T20:17+00:00",
+"sig": null,
+"snap": "2026-11-04T20:38+00:00",
 "src": "Pinnacle",
 "time": "2026-11-05T00:40:00Z"
 },
@@ -1411,8 +1422,8 @@
 2.19
 ],
 "Betclic (FR)": [
-1.66,
-2.1
+1.64,
+2.13
 ],
 "Betfair": [
 1.741,
@@ -1423,8 +1434,8 @@
 2.15
 ],
 "Codere (IT)": [
-1.72,
-2.13
+1.71,
+2.16
 ],
 "Coolbet": [
 1.71,
@@ -1451,8 +1462,8 @@
 2.235
 ],
 "MyBookie.ag": [
-1.72,
-2.09
+1.7,
+2.12
 ],
 "Nordic Bet": [
 1.68,
@@ -1464,15 +1475,15 @@
 ],
 "Pinnacle": [
 1.75,
-2.22
+2.23
 ],
 "Tipico": [
 1.7,
 2.1
 ],
 "Unibet (FR)": [
-1.68,
-2.05
+1.66,
+2.1
 ],
 "Unibet (NL)": [
 1.72,
@@ -1487,23 +1498,24 @@
 2.15
 ],
 "Winamax (DE)": [
-1.74,
-2.15
+1.72,
+2.2
 ],
 "Winamax (FR)": [
-1.66,
-2.0
+1.64,
+2.05
 ]
 },
 "draw": false,
 "fair": [
-0.5592,
-0.4408
+0.5603,
+0.4397
 ],
 "home": "Detroit Pistons",
 "lg": "basketball_nba",
 "result": null,
-"snap": "2026-11-04T20:17+00:00",
+"sig": null,
+"snap": "2026-11-04T20:38+00:00",
 "src": "Pinnacle",
 "time": "2026-11-05T00:00:00Z"
 },
@@ -1511,7 +1523,7 @@
 "away": "Minnesota Timberwolves",
 "best": [
 [
-1.372,
+1.382,
 "Matchbook"
 ],
 [
@@ -1541,7 +1553,7 @@
 3.13
 ],
 "Betfair": [
-1.361,
+1.37,
 3.422
 ],
 "Betsson": [
@@ -1573,7 +1585,7 @@
 3.3
 ],
 "Matchbook": [
-1.372,
+1.382,
 3.499
 ],
 "MyBookie.ag": [
@@ -1589,8 +1601,8 @@
 3.05
 ],
 "Pinnacle": [
-1.37,
-3.34
+1.38,
+3.38
 ],
 "Tipico": [
 1.32,
@@ -1623,13 +1635,14 @@
 },
 "draw": false,
 "fair": [
-0.7091,
-0.2909
+0.7101,
+0.2899
 ],
 "home": "Houston Rockets",
 "lg": "basketball_nba",
 "result": null,
-"snap": "2026-11-04T20:17+00:00",
+"sig": null,
+"snap": "2026-11-04T20:38+00:00",
 "src": "Pinnacle",
 "time": "2026-11-05T01:30:00Z"
 },
@@ -1667,7 +1680,7 @@
 1.59
 ],
 "Betfair": [
-2.273,
+2.254,
 1.694
 ],
 "Betsson": [
@@ -1755,7 +1768,8 @@
 "home": "Phoenix Suns",
 "lg": "basketball_nba",
 "result": null,
-"snap": "2026-11-04T20:17+00:00",
+"sig": null,
+"snap": "2026-11-04T20:38+00:00",
 "src": "Pinnacle",
 "time": "2026-11-05T02:00:00Z"
 }
