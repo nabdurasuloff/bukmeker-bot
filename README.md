@@ -22,14 +22,14 @@ Cloud Scheduler (har 6 soat) ──► Cloud Function "avto" ──► obunachil
 Firebase Console → loyihangiz → **Build → Firestore Database → Create database**.
 Joylashuv uchun `eur3` yoki `europe-west`, rejim uchun **Production** ni tanlang.
 
-### 2. Service account kaliti (GitHub Firebase'ga kirishi uchun)
-Google Cloud Console (console.cloud.google.com) → shu loyiha → **IAM & Admin → Service Accounts → Create service account**.
-Nomi masalan `github-deploy`. Unga quyidagi rollarni bering:
-- **Editor**
-- **Cloud Functions Admin**
-- **Service Account User**
+### 2. Service account va kalitsiz ulanish
+Google Cloud Console → **IAM & Admin → Service Accounts** → `bukmeker-bot` nomli service account yarating
+(JSON kalit kerak emas).
 
-Yaratilgan accountni oching → **Keys → Add key → Create new key → JSON**. Fayl yuklab olinadi.
+Keyin Google Cloud Console'da yuqori o'ngdagi **Cloud Shell** (>_) tugmasini bosing va
+`setup_github_auth.sh` faylining matnini u yerga joylab, Enter bosing. Skript rollarni beradi,
+GitHub uchun kalitsiz ulanishni (Workload Identity Federation) sozlaydi va oxirida
+`projects/.../providers/github-provider` qatorini chiqaradi. Uni `WIF_PROVIDER` secret'iga kiritasiz.
 
 ### 3. GitHub repo
 Yangi **Private** repo yarating, masalan `bukmeker-bot`, va shu papkadagi barcha fayllarni yuklang.
@@ -42,7 +42,7 @@ Repo → **Settings → Secrets and variables → Actions → New repository sec
 | Nomi | Qiymati |
 |---|---|
 | `FIREBASE_PROJECT_ID` | Firebase loyiha ID si (Project settings'da ko'rinadi) |
-| `GCP_SA_KEY` | 2-qadamdagi JSON faylning **butun** matni |
+| `WIF_PROVIDER` | 2-qadamdagi skript chiqargan `projects/.../providers/github-provider` qatori |
 | `BOT_TOKEN` | @BotFather bergan token |
 | `ODDS_API_KEY` | the-odds-api.com kaliti |
 | `TG_SECRET` | o'zingiz o'ylab topgan uzun so'z, faqat harf, raqam, `_` va `-` (masalan `MeningBotim_2026_xK9q`) |

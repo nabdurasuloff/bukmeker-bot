@@ -5,6 +5,10 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  id-token: write   # kalitsiz Google kirishi (Workload Identity Federation) uchun
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -35,12 +39,12 @@ jobs:
             echo "TG_SECRET=${{ secrets.TG_SECRET }}"
           } > functions/.env
 
-      - name: Google hisobiga kirish
-        env:
-          SA_KEY: ${{ secrets.GCP_SA_KEY }}
-        run: |
-          printf '%s' "$SA_KEY" > "$RUNNER_TEMP/sa.json"
-          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/sa.json" >> "$GITHUB_ENV"
+      - name: Google hisobiga kirish (kalitsiz)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: bukmeker-bot@${{ secrets.FIREBASE_PROJECT_ID }}.iam.gserviceaccount.com
+          create_credentials_file: true
 
       - name: Deploy
         run: npx -y firebase-tools@latest deploy --only functions --project "$PROJECT_ID" --non-interactive --force
