@@ -107,11 +107,18 @@ def tennis_buttons():
 def credits_left():
     # /sports so'rovi kredit sarflamaydi, lekin qolgan kreditni ko'rsatadi
     try:
+        k = env("ODDS_API_KEY")
+        if not k:
+            return "❌ ODDS_API_KEY serverda yo'q"
         r = requests.get("https://api.the-odds-api.com/v4/sports",
-                         params={"apiKey": env("ODDS_API_KEY")}, timeout=15)
-        return r.headers.get("x-requests-remaining", "noma'lum")
-    except Exception:
-        return "noma'lum"
+                         params={"apiKey": k}, timeout=15)
+        if r.status_code != 200:
+            return (f"❌ API xatosi {r.status_code}: {r.text[:200]}\n"
+                    f"(kalit {len(k)} belgi, '{k[:3]}…' bilan boshlanadi)")
+        used = r.headers.get("x-requests-used", "?")
+        return f"{r.headers.get('x-requests-remaining', '?')} (ishlatilgan: {used})"
+    except Exception as e:
+        return f"❌ Ulanish xatosi: {e}"
 
 
 def handle_text(chat, text):
