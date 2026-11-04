@@ -1,5 +1,7 @@
 # Avtomatik yaratiladi (scripts/track.py). Qo'lda o'zgartirmang.
-STATS = {'updated': '2026-11-04T20:11+00:00',
+STATS = {'updated': '2026-11-04T20:17+00:00',
+ 'bookies': ['1xBet'],
+ 'signals': [],
  'matches': 0,
  'pending': 14,
  'brier': None,
