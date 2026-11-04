@@ -296,7 +296,26 @@ def handle_callback(cb):
              + "\n\n".join(report(a) for a in res), kb)
 
 
+OWNER_ID = "6282774829"
+
+
+def allowed_ids():
+    """Botdan foydalanishga ruxsat berilganlar (ALLOWED_IDS, vergul bilan). Standart: egasi."""
+    raw = os.environ.get("ALLOWED_IDS") or os.environ.get("CHAT_ID") or OWNER_ID
+    return {x.strip() for x in raw.split(",") if x.strip()}
+
+
 def handle_update(u):
+    msg = u.get("message") or (u.get("callback_query") or {}).get("message") or {}
+    chat = msg.get("chat", {}).get("id")
+    if chat is not None and str(chat) not in allowed_ids():
+        # Begona foydalanuvchi: API'ga murojaat qilinmaydi, kredit sarflanmaydi
+        if "message" in u:
+            tg("sendMessage", chat_id=chat,
+               text=f"🔒 Bu shaxsiy bot. Sizning ID: {chat}\nKirish uchun bot egasiga murojaat qiling.")
+        elif "callback_query" in u:
+            tg("answerCallbackQuery", callback_query_id=u["callback_query"]["id"], text="🔒 Ruxsat yo'q")
+        return
     try:
         if "message" in u and "text" in u["message"]:
             handle_text(u["message"]["chat"]["id"], u["message"]["text"])
