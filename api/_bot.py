@@ -193,7 +193,22 @@ def format_stats(st):
         out.append(f"  Faqat ✅ signallarga: {v['hit']}/{v['n']} yutdi, {v['profit']:+.1f} birlik "
                    f"(ROI {v['profit']/v['n']*100:+.1f}%)")
     else:
-        out.append("  ✅ signallar hali bo'lmagan")
+        out.append("  ✅ signallar hali yakunlanmagan")
+    k = st.get("kelly")
+    if k:
+        if k["bets"]:
+            sp = lambda x: f"{x:,}".replace(",", " ")
+            out.append(f"\n🏦 Kelly bank (100 000 so'mdan boshlangan, chorak-Kelly): {sp(k['bank'])} so'm "
+                       f"({k['bets']} ta tikish; eng yuqori {sp(k['peak'])}, eng past {sp(k['low'])})")
+        else:
+            out.append("\n🏦 Kelly bank: 100 000 so'm (hali signal yakunlanmagan)")
+    c = st.get("clv")
+    if c:
+        if c["n"]:
+            out.append(f"📈 CLV (signal narxi yopilish narxidan yaxshimi): o'rtacha {c['avg']*100:+.1f}%, "
+                       f"{c['pos']}/{c['n']} tasida yaxshi. Musbat CLV — haqiqiy ustunlik belgisi.")
+        else:
+            out.append("📈 CLV: signal berilgan o'yinlar boshlanishi bilan hisoblanadi")
     if st.get("recent"):
         out.append("\nOxirgi o'yinlar:")
         for r in st["recent"]:
