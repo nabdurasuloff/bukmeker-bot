@@ -34,9 +34,9 @@ class handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         u = urlparse(self.path)
-        if "setup" not in u.path:
-            return self._reply(200, "Bot ishlayapti ✅")
         key = parse_qs(u.query).get("key", [""])[0]
+        if not key:
+            return self._reply(200, "Bot ishlayapti ✅\nWebhook ulash uchun manzil oxiriga ?key=TG_SECRET qo'shing.")
         if not env("TG_SECRET") or key != env("TG_SECRET"):
             return self._reply(403, "❌ key noto'g'ri. Manzil oxiriga ?key=TG_SECRET qiymatini yozing.")
         if not env("BOT_TOKEN") or not env("ODDS_API_KEY"):
