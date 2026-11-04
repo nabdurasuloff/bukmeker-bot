@@ -4,8 +4,7 @@
 - **GitHub Actions** — har 6 soatda avto signal sizning Telegramingizga
 
 ## Fayllar
-- `api/telegram.py` — Telegram webhook (Vercel funksiyasi)
-- `api/setup.py` — webhook'ni bir marta ulash sahifasi
+- `api/index.py` — Vercel kirish nuqtasi: Telegram webhook va `/api/setup`
 - `api/_bot.py` — bot mantiqi
 - `api/_prognoz.py` — hisob-kitoblar (marja, EV, arbitraj, Puasson)
 - `scripts/signal.py` + `.github/workflows/signal.yml` — avto signal
