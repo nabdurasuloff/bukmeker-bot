@@ -1,13 +1,14 @@
 # Koeffitsiyent tahlilchi Telegram bot (Vercel + GitHub Actions, bepul)
 
 - **Vercel** (bepul Hobby tarifi, karta kerak emas) — bot: tugmalar, ligalar, signallar, kredit
-- **GitHub Actions** — har 6 soatda avto signal sizning Telegramingizga
+- **GitHub Actions** — har kuni prognozlarni yozadi, o'yindan keyin natija bilan solishtiradi, hisobot va signallarni Telegramga yuboradi
 
 ## Fayllar
 - `api/index.py` — Vercel kirish nuqtasi: Telegram webhook va `/api/setup`
 - `api/_bot.py` — bot mantiqi
 - `api/_prognoz.py` — hisob-kitoblar (marja, EV, arbitraj, Puasson)
-- `scripts/signal.py` + `.github/workflows/signal.yml` — avto signal
+- `scripts/track.py` + `.github/workflows/track.yml` — kunlik prognoz, natija tekshiruvi va hisobot
+- `data/predictions.json` — yozilgan prognozlar va natijalar, `api/_stats.py` — statistika (avtomatik)
 
 ## O'rnatish
 1. **vercel.com** → *Continue with GitHub* → **Add New → Project** → `bukmeker-bot` reposini **Import**.
@@ -20,7 +21,8 @@
 Kodni GitHub'ga yuklasangiz, Vercel o'zi yangilaydi.
 
 ## Kredit sarfi
-Har bir liga tugmasi = 1 kredit, "Signallar" = 3 kredit, avto signal kuniga 4 × 3 = 12 kredit (oyiga ~360).
-Bepul tarifda oyiga 500 kredit bor. Kerak bo'lsa `signal.yml` dagi oraliqni `*/12` ga o'zgartiring.
+Kunlik kuzatuv: 4 liga × 1 kredit + natijalar uchun ~2 kredit har bir ligaga ≈ kuniga 8–12 (oyiga ~300).
+Botdagi har bir liga tugmasi = 1 kredit, "Signallar" = 3 kredit, "Natijalar" = 0.
+Bepul tarifda oyiga 500 kredit bor. Ligalar ro'yxati: `scripts/track.py` dagi `TRACK`.
 
 ⚠️ Bu statistikani o'rganish vositasi. Musbat EV yutishni kafolatlamaydi.

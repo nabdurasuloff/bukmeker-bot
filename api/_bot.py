@@ -23,7 +23,7 @@ SIGNAL_LEAGUES = ["soccer_epl", "soccer_spain_la_liga", "soccer_uefa_champs_leag
 
 MAIN_KB = {"keyboard": [[{"text": "📋 Ligalar"}, {"text": "🎾 Tennis"}],
                         [{"text": "🏦 Mening bukmekerim"}],
-                        [{"text": "🔔 Signallar"}],
+                        [{"text": "🔔 Signallar"}, {"text": "📊 Natijalar"}],
                         [{"text": "💳 Kredit"}, {"text": "🆔 Mening ID"}],
                         [{"text": "❓ Yordam"}]],
            "resize_keyboard": True}
@@ -35,7 +35,8 @@ HELP = (
     "• EV — eng yaxshi koeffitsiyentning adolatli narxdan farqi. Musbat bo'lsa, koeffitsiyent \"qimmat\".\n"
     "• Arbitraj — barcha natijalarga tikkanda foyda qoladigan holat.\n"
     "• Kutilgan gollar — koeffitsiyentlardan Puasson modeli orqali hisoblangan.\n\n"
-    "Har bir liga yoki turnir so'rovi 1 API kredit, \"Signallar\" 3 kredit sarflaydi.\n\n"
+    "Har bir liga yoki turnir so'rovi 1 API kredit, \"Signallar\" 3 kredit sarflaydi. "
+    "\"Natijalar\" kredit sarflamaydi — bot har kuni prognozlarni yozib, o'yindan keyin tekshiradi.\n\n"
     "⚠️ Bu statistikani o'rganish vositasi. Musbat EV yutishni kafolatlamaydi."
 )
 
@@ -141,6 +142,45 @@ def bookie_report(i, league, top_n=10):
     return "\n".join(out)
 
 
+def format_stats(st):
+    """Kuzatuv statistikasini o'qiladigan matnga aylantiradi."""
+    if not st or not st.get("matches"):
+        pend = st.get("pending", 0) if st else 0
+        return ("📊 Hali yakunlangan o'yinlar yo'q. Bot har kuni prognozlarni yozib boradi, "
+                f"o'yinlar tugagach natija shu yerda chiqadi. (Kutilmoqda: {pend})")
+    f, v = st["fav"], st["value"]
+    out = [f"📊 Prognozlar natijasi — {st['matches']} ta o'yin (kutilmoqda: {st['pending']})", ""]
+    out.append(f"🎯 Favorit (eng yuqori ehtimolli natija) {f['hit']}/{f['n']} marta to'g'ri chiqdi: "
+               f"{f['hit']/f['n']*100:.0f}% (bot kutgani: {f['p']/f['n']*100:.0f}%)")
+    out.append("\nEhtimollar to'g'riligi (kalibrovka):")
+    for b in st["buckets"]:
+        out.append(f"  {b['lo']*100:.0f}–{b['hi']*100:.0f}%: kutilgan {b['p']/b['n']*100:.0f}%, "
+                   f"haqiqatda {b['hit']/b['n']*100:.0f}% ({b['n']} ta)")
+    out.append(f"\nBrier ko'rsatkichi: {st['brier']} (qancha kichik bo'lsa, shuncha aniq)")
+    out.append("\n💡 Virtual tikish (1 birlikdan, pul tikilmagan):")
+    out.append(f"  Har doim favoritga: {f['profit']:+.1f} birlik (ROI {f['profit']/f['n']*100:+.1f}%)")
+    if v["n"]:
+        out.append(f"  Faqat ✅ signallarga: {v['hit']}/{v['n']} yutdi, {v['profit']:+.1f} birlik "
+                   f"(ROI {v['profit']/v['n']*100:+.1f}%)")
+    else:
+        out.append("  ✅ signallar hali bo'lmagan")
+    if st.get("recent"):
+        out.append("\nOxirgi o'yinlar:")
+        for r in st["recent"]:
+            out.append(f"  {'✅' if r['fav'] == r['res'] else '❌'} {r['m']} {r['score']} "
+                       f"(favorit {r['p']*100:.0f}%)")
+    out.append(f"\nYangilangan: {fmt_time(st['updated'])} · Kamida 100+ o'yindan keyin xulosa qiling.")
+    return "\n".join(out)
+
+
+def load_stats():
+    try:
+        from _stats import STATS
+        return STATS
+    except Exception:
+        return {}
+
+
 def tennis_buttons():
     """Hozir o'tayotgan tennis turnirlari (bu so'rov kredit sarflamaydi)."""
     try:
@@ -186,6 +226,8 @@ def handle_text(chat, text):
         send(chat, "⏳ Tekshiryapman...")
         send(chat, signals_text() or
              f"Hozircha signal yo'q (EV > {MIN_EV*100:.0f}% yoki arbitraj topilmadi).")
+    elif "natija" in t:
+        send(chat, format_stats(load_stats()))
     elif "kredit" in t:
         send(chat, f"💳 API kreditidan qoldi: {credits_left()}")
     elif "id" in t:
