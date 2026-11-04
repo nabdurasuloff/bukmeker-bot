@@ -24,6 +24,7 @@ Bepul kalit: https://the-odds-api.com (oyiga 500 kredit; 1 so'rov = 1 liga x 1 h
 """
 import argparse
 import math
+import os
 import sys
 import time
 from datetime import datetime, timedelta, timezone
@@ -214,10 +215,19 @@ def report(a):
 
 # ---------- Ma'lumot olish ----------
 
+# Faqat shu bukmekerlar olinadi: Pinnacle — adolatli baho uchun, 1xBet — siz o'ynaydigan bukmeker.
+# (10 tagacha bukmeker = 1 kredit.) O'zgartirish: ODDS_BOOKMAKERS muhit o'zgaruvchisi, masalan "pinnacle,onexbet,marathonbet"
+BOOKMAKERS = os.environ.get("ODDS_BOOKMAKERS", "pinnacle,onexbet")
+
+
 def fetch(key, league, region):
     import requests
-    r = requests.get(f"{API}/sports/{league}/odds", timeout=20, params={
-        "apiKey": key, "regions": region, "markets": "h2h", "oddsFormat": "decimal"})
+    params = {"apiKey": key, "markets": "h2h", "oddsFormat": "decimal"}
+    if BOOKMAKERS:
+        params["bookmakers"] = BOOKMAKERS
+    else:
+        params["regions"] = region
+    r = requests.get(f"{API}/sports/{league}/odds", timeout=20, params=params)
     left = r.headers.get("x-requests-remaining")
     if r.status_code != 200:
         print(f"[{league}] xato {r.status_code}: {r.text[:200]}", file=sys.stderr)

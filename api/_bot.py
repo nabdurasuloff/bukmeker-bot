@@ -24,7 +24,7 @@ SIGNAL_LEAGUES = ["soccer_epl", "soccer_spain_la_liga", "soccer_italy_serie_a", 
 
 MAIN_KB = {"keyboard": [[{"text": "🧠 Tahlil: kim yutadi?"}],
                         [{"text": "📋 Ligalar"}, {"text": "🎾 Tennis"}],
-                        [{"text": "🏦 Mening bukmekerim"}],
+                        [{"text": "🏦 1xBet reytingi"}],
                         [{"text": "🔔 Signallar"}, {"text": "📊 Natijalar"}],
                         [{"text": "💳 Kredit"}, {"text": "🆔 Mening ID"}],
                         [{"text": "❓ Yordam"}]],
@@ -130,8 +130,7 @@ def saved_signals():
     return f"🔔 {len(sig)} ta signal ({when} holati, {', '.join(my_bookies())}):\n\n" + "\n\n".join(sig)
 
 
-BOOKIES = ["1xBet", "Marathon Bet", "Pinnacle", "Betfair", "William Hill",
-           "Unibet", "Betsson", "888sport", "Bet365"]
+BOOKIES = ["1xBet"]
 
 
 def bookie_buttons():
@@ -384,8 +383,8 @@ def handle_text(chat, text):
                    f"Sizning chat ID: {chat}", keyboard=MAIN_KB)
     elif "tahlil" in t or "kim yutadi" in t:
         send(chat, "Qaysi ligani tahlil qilaylik?", analysis_buttons())
-    elif "bukmeker" in t:
-        send(chat, "Qaysi bukmekerda o'ynaysiz?", bookie_buttons())
+    elif "bukmeker" in t or "1xbet" in t or "reyting" in t:
+        send(chat, "🏦 1xBet: ligani tanlang — ehtimoli yuqoridan pastga saralanadi:", bookie_league_buttons(0))
     elif "tennis" in t:
         btns = tennis_buttons()
         send(chat, "Turnirni tanlang:" if btns else "Hozir faol tennis turnirlari topilmadi.", btns or None)
