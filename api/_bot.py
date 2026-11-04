@@ -16,10 +16,13 @@ LEAGUES = {
     "soccer_germany_bundesliga": "🇩🇪 Bundesliga",
     "soccer_france_ligue_one": "🇫🇷 Liga 1",
     "soccer_uefa_champs_league": "🏆 Chempionlar ligasi",
+    "basketball_nba": "🏀 NBA",
+    "basketball_euroleague": "🏀 Yevroliga",
 }
 SIGNAL_LEAGUES = ["soccer_epl", "soccer_spain_la_liga", "soccer_uefa_champs_league"]
 
-MAIN_KB = {"keyboard": [[{"text": "📋 Ligalar"}, {"text": "🔔 Signallar"}],
+MAIN_KB = {"keyboard": [[{"text": "📋 Ligalar"}, {"text": "🎾 Tennis"}],
+                        [{"text": "🔔 Signallar"}],
                         [{"text": "💳 Kredit"}, {"text": "🆔 Mening ID"}],
                         [{"text": "❓ Yordam"}]],
            "resize_keyboard": True}
@@ -31,7 +34,7 @@ HELP = (
     "• EV — eng yaxshi koeffitsiyentning adolatli narxdan farqi. Musbat bo'lsa, koeffitsiyent \"qimmat\".\n"
     "• Arbitraj — barcha natijalarga tikkanda foyda qoladigan holat.\n"
     "• Kutilgan gollar — koeffitsiyentlardan Puasson modeli orqali hisoblangan.\n\n"
-    "Har bir liga so'rovi 1 API kredit, \"Signallar\" 3 kredit sarflaydi.\n\n"
+    "Har bir liga yoki turnir so'rovi 1 API kredit, \"Signallar\" 3 kredit sarflaydi.\n\n"
     "⚠️ Bu statistikani o'rganish vositasi. Musbat EV yutishni kafolatlamaydi."
 )
 
@@ -90,6 +93,17 @@ def signals_text(leagues=SIGNAL_LEAGUES):
     return f"🔔 {len(found)} ta signal:\n\n" + "\n\n".join(found)
 
 
+def tennis_buttons():
+    """Hozir o'tayotgan tennis turnirlari (bu so'rov kredit sarflamaydi)."""
+    try:
+        r = requests.get("https://api.the-odds-api.com/v4/sports",
+                         params={"apiKey": env("ODDS_API_KEY")}, timeout=15)
+        sports = [s for s in r.json() if s.get("group") == "Tennis" and s.get("active")]
+    except Exception:
+        sports = []
+    return [[{"text": "🎾 " + s["title"], "callback_data": f"lg:{s['key']}"}] for s in sports[:12]]
+
+
 def credits_left():
     # /sports so'rovi kredit sarflamaydi, lekin qolgan kreditni ko'rsatadi
     try:
@@ -106,6 +120,9 @@ def handle_text(chat, text):
         send(chat, "Salom! Men koeffitsiyent tahlilchi botman 📊\n"
                    "Ligani tanlang yoki signallarni ko'ring.\n\n"
                    f"Sizning chat ID: {chat}", keyboard=MAIN_KB)
+    elif "tennis" in t:
+        btns = tennis_buttons()
+        send(chat, "Turnirni tanlang:" if btns else "Hozir faol tennis turnirlari topilmadi.", btns or None)
     elif "liga" in t:
         send(chat, "Ligani tanlang:", league_buttons())
     elif "signal" in t:
@@ -128,12 +145,14 @@ def handle_callback(cb):
     tg("answerCallbackQuery", callback_query_id=cb["id"])
     if data.startswith("lg:"):
         lg = data[3:]
+        name = LEAGUES.get(lg, lg.replace("tennis_", "🎾 ").replace("_", " ").upper())
+        kb = None if lg.startswith("tennis_") else league_buttons()
         res = analysed(lg, MAX_MATCHES)
         if not res:
-            send(chat, "Bu ligada yaqin o'yinlar topilmadi.", league_buttons())
+            send(chat, "Bu yerda yaqin o'yinlar topilmadi.", kb)
             return
-        send(chat, f"{LEAGUES.get(lg, lg)} — {len(res)} ta o'yin\n\n"
-             + "\n\n".join(report(a) for a in res), league_buttons())
+        send(chat, f"{name} — {len(res)} ta o'yin\n\n"
+             + "\n\n".join(report(a) for a in res), kb)
 
 
 def handle_update(u):

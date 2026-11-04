@@ -102,8 +102,13 @@ def implied_lambdas(p1, p2):
 
 
 def analyse(event):
+    """3 natijali (futbol: 1-X-2) yoki 2 natijali (tennis, basketbol: 1-2) bozorni tahlil qiladi."""
     home, away = event["home_team"], event["away_team"]
-    keys = [home, "Draw", away]
+    has_draw = any(o.get("name") == "Draw"
+                   for b in event.get("bookmakers", []) for mk in b.get("markets", [])
+                   if mk.get("key") == "h2h" for o in mk.get("outcomes", []))
+    keys = [home, "Draw", away] if has_draw else [home, away]
+    n = len(keys)
     books = []
     for b in event.get("bookmakers", []):
         for mk in b.get("markets", []):
@@ -124,27 +129,28 @@ def analyse(event):
     if sharp:
         fair, source = sharp[0]["fair"], "Pinnacle"
     else:
-        fair = [sum(b["fair"][i] for b in books) / len(books) for i in range(3)]
+        fair = [sum(b["fair"][i] for b in books) / len(books) for i in range(n)]
         source = f"{len(books)} ta bukmeker o'rtachasi"
 
     best = []
-    for i in range(3):
+    for i in range(n):
         top = max(books, key=lambda b: b["odds"][i])
         odd = top["odds"][i]
         best.append({"odds": odd, "book": top["name"], "ev": fair[i] * odd - 1})
     arb_sum = sum(1 / x["odds"] for x in best)
 
-    lh, la = implied_lambdas(fair[0], fair[2])
-    m = score_matrix(lh, la)
-    cells = sorted(((i, j, m[i][j]) for i in range(len(m)) for j in range(len(m))),
-                   key=lambda x: -x[2])
-    over25 = sum(m[i][j] for i in range(len(m)) for j in range(len(m)) if i + j > 2)
-    btts = sum(m[i][j] for i in range(1, len(m)) for j in range(1, len(m)))
-
-    return {"home": home, "away": away, "time": event.get("commence_time", ""),
-            "books": books, "fair": fair, "source": source, "best": best,
-            "arb": arb_sum, "lam": (lh, la), "top": cells[:5],
-            "over25": over25, "btts": btts}
+    res = {"home": home, "away": away, "time": event.get("commence_time", ""),
+           "books": books, "fair": fair, "source": source, "best": best,
+           "arb": arb_sum, "draw": has_draw, "lam": None}
+    if has_draw:  # gollar modeli faqat futbolga mos
+        lh, la = implied_lambdas(fair[0], fair[2])
+        m = score_matrix(lh, la)
+        cells = sorted(((i, j, m[i][j]) for i in range(len(m)) for j in range(len(m))),
+                       key=lambda x: -x[2])
+        res.update(lam=(lh, la), top=cells[:5],
+                   over25=sum(m[i][j] for i in range(len(m)) for j in range(len(m)) if i + j > 2),
+                   btts=sum(m[i][j] for i in range(1, len(m)) for j in range(1, len(m))))
+    return res
 
 
 # ---------- Chiqarish ----------
@@ -159,27 +165,32 @@ def fmt_time(iso):
 
 
 def report(a):
-    lbl = ["1", "X", "2"]
-    out = [f"⚽ {a['home']} — {a['away']}  ({fmt_time(a['time'])}, Toshkent)"]
+    lbl = ["1", "X", "2"] if a.get("draw", True) else ["1", "2"]
+    icon = "⚽" if a.get("draw", True) else "🏟"
+    n = len(lbl)
+    out = [f"{icon} {a['home']} — {a['away']}  ({fmt_time(a['time'])}, Toshkent)"]
     out.append(f"Adolatli ehtimollar ({a['source']}): "
-               + "  ".join(f"{lbl[i]}: {a['fair'][i]*100:.1f}%" for i in range(3)))
+               + "  ".join(f"{lbl[i]}: {a['fair'][i]*100:.1f}%" for i in range(n)))
     out.append("Adolatli koeffitsiyent: "
-               + "  ".join(f"{lbl[i]}: {1/a['fair'][i]:.2f}" for i in range(3)))
+               + "  ".join(f"{lbl[i]}: {1/a['fair'][i]:.2f}" for i in range(n)))
     out.append("Eng yaxshi koeffitsiyent:")
     for i, b in enumerate(a["best"]):
         flag = "  ← musbat EV" if b["ev"] > 0 else ""
         out.append(f"   {lbl[i]}: {b['odds']:.2f} ({b['book']})  EV {b['ev']*100:+.1f}%{flag}")
-    margins = ", ".join(f"{b['name']} {b['margin']*100:.1f}%" for b in a["books"])
+    margins = ", ".join(f"{b['name']} {b['margin']*100:.1f}%" for b in a["books"][:6])
+    if len(a["books"]) > 6:
+        margins += f" (+{len(a['books'])-6})"
     out.append(f"Marjalar: {margins}")
     if a["arb"] < 1:
         out.append(f"🔔 Arbitraj: eng yaxshi koeffitsiyentlar yig'indisi {a['arb']*100:.1f}% "
                    f"→ nazariy foyda {(1/a['arb']-1)*100:.2f}%")
     else:
         out.append(f"Arbitraj yo'q (yig'indi {a['arb']*100:.1f}%)")
-    lh, la = a["lam"]
-    out.append(f"Kutilgan gollar (koeffitsiyentdan): {lh:.2f} — {la:.2f}")
-    out.append("Ehtimolli hisoblar: " + ", ".join(f"{i}:{j} {p*100:.1f}%" for i, j, p in a["top"]))
-    out.append(f"Total 2.5+: {a['over25']*100:.1f}%   Ikkala jamoa uradi: {a['btts']*100:.1f}%")
+    if a.get("lam"):
+        lh, la = a["lam"]
+        out.append(f"Kutilgan gollar (koeffitsiyentdan): {lh:.2f} — {la:.2f}")
+        out.append("Ehtimolli hisoblar: " + ", ".join(f"{i}:{j} {p*100:.1f}%" for i, j, p in a["top"]))
+        out.append(f"Total 2.5+: {a['over25']*100:.1f}%   Ikkala jamoa uradi: {a['btts']*100:.1f}%")
     return "\n".join(out)
 
 
