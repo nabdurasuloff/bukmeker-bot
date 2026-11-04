@@ -3,7 +3,7 @@ import os
 
 import requests
 
-from _prognoz import analyse, report, fetch
+from _prognoz import analyse, report, fetch, fmt_time
 
 REGION = "eu"
 MIN_EV = 0.02
@@ -22,6 +22,7 @@ LEAGUES = {
 SIGNAL_LEAGUES = ["soccer_epl", "soccer_spain_la_liga", "soccer_uefa_champs_league"]
 
 MAIN_KB = {"keyboard": [[{"text": "📋 Ligalar"}, {"text": "🎾 Tennis"}],
+                        [{"text": "🏦 Mening bukmekerim"}],
                         [{"text": "🔔 Signallar"}],
                         [{"text": "💳 Kredit"}, {"text": "🆔 Mening ID"}],
                         [{"text": "❓ Yordam"}]],
@@ -93,6 +94,53 @@ def signals_text(leagues=SIGNAL_LEAGUES):
     return f"🔔 {len(found)} ta signal:\n\n" + "\n\n".join(found)
 
 
+BOOKIES = ["1xBet", "Marathon Bet", "Pinnacle", "Betfair", "William Hill",
+           "Unibet", "Betsson", "888sport", "Bet365"]
+
+
+def bookie_buttons():
+    return [[{"text": "🏦 " + b, "callback_data": f"bm:{i}"}] for i, b in enumerate(BOOKIES)]
+
+
+def bookie_league_buttons(i):
+    return [[{"text": n, "callback_data": f"bl:{i}:{k}"}] for k, n in LEAGUES.items()]
+
+
+def bookie_report(i, league, top_n=10):
+    """Tanlangan bukmeker koeffitsiyentlarini ehtimoli yuqoridan pastga saralaydi."""
+    bname = BOOKIES[i]
+    events, _ = fetch(env("ODDS_API_KEY"), league, REGION)
+    rows = []
+    for e in events:
+        a = analyse(e)
+        if not a:
+            continue
+        mine = next((b for b in a["books"] if bname.lower() in b["name"].lower()), None)
+        if not mine:
+            continue
+        lbl = ["1", "X", "2"] if a["draw"] else ["1", "2"]
+        names = [a["home"], "Durang", a["away"]] if a["draw"] else [a["home"], a["away"]]
+        for k in range(len(lbl)):
+            if lbl[k] == "X":
+                continue
+            p, odd = a["fair"][k], mine["odds"][k]
+            rows.append({"p": p, "odd": odd, "ev": p * odd - 1, "pick": names[k], "lbl": lbl[k],
+                         "match": f"{a['home']} — {a['away']}", "time": a["time"]})
+    if not rows:
+        return f"🏦 {bname}: bu ligada uning koeffitsiyentlari topilmadi (yoki yaqin o'yin yo'q)."
+    rows.sort(key=lambda r: -r["p"])
+    out = [f"🏦 {bname} — {LEAGUES.get(league, league)}",
+           "Ehtimoli eng yuqori natijalar (adolatli ehtimol bo'yicha):", ""]
+    for n, r in enumerate(rows[:top_n], 1):
+        mark = "✅ qimmat narx" if r["ev"] > 0 else ("➖ deyarli adolatli" if r["ev"] > -0.03 else "🔻 arzon narx")
+        out.append(f"{n}. {r['pick']} ({r['lbl']}) — {r['p']*100:.1f}%\n"
+                   f"   {bname}: {r['odd']:.2f} | adolatli: {1/r['p']:.2f} | EV {r['ev']*100:+.1f}% {mark}\n"
+                   f"   {r['match']}, {fmt_time(r['time'])}")
+    out.append("\nℹ️ Yuqori ehtimol — past koeffitsiyent degani. Foyda faqat ✅ (EV musbat) "
+               "narxlarda uzoq muddatda bo'lishi mumkin; kafolat yo'q.")
+    return "\n".join(out)
+
+
 def tennis_buttons():
     """Hozir o'tayotgan tennis turnirlari (bu so'rov kredit sarflamaydi)."""
     try:
@@ -127,6 +175,8 @@ def handle_text(chat, text):
         send(chat, "Salom! Men koeffitsiyent tahlilchi botman 📊\n"
                    "Ligani tanlang yoki signallarni ko'ring.\n\n"
                    f"Sizning chat ID: {chat}", keyboard=MAIN_KB)
+    elif "bukmeker" in t:
+        send(chat, "Qaysi bukmekerda o'ynaysiz?", bookie_buttons())
     elif "tennis" in t:
         btns = tennis_buttons()
         send(chat, "Turnirni tanlang:" if btns else "Hozir faol tennis turnirlari topilmadi.", btns or None)
@@ -150,6 +200,14 @@ def handle_callback(cb):
     chat = cb["message"]["chat"]["id"]
     data = cb.get("data", "")
     tg("answerCallbackQuery", callback_query_id=cb["id"])
+    if data.startswith("bm:"):
+        i = int(data[3:])
+        send(chat, f"🏦 {BOOKIES[i]} tanlandi. Ligani tanlang:", bookie_league_buttons(i))
+        return
+    if data.startswith("bl:"):
+        _, i, lg = data.split(":", 2)
+        send(chat, bookie_report(int(i), lg), bookie_league_buttons(int(i)))
+        return
     if data.startswith("lg:"):
         lg = data[3:]
         name = LEAGUES.get(lg, lg.replace("tennis_", "🎾 ").replace("_", " ").upper())
