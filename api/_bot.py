@@ -19,7 +19,7 @@ LEAGUES = {
     "basketball_nba": "🏀 NBA",
     "basketball_euroleague": "🏀 Yevroliga",
 }
-SIGNAL_LEAGUES = ["soccer_epl", "soccer_spain_la_liga", "soccer_uefa_champs_league"]
+SIGNAL_LEAGUES = ["soccer_epl", "soccer_spain_la_liga", "soccer_italy_serie_a", "basketball_nba"]
 
 MAIN_KB = {"keyboard": [[{"text": "📋 Ligalar"}, {"text": "🎾 Tennis"}],
                         [{"text": "🏦 Mening bukmekerim"}],
@@ -36,7 +36,7 @@ HELP = (
     "• Arbitraj — barcha natijalarga tikkanda foyda qoladigan holat.\n"
     "• Kutilgan gollar — koeffitsiyentlardan Puasson modeli orqali hisoblangan.\n\n"
     "Har bir liga yoki turnir so'rovi 1 API kredit. \"Signallar\" va \"Natijalar\" kunlik saqlangan ma'lumotni ko'rsatadi (0 kredit), "
-    "\"🔄 Hozir qayta tekshirish\" — 3 kredit. Betfair/Matchbook narxlari komissiya chegirilgan holda. "
+    "\"🔄 Hozir qayta tekshirish\" — 4 kredit. Betfair/Matchbook narxlari komissiya chegirilgan holda. "
     "Bot har kuni prognozlarni yozib, o'yindan keyin tekshiradi.\n\n"
     "⚠️ Bu statistikani o'rganish vositasi. Musbat EV yutishni kafolatlamaydi."
 )
@@ -254,7 +254,7 @@ def handle_text(chat, text):
         send(chat, "Ligani tanlang:", league_buttons())
     elif "signal" in t:
         send(chat, saved_signals(),
-             [[{"text": "🔄 Hozir qayta tekshirish (3 kredit)", "callback_data": "live_signals"}]])
+             [[{"text": "🔄 Hozir qayta tekshirish (4 kredit)", "callback_data": "live_signals"}]])
     elif "natija" in t:
         send(chat, format_stats(load_stats()))
     elif "kredit" in t:
