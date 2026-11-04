@@ -3,12 +3,12 @@
 "away": "Atlanta Hawks",
 "best": [
 [
-2.352,
-"Matchbook"
+2.32,
+"1xBet"
 ],
 [
-1.71,
-"Unibet (NL)"
+1.68,
+"Pinnacle"
 ]
 ],
 "books": {
@@ -16,101 +16,9 @@
 2.32,
 1.65
 ],
-"888sport": [
-2.2,
-1.67
-],
-"BetAnything": [
-2.3,
-1.67
-],
-"BetOnline.ag": [
-2.3,
-1.67
-],
-"Betclic (FR)": [
-2.22,
-1.59
-],
-"Betfair": [
-2.311,
-1.675
-],
-"Betsson": [
-2.25,
-1.62
-],
-"Codere (IT)": [
-2.24,
-1.66
-],
-"Coolbet": [
-2.21,
-1.7
-],
-"Everygame": [
-2.3,
-1.67
-],
-"GTbets": [
-2.3,
-1.67
-],
-"LeoVegas (SE)": [
-2.15,
-1.68
-],
-"Marathon Bet": [
-2.26,
-1.66
-],
-"Matchbook": [
-2.352,
-1.696
-],
-"MyBookie.ag": [
-2.22,
-1.64
-],
-"Nordic Bet": [
-2.25,
-1.62
-],
-"PMU (FR)": [
-2.07,
-1.62
-],
 "Pinnacle": [
 2.3,
 1.68
-],
-"Tipico": [
-2.15,
-1.67
-],
-"Unibet (FR)": [
-2.1,
-1.57
-],
-"Unibet (NL)": [
-2.18,
-1.71
-],
-"Unibet (SE)": [
-2.18,
-1.71
-],
-"William Hill": [
-2.2,
-1.67
-],
-"Winamax (DE)": [
-2.25,
-1.68
-],
-"Winamax (FR)": [
-2.1,
-1.6
 ]
 },
 "draw": false,
@@ -122,20 +30,28 @@
 "lg": "basketball_nba",
 "result": null,
 "sig": null,
-"snap": "2026-11-04T20:38+00:00",
+"snap": "2026-11-04T20:53+00:00",
 "src": "Pinnacle",
-"time": "2026-11-05T00:10:00Z"
+"time": "2026-11-05T00:10:00Z",
+"verdict": {
+"ev": null,
+"i": null,
+"odds": null,
+"p": null,
+"total": null,
+"type": "skip"
+}
 },
 "0b5966b7b96eb844618eea8f215a0c71": {
 "away": "Utah Jazz",
 "best": [
 [
-1.53,
-"Coolbet"
+1.51,
+"Pinnacle"
 ],
 [
-3.0,
-"BetAnything"
+2.73,
+"Pinnacle"
 ]
 ],
 "books": {
@@ -143,101 +59,9 @@
 1.5,
 2.71
 ],
-"888sport": [
-1.5,
-2.6
-],
-"BetAnything": [
-1.45,
-3.0
-],
-"BetOnline.ag": [
-1.51,
-2.7
-],
-"Betclic (FR)": [
-1.45,
-2.57
-],
-"Betfair": [
-1.503,
-2.729
-],
-"Betsson": [
-1.48,
-2.58
-],
-"Codere (IT)": [
-1.5,
-2.6
-],
-"Coolbet": [
-1.53,
-2.58
-],
-"Everygame": [
-1.5,
-2.7
-],
-"GTbets": [
-1.5,
-2.7
-],
-"LeoVegas (SE)": [
-1.45,
-2.7
-],
-"Marathon Bet": [
-1.49,
-2.68
-],
-"Matchbook": [
-1.519,
-2.803
-],
-"MyBookie.ag": [
-1.49,
-2.59
-],
-"Nordic Bet": [
-1.48,
-2.58
-],
-"PMU (FR)": [
-1.41,
-2.6
-],
 "Pinnacle": [
 1.51,
 2.73
-],
-"Tipico": [
-1.45,
-2.7
-],
-"Unibet (FR)": [
-1.43,
-2.4
-],
-"Unibet (NL)": [
-1.48,
-2.7
-],
-"Unibet (SE)": [
-1.48,
-2.7
-],
-"William Hill": [
-1.5,
-2.6
-],
-"Winamax (DE)": [
-1.52,
-2.65
-],
-"Winamax (FR)": [
-1.45,
-2.45
 ]
 },
 "draw": false,
@@ -249,118 +73,38 @@
 "lg": "basketball_nba",
 "result": null,
 "sig": null,
-"snap": "2026-11-04T20:38+00:00",
+"snap": "2026-11-04T20:53+00:00",
 "src": "Pinnacle",
-"time": "2026-11-05T01:10:00Z"
+"time": "2026-11-05T01:10:00Z",
+"verdict": {
+"ev": null,
+"i": 0,
+"odds": 1.5,
+"p": 0.6439,
+"total": null,
+"type": "fav"
+}
 },
 "1cb12166c3eda270d40cc65b9b34459a": {
 "away": "Milwaukee Bucks",
 "best": [
 [
-1.21,
-"BetOnline.ag"
+1.2,
+"1xBet"
 ],
 [
-5.41,
-"Matchbook"
+5.09,
+"Pinnacle"
 ]
 ],
 "books": {
 "1xBet": [
-1.21,
-4.8
-],
-"888sport": [
 1.2,
-4.5
-],
-"BetAnything": [
-1.2,
-4.75
-],
-"BetOnline.ag": [
-1.21,
-4.74
-],
-"Betfair": [
-1.2,
-5.275
-],
-"Betsson": [
-1.2,
-4.15
-],
-"Codere (IT)": [
-1.21,
-4.4
-],
-"Coolbet": [
-1.21,
-4.65
-],
-"Everygame": [
-1.21,
-4.6
-],
-"GTbets": [
-1.19,
-4.85
-],
-"LeoVegas (SE)": [
-1.19,
-4.7
-],
-"Marathon Bet": [
-1.18,
-5.05
-],
-"Matchbook": [
-1.206,
-5.41
-],
-"MyBookie.ag": [
-1.19,
-4.45
-],
-"Nordic Bet": [
-1.2,
-4.15
-],
-"PMU (FR)": [
-1.15,
-4.4
+4.97
 ],
 "Pinnacle": [
 1.2,
 5.09
-],
-"Tipico": [
-1.16,
-5.0
-],
-"Unibet (FR)": [
-1.16,
-3.9
-],
-"Unibet (NL)": [
-1.2,
-4.75
-],
-"Unibet (SE)": [
-1.2,
-4.75
-],
-"William Hill": [
-1.2,
-4.5
-],
-"Winamax (DE)": [
-1.21,
-4.9
-],
-"Winamax (FR)": [
-1.17,
-4.2
 ]
 },
 "draw": false,
@@ -372,20 +116,28 @@
 "lg": "basketball_nba",
 "result": null,
 "sig": null,
-"snap": "2026-11-04T20:38+00:00",
+"snap": "2026-11-04T20:53+00:00",
 "src": "Pinnacle",
-"time": "2026-11-05T00:40:00Z"
+"time": "2026-11-05T00:40:00Z",
+"verdict": {
+"ev": null,
+"i": 0,
+"odds": 1.2,
+"p": 0.8092,
+"total": null,
+"type": "fav"
+}
 },
 "29988f1011d7738962e13e0a0beb693f": {
 "away": "Los Angeles Lakers",
 "best": [
 [
-5.802,
-"Matchbook"
+5.57,
+"1xBet"
 ],
 [
-1.2,
-"Coolbet"
+1.18,
+"Pinnacle"
 ]
 ],
 "books": {
@@ -393,101 +145,9 @@
 5.57,
 1.17
 ],
-"888sport": [
-4.8,
-1.18
-],
-"BetAnything": [
-5.5,
-1.15
-],
-"BetOnline.ag": [
-5.46,
-1.17
-],
-"Betclic (FR)": [
-4.95,
-1.14
-],
-"Betfair": [
-5.56,
-1.18
-],
-"Betsson": [
-5.0,
-1.15
-],
-"Codere (IT)": [
-5.0,
-1.16
-],
-"Coolbet": [
-4.8,
-1.2
-],
-"Everygame": [
-5.4,
-1.17
-],
-"GTbets": [
-5.5,
-1.17
-],
-"LeoVegas (SE)": [
-5.75,
-1.13
-],
-"Marathon Bet": [
-5.4,
-1.17
-],
-"Matchbook": [
-5.802,
-1.186
-],
-"MyBookie.ag": [
-5.3,
-1.15
-],
-"Nordic Bet": [
-5.0,
-1.15
-],
-"PMU (FR)": [
-5.4,
-1.1
-],
 "Pinnacle": [
 5.47,
 1.18
-],
-"Tipico": [
-5.5,
-1.14
-],
-"Unibet (FR)": [
-4.2,
-1.13
-],
-"Unibet (NL)": [
-5.8,
-1.15
-],
-"Unibet (SE)": [
-5.8,
-1.15
-],
-"William Hill": [
-4.8,
-1.18
-],
-"Winamax (DE)": [
-5.4,
-1.18
-],
-"Winamax (FR)": [
-4.5,
-1.14
 ]
 },
 "draw": false,
@@ -499,20 +159,28 @@
 "lg": "basketball_nba",
 "result": null,
 "sig": null,
-"snap": "2026-11-04T20:38+00:00",
+"snap": "2026-11-04T20:53+00:00",
 "src": "Pinnacle",
-"time": "2026-11-05T03:10:00Z"
+"time": "2026-11-05T03:10:00Z",
+"verdict": {
+"ev": null,
+"i": 1,
+"odds": 1.17,
+"p": 0.8226,
+"total": null,
+"type": "fav"
+}
 },
 "3469f522ffcacb13f88e6cd297adc110": {
 "away": "Indiana Pacers",
 "best": [
 [
-1.461,
-"Matchbook"
+1.43,
+"1xBet"
 ],
 [
-3.058,
-"Matchbook"
+3.02,
+"Pinnacle"
 ]
 ],
 "books": {
@@ -520,122 +188,38 @@
 1.43,
 2.98
 ],
-"888sport": [
-1.44,
-2.75
-],
-"BetAnything": [
-1.43,
-2.9
-],
-"BetOnline.ag": [
-1.43,
-2.92
-],
-"Betclic (FR)": [
-1.38,
-2.82
-],
-"Betfair": [
-1.437,
-2.995
-],
-"Betsson": [
-1.42,
-2.77
-],
-"Codere (IT)": [
-1.45,
-2.8
-],
-"Coolbet": [
-1.46,
-2.79
-],
-"Everygame": [
-1.43,
-2.9
-],
-"GTbets": [
-1.41,
-2.95
-],
-"LeoVegas (SE)": [
-1.43,
-2.8
-],
-"Marathon Bet": [
-1.43,
-2.9
-],
-"Matchbook": [
-1.461,
-3.058
-],
-"MyBookie.ag": [
-1.44,
-2.74
-],
-"Nordic Bet": [
-1.42,
-2.77
-],
-"PMU (FR)": [
-1.38,
-2.65
-],
 "Pinnacle": [
 1.43,
-3.04
-],
-"Tipico": [
-1.37,
-3.0
-],
-"Unibet (FR)": [
-1.38,
-2.5
-],
-"Unibet (NL)": [
-1.44,
-2.8
-],
-"Unibet (SE)": [
-1.44,
-2.8
-],
-"William Hill": [
-1.44,
-2.75
-],
-"Winamax (DE)": [
-1.46,
-2.85
-],
-"Winamax (FR)": [
-1.4,
-2.6
+3.02
 ]
 },
 "draw": false,
 "fair": [
-0.6801,
-0.3199
+0.6787,
+0.3213
 ],
 "home": "Memphis Grizzlies",
 "lg": "basketball_nba",
 "result": null,
 "sig": null,
-"snap": "2026-11-04T20:38+00:00",
+"snap": "2026-11-04T20:53+00:00",
 "src": "Pinnacle",
-"time": "2026-11-05T01:10:00Z"
+"time": "2026-11-05T01:10:00Z",
+"verdict": {
+"ev": null,
+"i": 0,
+"odds": 1.43,
+"p": 0.6787,
+"total": null,
+"type": "fav"
+}
 },
 "38fdb396939e8aabebd93cb509618927": {
 "away": "Cleveland Cavaliers",
 "best": [
 [
-1.666,
-"Matchbook"
+1.65,
+"Pinnacle"
 ],
 [
 2.42,
@@ -647,101 +231,9 @@
 1.63,
 2.37
 ],
-"888sport": [
-1.57,
-2.38
-],
-"BetAnything": [
-1.62,
-2.4
-],
-"BetOnline.ag": [
-1.62,
-2.4
-],
-"Betclic (FR)": [
-1.55,
-2.3
-],
-"Betfair": [
-1.636,
-2.368
-],
-"Betsson": [
-1.58,
-2.33
-],
-"Codere (IT)": [
-1.61,
-2.33
-],
-"Coolbet": [
-1.66,
-2.27
-],
-"Everygame": [
-1.62,
-2.4
-],
-"GTbets": [
-1.62,
-2.35
-],
-"LeoVegas (SE)": [
-1.61,
-2.3
-],
-"Marathon Bet": [
-1.64,
-2.3
-],
-"Matchbook": [
-1.666,
-2.411
-],
-"MyBookie.ag": [
-1.6,
-2.3
-],
-"Nordic Bet": [
-1.58,
-2.33
-],
-"PMU (FR)": [
-1.55,
-2.2
-],
 "Pinnacle": [
 1.65,
 2.42
-],
-"Tipico": [
-1.57,
-2.35
-],
-"Unibet (FR)": [
-1.53,
-2.15
-],
-"Unibet (NL)": [
-1.63,
-2.33
-],
-"Unibet (SE)": [
-1.63,
-2.33
-],
-"William Hill": [
-1.57,
-2.38
-],
-"Winamax (DE)": [
-1.62,
-2.35
-],
-"Winamax (FR)": [
-1.56,
-2.2
 ]
 },
 "draw": false,
@@ -753,20 +245,28 @@
 "lg": "basketball_nba",
 "result": null,
 "sig": null,
-"snap": "2026-11-04T20:38+00:00",
+"snap": "2026-11-04T20:53+00:00",
 "src": "Pinnacle",
-"time": "2026-11-05T01:00:00Z"
+"time": "2026-11-05T01:00:00Z",
+"verdict": {
+"ev": null,
+"i": null,
+"odds": null,
+"p": null,
+"total": null,
+"type": "skip"
+}
 },
 "50bdc20ea9ea3c88d4bfa261b9b2307e": {
 "away": "Toronto Raptors",
 "best": [
 [
-1.549,
-"Matchbook"
+1.53,
+"1xBet"
 ],
 [
-2.725,
-"Matchbook"
+2.69,
+"Pinnacle"
 ]
 ],
 "books": {
@@ -774,101 +274,9 @@
 1.53,
 2.62
 ],
-"888sport": [
-1.53,
-2.5
-],
-"BetAnything": [
-1.51,
-2.65
-],
-"BetOnline.ag": [
-1.53,
-2.63
-],
-"Betclic (FR)": [
-1.48,
-2.47
-],
-"Betfair": [
-1.532,
-2.653
-],
-"Betsson": [
-1.53,
-2.45
-],
-"Codere (IT)": [
-1.54,
-2.5
-],
-"Coolbet": [
-1.53,
-2.58
-],
-"Everygame": [
-1.53,
-2.65
-],
-"GTbets": [
-1.53,
-2.6
-],
-"LeoVegas (SE)": [
-1.5,
-2.55
-],
-"Marathon Bet": [
-1.52,
-2.59
-],
-"Matchbook": [
-1.549,
-2.725
-],
-"MyBookie.ag": [
-1.54,
-2.43
-],
-"Nordic Bet": [
-1.53,
-2.45
-],
-"PMU (FR)": [
-1.44,
-2.45
-],
 "Pinnacle": [
 1.53,
 2.69
-],
-"Tipico": [
-1.47,
-2.6
-],
-"Unibet (FR)": [
-1.46,
-2.3
-],
-"Unibet (NL)": [
-1.53,
-2.6
-],
-"Unibet (SE)": [
-1.53,
-2.6
-],
-"William Hill": [
-1.53,
-2.5
-],
-"Winamax (DE)": [
-1.54,
-2.6
-],
-"Winamax (FR)": [
-1.47,
-2.4
 ]
 },
 "draw": false,
@@ -880,20 +288,28 @@
 "lg": "basketball_nba",
 "result": null,
 "sig": null,
-"snap": "2026-11-04T20:38+00:00",
+"snap": "2026-11-04T20:53+00:00",
 "src": "Pinnacle",
-"time": "2026-11-05T02:00:00Z"
+"time": "2026-11-05T02:00:00Z",
+"verdict": {
+"ev": null,
+"i": 0,
+"odds": 1.53,
+"p": 0.6374,
+"total": null,
+"type": "fav"
+}
 },
 "6b25f3932db93d4c5ad7658def2645bf": {
 "away": "Dallas Mavericks",
 "best": [
 [
-1.2,
-"Unibet (NL)"
+1.18,
+"Pinnacle"
 ],
 [
-5.802,
-"Matchbook"
+5.49,
+"Pinnacle"
 ]
 ],
 "books": {
@@ -901,101 +317,9 @@
 1.17,
 5.48
 ],
-"888sport": [
-1.15,
-5.2
-],
-"BetAnything": [
-1.15,
-5.5
-],
-"BetOnline.ag": [
-1.17,
-5.4
-],
-"Betclic (FR)": [
-1.14,
-5.0
-],
-"Betfair": [
-1.19,
-5.655
-],
-"Betsson": [
-1.15,
-5.0
-],
-"Codere (IT)": [
-1.16,
-5.0
-],
-"Coolbet": [
-1.17,
-5.4
-],
-"Everygame": [
-1.17,
-5.4
-],
-"GTbets": [
-1.17,
-5.4
-],
-"LeoVegas (SE)": [
-1.18,
-4.75
-],
-"Marathon Bet": [
-1.16,
-5.5
-],
-"Matchbook": [
-1.196,
-5.802
-],
-"MyBookie.ag": [
-1.17,
-4.9
-],
-"Nordic Bet": [
-1.15,
-5.0
-],
-"PMU (FR)": [
-1.14,
-4.5
-],
 "Pinnacle": [
 1.18,
 5.49
-],
-"Tipico": [
-1.14,
-5.5
-],
-"Unibet (FR)": [
-1.13,
-5.1
-],
-"Unibet (NL)": [
-1.2,
-4.8
-],
-"Unibet (SE)": [
-1.2,
-4.8
-],
-"William Hill": [
-1.15,
-5.2
-],
-"Winamax (DE)": [
-1.17,
-5.5
-],
-"Winamax (FR)": [
-1.14,
-4.6
 ]
 },
 "draw": false,
@@ -1007,20 +331,28 @@
 "lg": "basketball_nba",
 "result": null,
 "sig": null,
-"snap": "2026-11-04T20:38+00:00",
+"snap": "2026-11-04T20:53+00:00",
 "src": "Pinnacle",
-"time": "2026-11-05T02:30:00Z"
+"time": "2026-11-05T02:30:00Z",
+"verdict": {
+"ev": null,
+"i": 0,
+"odds": 1.17,
+"p": 0.8231,
+"total": null,
+"type": "fav"
+}
 },
 "6b33f8632d4dd100cba8453db82213fa": {
 "away": "Charlotte Hornets",
 "best": [
 [
-2.5,
-"Everygame"
+2.46,
+"Pinnacle"
 ],
 [
-1.64,
-"Unibet (NL)"
+1.62,
+"Pinnacle"
 ]
 ],
 "books": {
@@ -1028,101 +360,9 @@
 2.45,
 1.59
 ],
-"888sport": [
-2.38,
-1.57
-],
-"BetAnything": [
-2.45,
-1.61
-],
-"BetOnline.ag": [
-2.45,
-1.61
-],
-"Betclic (FR)": [
-2.32,
-1.54
-],
-"Betfair": [
-2.425,
-1.608
-],
-"Betsson": [
-2.33,
-1.58
-],
-"Codere (IT)": [
-2.36,
-1.6
-],
-"Coolbet": [
-2.4,
-1.61
-],
-"Everygame": [
-2.5,
-1.59
-],
-"GTbets": [
-2.4,
-1.61
-],
-"LeoVegas (SE)": [
-2.28,
-1.62
-],
-"Marathon Bet": [
-2.39,
-1.6
-],
-"Matchbook": [
-2.49,
-1.637
-],
-"MyBookie.ag": [
-2.33,
-1.58
-],
-"Nordic Bet": [
-2.33,
-1.58
-],
-"PMU (FR)": [
-2.18,
-1.56
-],
 "Pinnacle": [
 2.46,
 1.62
-],
-"Tipico": [
-2.4,
-1.55
-],
-"Unibet (FR)": [
-2.15,
-1.52
-],
-"Unibet (NL)": [
-2.3,
-1.64
-],
-"Unibet (SE)": [
-2.3,
-1.64
-],
-"William Hill": [
-2.38,
-1.57
-],
-"Winamax (DE)": [
-2.4,
-1.62
-],
-"Winamax (FR)": [
-2.2,
-1.54
 ]
 },
 "draw": false,
@@ -1134,20 +374,28 @@
 "lg": "basketball_nba",
 "result": null,
 "sig": null,
-"snap": "2026-11-04T20:38+00:00",
+"snap": "2026-11-04T20:53+00:00",
 "src": "Pinnacle",
-"time": "2026-11-05T00:30:00Z"
+"time": "2026-11-05T00:30:00Z",
+"verdict": {
+"ev": null,
+"i": 1,
+"odds": 1.59,
+"p": 0.6029,
+"total": null,
+"type": "fav"
+}
 },
 "72c786e70ad9360fdc41e4c2a50fa788": {
 "away": "Miami Heat",
 "best": [
 [
-2.9,
-"Unibet (SE)"
+2.83,
+"Pinnacle"
 ],
 [
-1.51,
-"Coolbet"
+1.49,
+"Pinnacle"
 ]
 ],
 "books": {
@@ -1155,101 +403,9 @@
 2.82,
 1.47
 ],
-"888sport": [
-2.75,
-1.44
-],
-"BetAnything": [
-2.7,
-1.5
-],
-"BetOnline.ag": [
-2.8,
-1.48
-],
-"Betclic (FR)": [
-2.65,
-1.43
-],
-"Betfair": [
-2.786,
-1.484
-],
-"Betsson": [
-2.65,
-1.46
-],
-"Codere (IT)": [
-2.65,
-1.47
-],
-"Coolbet": [
-2.64,
-1.51
-],
-"Everygame": [
-2.75,
-1.49
-],
-"GTbets": [
-2.75,
-1.48
-],
-"LeoVegas (SE)": [
-2.85,
-1.41
-],
-"Marathon Bet": [
-2.84,
-1.44
-],
-"Matchbook": [
-2.862,
-1.5
-],
-"MyBookie.ag": [
-2.66,
-1.46
-],
-"Nordic Bet": [
-2.65,
-1.46
-],
-"PMU (FR)": [
-2.75,
-1.36
-],
 "Pinnacle": [
 2.83,
 1.49
-],
-"Tipico": [
-2.8,
-1.42
-],
-"Unibet (FR)": [
-2.45,
-1.41
-],
-"Unibet (NL)": [
-2.9,
-1.43
-],
-"Unibet (SE)": [
-2.9,
-1.43
-],
-"William Hill": [
-2.75,
-1.44
-],
-"Winamax (DE)": [
-2.75,
-1.49
-],
-"Winamax (FR)": [
-2.5,
-1.43
 ]
 },
 "draw": false,
@@ -1261,20 +417,28 @@
 "lg": "basketball_nba",
 "result": null,
 "sig": null,
-"snap": "2026-11-04T20:38+00:00",
+"snap": "2026-11-04T20:53+00:00",
 "src": "Pinnacle",
-"time": "2026-11-05T03:40:00Z"
+"time": "2026-11-05T03:40:00Z",
+"verdict": {
+"ev": null,
+"i": 1,
+"odds": 1.47,
+"p": 0.6551,
+"total": null,
+"type": "fav"
+}
 },
 "87d2b814c3f0d3691e9cebbf2de76295": {
 "away": "Chicago Bulls",
 "best": [
 [
-1.186,
-"Matchbook"
+1.18,
+"Pinnacle"
 ],
 [
-5.9,
-"Matchbook"
+5.48,
+"1xBet"
 ]
 ],
 "books": {
@@ -1282,101 +446,9 @@
 1.17,
 5.48
 ],
-"888sport": [
-1.15,
-5.2
-],
-"BetAnything": [
-1.17,
-5.45
-],
-"BetOnline.ag": [
-1.17,
-5.4
-],
-"Betclic (FR)": [
-1.13,
-5.0
-],
-"Betfair": [
-1.18,
-5.75
-],
-"Betsson": [
-1.15,
-5.0
-],
-"Codere (IT)": [
-1.16,
-5.2
-],
-"Coolbet": [
-1.17,
-5.4
-],
-"Everygame": [
-1.17,
-5.4
-],
-"GTbets": [
-1.17,
-5.4
-],
-"LeoVegas (SE)": [
-1.15,
-5.3
-],
-"Marathon Bet": [
-1.16,
-5.6
-],
-"Matchbook": [
-1.186,
-5.9
-],
-"MyBookie.ag": [
-1.16,
-5.1
-],
-"Nordic Bet": [
-1.15,
-5.0
-],
-"PMU (FR)": [
-1.11,
-5.0
-],
 "Pinnacle": [
 1.18,
 5.4
-],
-"Tipico": [
-1.15,
-5.2
-],
-"Unibet (FR)": [
-1.13,
-4.3
-],
-"Unibet (NL)": [
-1.16,
-5.4
-],
-"Unibet (SE)": [
-1.16,
-5.4
-],
-"William Hill": [
-1.15,
-5.2
-],
-"Winamax (DE)": [
-1.17,
-5.5
-],
-"Winamax (FR)": [
-1.14,
-4.6
 ]
 },
 "draw": false,
@@ -1388,20 +460,28 @@
 "lg": "basketball_nba",
 "result": null,
 "sig": null,
-"snap": "2026-11-04T20:38+00:00",
+"snap": "2026-11-04T20:53+00:00",
 "src": "Pinnacle",
-"time": "2026-11-05T00:40:00Z"
+"time": "2026-11-05T00:40:00Z",
+"verdict": {
+"ev": null,
+"i": 0,
+"odds": 1.17,
+"p": 0.8207,
+"total": null,
+"type": "fav"
+}
 },
 "91df86557819598ca270ba35410cfcfa": {
 "away": "Philadelphia 76ers",
 "best": [
 [
-1.764,
-"Matchbook"
+1.76,
+"Pinnacle"
 ],
 [
-2.235,
-"Matchbook"
+2.22,
+"Pinnacle"
 ]
 ],
 "books": {
@@ -1409,126 +489,42 @@
 1.71,
 2.21
 ],
-"888sport": [
-1.7,
-2.15
-],
-"BetAnything": [
-1.74,
-2.15
-],
-"BetOnline.ag": [
-1.72,
-2.19
-],
-"Betclic (FR)": [
-1.64,
-2.13
-],
-"Betfair": [
-1.741,
-2.178
-],
-"Betsson": [
-1.68,
-2.15
-],
-"Codere (IT)": [
-1.71,
-2.16
-],
-"Coolbet": [
-1.71,
-2.19
-],
-"Everygame": [
-1.74,
-2.15
-],
-"GTbets": [
-1.71,
-2.2
-],
-"LeoVegas (SE)": [
-1.7,
-2.14
-],
-"Marathon Bet": [
-1.68,
-2.23
-],
-"Matchbook": [
-1.764,
-2.235
-],
-"MyBookie.ag": [
-1.7,
-2.12
-],
-"Nordic Bet": [
-1.68,
-2.15
-],
-"PMU (FR)": [
-1.63,
-2.06
-],
 "Pinnacle": [
-1.75,
-2.23
-],
-"Tipico": [
-1.7,
-2.1
-],
-"Unibet (FR)": [
-1.66,
-2.1
-],
-"Unibet (NL)": [
-1.72,
-2.17
-],
-"Unibet (SE)": [
-1.72,
-2.17
-],
-"William Hill": [
-1.7,
-2.15
-],
-"Winamax (DE)": [
-1.72,
-2.2
-],
-"Winamax (FR)": [
-1.64,
-2.05
+1.76,
+2.22
 ]
 },
 "draw": false,
 "fair": [
-0.5603,
-0.4397
+0.5578,
+0.4422
 ],
 "home": "Detroit Pistons",
 "lg": "basketball_nba",
 "result": null,
 "sig": null,
-"snap": "2026-11-04T20:38+00:00",
+"snap": "2026-11-04T20:53+00:00",
 "src": "Pinnacle",
-"time": "2026-11-05T00:00:00Z"
+"time": "2026-11-05T00:00:00Z",
+"verdict": {
+"ev": null,
+"i": null,
+"odds": null,
+"p": null,
+"total": null,
+"type": "skip"
+}
 },
 "b2557f74f4d7675ed3b76a4a064e0bc9": {
 "away": "Minnesota Timberwolves",
 "best": [
 [
-1.382,
-"Matchbook"
+1.38,
+"Pinnacle"
 ],
 [
-3.499,
-"Matchbook"
+3.38,
+"Pinnacle"
 ]
 ],
 "books": {
@@ -1536,101 +532,9 @@
 1.36,
 3.3
 ],
-"888sport": [
-1.33,
-3.3
-],
-"BetAnything": [
-1.36,
-3.3
-],
-"BetOnline.ag": [
-1.36,
-3.3
-],
-"Betclic (FR)": [
-1.31,
-3.13
-],
-"Betfair": [
-1.37,
-3.422
-],
-"Betsson": [
-1.34,
-3.1
-],
-"Codere (IT)": [
-1.36,
-3.2
-],
-"Coolbet": [
-1.35,
-3.35
-],
-"Everygame": [
-1.37,
-3.3
-],
-"GTbets": [
-1.36,
-3.3
-],
-"LeoVegas (SE)": [
-1.35,
-3.15
-],
-"Marathon Bet": [
-1.35,
-3.3
-],
-"Matchbook": [
-1.382,
-3.499
-],
-"MyBookie.ag": [
-1.34,
-3.14
-],
-"Nordic Bet": [
-1.34,
-3.1
-],
-"PMU (FR)": [
-1.3,
-3.05
-],
 "Pinnacle": [
 1.38,
 3.38
-],
-"Tipico": [
-1.32,
-3.3
-],
-"Unibet (FR)": [
-1.3,
-2.85
-],
-"Unibet (NL)": [
-1.36,
-3.2
-],
-"Unibet (SE)": [
-1.36,
-3.2
-],
-"William Hill": [
-1.33,
-3.3
-],
-"Winamax (DE)": [
-1.37,
-3.3
-],
-"Winamax (FR)": [
-1.32,
-2.95
 ]
 },
 "draw": false,
@@ -1642,20 +546,28 @@
 "lg": "basketball_nba",
 "result": null,
 "sig": null,
-"snap": "2026-11-04T20:38+00:00",
+"snap": "2026-11-04T20:53+00:00",
 "src": "Pinnacle",
-"time": "2026-11-05T01:30:00Z"
+"time": "2026-11-05T01:30:00Z",
+"verdict": {
+"ev": null,
+"i": 0,
+"odds": 1.36,
+"p": 0.7101,
+"total": null,
+"type": "fav"
+}
 },
 "d3d91c40111aca301d41c9cdb9d64608": {
 "away": "Portland Trail Blazers",
 "best": [
 [
-2.313,
-"Matchbook"
+2.3,
+"Pinnacle"
 ],
 [
-1.72,
-"Coolbet"
+1.69,
+"Pinnacle"
 ]
 ],
 "books": {
@@ -1663,101 +575,9 @@
 2.27,
 1.68
 ],
-"888sport": [
-2.2,
-1.67
-],
-"BetAnything": [
-2.3,
-1.67
-],
-"BetOnline.ag": [
-2.3,
-1.67
-],
-"Betclic (FR)": [
-2.22,
-1.59
-],
-"Betfair": [
-2.254,
-1.694
-],
-"Betsson": [
-2.2,
-1.65
-],
-"Codere (IT)": [
-2.25,
-1.65
-],
-"Coolbet": [
-2.17,
-1.72
-],
-"Everygame": [
-2.3,
-1.67
-],
-"GTbets": [
-2.3,
-1.67
-],
-"LeoVegas (SE)": [
-2.2,
-1.65
-],
-"Marathon Bet": [
-2.3,
-1.64
-],
-"Matchbook": [
-2.313,
-1.715
-],
-"MyBookie.ag": [
-2.22,
-1.64
-],
-"Nordic Bet": [
-2.2,
-1.65
-],
-"PMU (FR)": [
-2.12,
-1.6
-],
 "Pinnacle": [
 2.3,
 1.69
-],
-"Tipico": [
-2.25,
-1.62
-],
-"Unibet (FR)": [
-2.1,
-1.57
-],
-"Unibet (NL)": [
-2.23,
-1.68
-],
-"Unibet (SE)": [
-2.23,
-1.68
-],
-"William Hill": [
-2.2,
-1.67
-],
-"Winamax (DE)": [
-2.25,
-1.68
-],
-"Winamax (FR)": [
-2.1,
-1.6
 ]
 },
 "draw": false,
@@ -1769,8 +589,16 @@
 "lg": "basketball_nba",
 "result": null,
 "sig": null,
-"snap": "2026-11-04T20:38+00:00",
+"snap": "2026-11-04T20:53+00:00",
 "src": "Pinnacle",
-"time": "2026-11-05T02:00:00Z"
+"time": "2026-11-05T02:00:00Z",
+"verdict": {
+"ev": null,
+"i": null,
+"odds": null,
+"p": null,
+"total": null,
+"type": "skip"
+}
 }
 }
