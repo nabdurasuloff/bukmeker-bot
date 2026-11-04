@@ -45,7 +45,7 @@ jobs:
           RAW: ${{ secrets.WIF_PROVIDER || secrets.GCP_SA_KEY }}
         run: |
           P=$(printf '%s' "$RAW" | grep -oE 'projects/[0-9]+/locations/global/workloadIdentityPools/[A-Za-z0-9_-]+/providers/[A-Za-z0-9_-]+' | head -1)
-          if [ -z "$P" ]; then echo "::error::WIF_PROVIDER secret'ida projects/.../providers/... qatori topilmadi"; exit 1; fi
+          if [ -z "$P" ]; then echo "Uzunlik: ${#RAW}, boshi: $(printf '%s' "$RAW" | head -c 12 | sed 's/[0-9]/#/g'), '/' soni: $(printf '%s' "$RAW" | tr -cd '/' | wc -c)"; echo "::error::WIF_PROVIDER secret'ida projects/.../providers/... qatori topilmadi"; exit 1; fi
           echo "provider=$P" >> "$GITHUB_OUTPUT"
 
       - name: Google hisobiga kirish (kalitsiz)
