@@ -58,7 +58,7 @@ jobs:
         uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: ${{ steps.wif.outputs.provider }}
-          service_account: bukmeker-bot@${{ secrets.FIREBASE_PROJECT_ID }}.iam.gserviceaccount.com
+          service_account: bukmeker-deploy@${{ secrets.FIREBASE_PROJECT_ID }}.iam.gserviceaccount.com
           create_credentials_file: true
 
       - name: Google hisobiga kirish (JSON kalit)
@@ -69,11 +69,11 @@ jobs:
           create_credentials_file: true
 
       - name: Deploy
-        run: npx -y firebase-tools@latest deploy --only functions --project "$PROJECT_ID" --non-interactive --force
+        run: npx -y firebase-tools@latest deploy --only functions:bukmeker --project "$PROJECT_ID" --non-interactive --force
 
       - name: Telegram webhook ulash
         run: |
-          URL="https://${REGION}-${PROJECT_ID}.cloudfunctions.net/telegram"
+          URL="https://${REGION}-${PROJECT_ID}.cloudfunctions.net/bukmeker_telegram"
           curl -s "https://api.telegram.org/bot${{ secrets.BOT_TOKEN }}/setWebhook" \
             -d "url=${URL}" \
             -d "secret_token=${{ secrets.TG_SECRET }}" \

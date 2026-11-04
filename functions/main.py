@@ -1,8 +1,8 @@
 """
 Firebase Cloud Functions: Telegram koeffitsiyent tahlilchi bot (o'rganish uchun).
 
-  telegram  — Telegram webhook (har bir xabar shu funksiyaga keladi)
-  avto      — har 6 soatda obunachilarga signal yuboradi
+  bukmeker_telegram — Telegram webhook (har bir xabar shu funksiyaga keladi)
+  bukmeker_avto     — har 6 soatda obunachilarga signal yuboradi
 
 Maxfiy qiymatlar functions/.env faylidan olinadi (uni GitHub Actions yaratadi):
   BOT_TOKEN, ODDS_API_KEY, TG_SECRET
@@ -101,7 +101,7 @@ def league_buttons():
 # ---------- Ma'lumot (Firestore keshi bilan) ----------
 
 def get_events(league):
-    ref = db().collection("kesh").document(league)
+    ref = db().collection("bk_kesh").document(league)
     snap = ref.get()
     if snap.exists:
         d = snap.to_dict()
@@ -110,7 +110,7 @@ def get_events(league):
     events, left = fetch(env("ODDS_API_KEY"), league, REGION)
     ref.set({"ts": time.time(), "data": json.dumps(events)})
     if left is not None:
-        db().collection("holat").document("api").set({"kredit": left, "ts": time.time()})
+        db().collection("bk_holat").document("api").set({"kredit": left, "ts": time.time()})
     return events
 
 
@@ -139,7 +139,7 @@ def signals_text(leagues):
 
 def handle_text(chat, text):
     t = text.strip().lower()
-    subs = db().collection("obunachilar")
+    subs = db().collection("bk_obunachilar")
     if t.startswith("/start"):
         send(chat, "Salom! Men koeffitsiyent tahlilchi botman 📊\n"
                    "Ligani tanlang yoki signallarni ko'ring.", keyboard=MAIN_KB)
@@ -158,7 +158,7 @@ def handle_text(chat, text):
             ref.set({"ts": time.time()})
             send(chat, "⏱ Avto signal yoqildi: har 6 soatda signallar keladi.")
     elif "kredit" in t:
-        snap = db().collection("holat").document("api").get()
+        snap = db().collection("bk_holat").document("api").get()
         left = snap.to_dict().get("kredit") if snap.exists else "noma'lum"
         send(chat, f"💳 API kreditidan qoldi: {left}")
     elif "yordam" in t:
@@ -185,7 +185,7 @@ def handle_callback(cb):
 # ---------- Cloud Functions ----------
 
 @https_fn.on_request(timeout_sec=120)
-def telegram(req: https_fn.Request) -> https_fn.Response:
+def bukmeker_telegram(req: https_fn.Request) -> https_fn.Response:
     # Faqat Telegramdan kelgan so'rovlarni qabul qilamiz
     if req.headers.get("X-Telegram-Bot-Api-Secret-Token") != env("TG_SECRET"):
         return https_fn.Response("forbidden", status=403)
@@ -203,8 +203,8 @@ def telegram(req: https_fn.Request) -> https_fn.Response:
 @scheduler_fn.on_schedule(schedule="every 6 hours",
                           timezone=scheduler_fn.Timezone("Asia/Tashkent"),
                           timeout_sec=300)
-def avto(event: scheduler_fn.ScheduledEvent) -> None:
-    subs = [d.id for d in db().collection("obunachilar").stream()]
+def bukmeker_avto(event: scheduler_fn.ScheduledEvent) -> None:
+    subs = [d.id for d in db().collection("bk_obunachilar").stream()]
     if not subs:
         return
     text = signals_text(AUTO_LEAGUES)

@@ -2,7 +2,7 @@
   "functions": [
     {
       "source": "functions",
-      "codebase": "default",
+      "codebase": "bukmeker",
       "runtime": "python312",
       "ignore": ["venv", ".git", "__pycache__", "*.local"]
     }

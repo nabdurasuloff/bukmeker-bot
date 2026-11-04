@@ -23,7 +23,7 @@ Firebase Console → loyihangiz → **Build → Firestore Database → Create da
 Joylashuv uchun `eur3` yoki `europe-west`, rejim uchun **Production** ni tanlang.
 
 ### 2. Service account va kalitsiz ulanish
-Google Cloud Console → **IAM & Admin → Service Accounts** → `bukmeker-bot` nomli service account yarating
+Google Cloud Console → **IAM & Admin → Service Accounts** → (eslatma: endi bot `bilyard-klub` loyihasida, `bukmeker` codebase ichida) service account yarating
 (JSON kalit kerak emas).
 
 Keyin Google Cloud Console'da yuqori o'ngdagi **Cloud Shell** (>_) tugmasini bosing va
