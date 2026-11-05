@@ -1,1 +1,72 @@
-[]
+[
+{
+"at": "2026-11-05T07:15+00:00",
+"legs": [
+{
+"id": "842fcc5b9feb8c63054a661ad1fc8926",
+"lg": "soccer_epl",
+"m": "Arsenal — Hull City",
+"time": "2026-11-07T15:00:00Z",
+"i": 2,
+"pick": "Hull City",
+"odds": 19.0,
+"book": "1xBet",
+"p": 0.0586,
+"ev": 0.1127
+},
+{
+"id": "fa069801a5c9b49143447a1a1d173fd1",
+"lg": "soccer_italy_serie_a",
+"m": "Venezia — Udinese",
+"time": "2026-11-06T19:45:00Z",
+"i": 2,
+"pick": "Udinese",
+"odds": 3.23,
+"book": "1xBet",
+"p": 0.3235,
+"ev": 0.0451
+},
+{
+"id": "0d2e199bfba0db42871696c10037bad3",
+"lg": "soccer_spain_la_liga",
+"m": "Celta Vigo — Levante",
+"time": "2026-11-08T17:30:00Z",
+"i": 2,
+"pick": "Levante",
+"odds": 4.52,
+"book": "1xBet",
+"p": 0.2308,
+"ev": 0.0431
+},
+{
+"id": "23bf8ea47358ef82f65aa7398a2b3921",
+"lg": "soccer_italy_serie_a",
+"m": "Napoli — Lazio",
+"time": "2026-11-08T11:30:00Z",
+"i": 2,
+"pick": "Lazio",
+"odds": 3.27,
+"book": "1xBet",
+"p": 0.3171,
+"ev": 0.0369
+},
+{
+"id": "79ed3df594d7b352ef027128b1ba5d0a",
+"lg": "soccer_epl",
+"m": "Ipswich Town — Bournemouth",
+"time": "2026-11-08T14:00:00Z",
+"i": 1,
+"pick": "durang",
+"odds": 3.96,
+"book": "1xBet",
+"p": 0.2605,
+"ev": 0.0314
+}
+],
+"stake": 500,
+"k": 4,
+"odds": 3592.01,
+"p": 0.00036,
+"ev": 0.2982
+}
+]
