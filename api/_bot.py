@@ -3,7 +3,7 @@ import os
 
 import requests
 
-from _prognoz import analyse, report, fetch, fmt_time, verdict_core
+from _prognoz import analyse, report, fetch, fmt_time, verdict_core, verdict_short
 from _model import blend, elo_info, load as load_elo
 
 REGION = "eu"
@@ -320,34 +320,17 @@ def pct(p):
 
 
 def analysis_item(lg, m, elo):
-    """Sodda tahlil: model + bozor -> kim yutadi, forma, 1xBet narxi."""
+    """Sodda tahlil: ehtimollar va bitta xulosa."""
     draw = m["draw"]
     names = [m["home"], "Durang", m["away"]] if draw else [m["home"], m["away"]]
     ei = elo_info(lg, m["home"], m["away"], elo) if draw else None
-    pe, pm = (ei["p"] if ei else None), m.get("fair")
-    comb = blend(pe, pm, ei["w"] if ei else 0.5)
-    n = len(comb)
-    k = max(range(n), key=lambda i: comb[i])
-    rest = ", ".join(f"{'durang' if names[i] == 'Durang' else names[i]} {pct(comb[i])}"
-                     for i in range(n) if i != k)
-    src = f" (model {pct(pe[k])}, bozor {pct(pm[k])})" if (pe and pm) else ""
-    out = [f"{'⚽' if draw else '🏀'} {m['home']} — {m['away']} · {fmt_time(m['time'])}"]
-    if names[k] == "Durang":
-        out.append(f"• Eng ehtimolli: durang, {pct(comb[k])}{src}. ({rest})")
-    else:
-        out.append(f"• Kim yutadi: {names[k]}, {pct(comb[k])}{src}. ({rest})")
-    if ei and (ei["fh"] or ei["fa"]):
-        out.append(f"• Forma: {ei['h']} {ei['fh'] or '—'} | {ei['a']} {ei['fa'] or '—'}")
-    mine = m.get("mine")
-    mo = [x[0] for x in mine] if mine else None
-    out.append("• 1xBet: " + (" / ".join(f"{o:.2f}" for o in mo) if mo else "koeffitsiyent yo'q"))
-    if pe and pm:
-        diff = max(abs(pe[i] - pm[i]) for i in range(3))
-        if diff >= 0.08:
-            j = max(range(3), key=lambda i: pe[i] - pm[i])
-            out.append(f"• ⚠️ Model va bozor farq qiladi: model {names[j]}ga {diff*100:.0f}% ko'proq ishonadi")
-    out.append(verdict_core(comb, comb, names, mo if pm else None, m.get("o25"))["text"])
-    return "\n".join(out)
+    pm = m.get("fair")
+    comb = blend(ei["p"] if ei else None, pm, ei["w"] if ei else 0.5)
+    mo = [x[0] for x in m["mine"]] if m.get("mine") else None
+    probs = " · ".join(f"{'durang' if names[i] == 'Durang' else names[i]} {pct(comb[i])}" for i in range(len(comb)))
+    v = verdict_core(comb, comb, names, mo if pm else None, m.get("o25"))
+    return (f"{'⚽' if draw else '🏀'} {m['home']} — {m['away']} · {fmt_time(m['time'])}\n"
+            f"{probs}\n{verdict_short(v, names)}")
 
 
 def analysis_text(lg, live=False, limit=10):
@@ -378,8 +361,8 @@ def analysis_text(lg, live=False, limit=10):
     if not items:
         return f"{LEAGUES.get(lg, lg)}: yaqin o'yinlar topilmadi (saqlanganlari boshlanib bo'lgan)."
     items = sorted(items, key=lambda m: m["time"])[:limit]
-    head = [f"🧠 {LEAGUES.get(lg, lg)} — {len(items)} ta o'yin {src}", "", ""]
-    foot = ["", "ℹ️ Forma — oxirgi 5 o'yin: ✅ g'alaba, ➖ durang, ❌ mag'lubiyat. Ehtimol — kafolat emas."]
+    head = [f"🧠 {LEAGUES.get(lg, lg)} — {len(items)} ta o'yin", "", ""]
+    foot = ["", "ℹ️ 🎯 — bot xulosasi; ✅ — 1xBet narxi foydali. Ehtimol kafolat emas."]
     return ("\n".join(head[:2]) + "\n\n" + "\n\n".join(analysis_item(lg, m, elo) for m in items)
             + "\n\n" + foot[1])
 

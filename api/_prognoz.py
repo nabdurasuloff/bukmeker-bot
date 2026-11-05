@@ -222,6 +222,21 @@ def verdict_core(probs, fair, names, my_odds=None, over25=None, book="1xBet"):
     return v
 
 
+def verdict_short(v, names):
+    """Bir qatorli xulosa."""
+    nm = None if v["i"] is None else ("durang" if names[v["i"]] == "Durang" else names[v["i"]])
+    if v["type"] == "value":
+        t = f"🎯 ✅ {nm} @{v['odds']:.2f} — foydali narx (+{v['ev']*100:.0f}%), ehtimol {v['p']*100:.0f}%"
+    elif v["type"] == "fav":
+        t = f"🎯 {nm} yutadi ({v['p']*100:.0f}%)" if nm != "durang" else f"🎯 Durang ({v['p']*100:.0f}%)"
+    else:
+        t = "🎯 O'tkazib yuborish"
+    if v.get("total"):
+        tt = v["total"]
+        t += f" · Total: {'kam' if tt['side'] == 'under' else 'ko‘p'} ({tt['p']*100:.0f}%)"
+    return t
+
+
 def my_odds_of(a, mine="1xBet"):
     mb = next((b for b in a["books"] if mine.lower() in b["name"].lower()), None)
     return mb["odds"] if mb else None
