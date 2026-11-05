@@ -179,36 +179,44 @@
 "away": "Orlando Magic",
 "best": [
 [
-1.82,
-"1xBet"
+1.89,
+"Pinnacle"
 ],
 [
-2.05,
+2.0,
 "1xBet"
 ]
 ],
 "blend": [
-0.5297,
-0.4703
+0.5141,
+0.4859
 ],
 "books": {
 "1xBet": [
-1.82,
-2.05
+1.86,
+2.0
+],
+"Marathon Bet": [
+1.85,
+1.99
+],
+"Pinnacle": [
+1.89,
+2.0
 ]
 },
 "coupon": null,
 "draw": false,
 "fair": [
-0.5297,
-0.4703
+0.5141,
+0.4859
 ],
 "home": "Phoenix Suns",
 "lg": "basketball_nba",
 "result": null,
 "sig": null,
-"snap": "2026-11-05T06:29+00:00",
-"src": "1 ta bukmeker o'rtachasi",
+"snap": "2026-11-05T07:11+00:00",
+"src": "Pinnacle",
 "time": "2026-11-06T02:10:00Z",
 "verdict": {
 "ev": null,
@@ -575,42 +583,50 @@
 "away": "Miami Heat",
 "best": [
 [
-1.41,
+1.38,
 "1xBet"
 ],
 [
-3.06,
+3.21,
 "1xBet"
 ]
 ],
 "blend": [
-0.6846,
-0.3154
+0.6993,
+0.3007
 ],
 "books": {
 "1xBet": [
-1.41,
-3.06
+1.38,
+3.21
+],
+"Marathon Bet": [
+1.37,
+3.18
+],
+"Pinnacle": [
+1.38,
+3.21
 ]
 },
 "coupon": null,
 "draw": false,
 "fair": [
-0.6846,
-0.3154
+0.6993,
+0.3007
 ],
 "home": "Golden State Warriors",
 "lg": "basketball_nba",
 "result": null,
 "sig": null,
-"snap": "2026-11-05T06:29+00:00",
-"src": "1 ta bukmeker o'rtachasi",
+"snap": "2026-11-05T07:11+00:00",
+"src": "Pinnacle",
 "time": "2026-11-06T03:10:00Z",
 "verdict": {
 "ev": null,
 "i": 0,
-"odds": 1.41,
-"p": 0.6846,
+"odds": 1.38,
+"p": 0.6993,
 "total": null,
 "type": "fav"
 }
