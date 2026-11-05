@@ -3,7 +3,7 @@ import os
 
 import requests
 
-from _prognoz import analyse, report, fetch, fmt_time, verdict_core, verdict_short
+from _prognoz import analyse, report, fetch, fmt_time, short_book, verdict_core, verdict_short
 from _model import blend, elo_info, load as load_elo
 
 REGION = "eu"
@@ -24,7 +24,7 @@ SIGNAL_LEAGUES = ["soccer_epl", "soccer_spain_la_liga", "soccer_italy_serie_a", 
 
 MAIN_KB = {"keyboard": [[{"text": "🧠 Tahlil: kim yutadi?"}],
                         [{"text": "📋 Ligalar"}, {"text": "🎾 Tennis"}],
-                        [{"text": "🏦 1xBet reytingi"}],
+                        [{"text": "🏦 Bukmeker reytingi"}],
                         [{"text": "📝 Kupon"}, {"text": "🔔 Signallar"}],
                         [{"text": "🧮 Hisob-kitob"}, {"text": "📊 Natijalar"}],
                         [{"text": "💳 Kredit"}, {"text": "🆔 Mening ID"}],
@@ -46,8 +46,8 @@ HELP = (
 
 
 def my_bookies():
-    """Siz o'ynaydigan bukmekerlar (Vercel/GitHub'da MY_BOOKIES, vergul bilan). Standart: 1xBet."""
-    return [x.strip() for x in (os.environ.get("MY_BOOKIES") or "1xBet").split(",") if x.strip()]
+    """Siz o'ynaydigan bukmekerlar (Vercel/GitHub'da MY_BOOKIES, vergul bilan). Standart: 1xBet, Marathon Bet."""
+    return [x.strip() for x in (os.environ.get("MY_BOOKIES") or "1xBet,Marathon Bet").split(",") if x.strip()]
 
 
 def env(name):
@@ -131,7 +131,7 @@ def saved_signals():
     return f"🔔 {len(sig)} ta signal ({when} holati, {', '.join(my_bookies())}):\n\n" + "\n\n".join(sig)
 
 
-BOOKIES = ["1xBet"]
+BOOKIES = ["1xBet", "Marathon Bet"]
 
 
 def bookie_buttons():
@@ -183,7 +183,7 @@ def money(x):
 
 
 def calc_items(lg, limit=10):
-    """Yaqin o'yinlar: har biri uchun eng ehtimolli natija, uning ehtimoli va 1xBet koeffitsiyenti."""
+    """Yaqin o'yinlar: har biri uchun eng ehtimolli natija, uning ehtimoli va eng yaxshi koeffitsiyent."""
     st = load_stats()
     items = (st.get("upcoming") or {}).get(lg)
     src = "kunlik ma'lumot, 0 kredit"
@@ -210,7 +210,7 @@ def calc_items(lg, limit=10):
         k = max(range(len(pr)), key=lambda i: pr[i])
         names = [m["home"], "Durang", m["away"]] if m["draw"] else [m["home"], m["away"]]
         picks.append({"m": f"{m['home']} — {m['away']}", "pick": names[k], "p": pr[k],
-                      "odds": m["mine"][k][0]})
+                      "odds": m["mine"][k][0], "book": m["mine"][k][1]})
         if len(picks) >= limit:
             break
     return picks, src
@@ -220,7 +220,7 @@ def calc_text(lg, stake=10000, rate=75):
     import math
     picks, _ = calc_items(lg)
     if not picks:
-        return f"{LEAGUES.get(lg, lg)}: 1xBet koeffitsiyenti bor yaqin o'yin topilmadi."
+        return f"{LEAGUES.get(lg, lg)}: koeffitsiyenti bor yaqin o'yin topilmadi."
     n = len(picks)
     total = stake * n
     avg = sum(p["odds"] for p in picks) / n
@@ -230,7 +230,7 @@ def calc_text(lg, stake=10000, rate=75):
     need = math.ceil(n / avg - 1e-9)
     sign = lambda v: ("+" if v > 0 else "") + money(v)
     out = [f"🧮 {LEAGUES.get(lg, lg)} · {n} o'yin × {money(stake)} = {money(total)}", ""]
-    out += [f"{i}. {p['pick']} @{p['odds']:.2f}" for i, p in enumerate(picks, 1)]
+    out += [f"{i}. {p['pick']} @{p['odds']:.2f} ({short_book(p['book'])})" for i, p in enumerate(picks, 1)]
     out += ["",
             f"✅ {rate}% o'tsa: {sign(win)}",
             f"📈 Real kutilgan ({real*100:.0f}%): {sign(exp)}",
@@ -251,13 +251,13 @@ def coupon_text():
         return "📝 Kupon hali tayyor emas (kunlik tahlil 12:37 da)."
     bank = st.get("bank", 100000)
     op = st.get("coupon_open") or []
-    out = [f"📝 Kupon (1xBet, ordinar) — bank {money(bank)}", ""]
+    out = [f"📝 Kupon (ordinar) — bank {money(bank)}", ""]
     if op:
         out += [f"{i}. {c['label']}" for i, c in enumerate(op, 1)]
         out.append(f"\nJami: {len(op)} ta, {money(sum(c['stake'] for c in op))}. "
                    f"Hammasi o'tsa: +{money(sum(c['win'] for c in op))}")
     else:
-        out.append("Hozir ochiq kupon yo'q — 1xBet'da foydali narx topilmadi. Bu normal holat.")
+        out.append("Hozir ochiq kupon yo'q — 1xBet va Marathon'da foydali narx topilmadi. Bu normal holat.")
     c = st.get("coupon") or {}
     if c.get("n"):
         roi = c["profit"] / c["staked"] * 100 if c["staked"] else 0
@@ -422,8 +422,9 @@ def analysis_item(lg, m, elo):
     pm = m.get("fair")
     comb = blend(ei["p"] if ei else None, pm, ei["w"] if ei else 0.5)
     mo = [x[0] for x in m["mine"]] if m.get("mine") else None
+    mb = [x[1] for x in m["mine"]] if m.get("mine") else ""
     probs = " · ".join(f"{'durang' if names[i] == 'Durang' else names[i]} {pct(comb[i])}" for i in range(len(comb)))
-    v = verdict_core(comb, comb, names, mo if pm else None, m.get("o25"))
+    v = verdict_core(comb, comb, names, mo if pm else None, m.get("o25"), mb)
     return (f"{'⚽' if draw else '🏀'} {m['home']} — {m['away']} · {fmt_time(m['time'])}\n"
             f"{probs}\n{verdict_short(v, names)}")
 
@@ -457,7 +458,7 @@ def analysis_text(lg, live=False, limit=10):
         return f"{LEAGUES.get(lg, lg)}: yaqin o'yinlar topilmadi (saqlanganlari boshlanib bo'lgan)."
     items = sorted(items, key=lambda m: m["time"])[:limit]
     head = [f"🧠 {LEAGUES.get(lg, lg)} — {len(items)} ta o'yin", "", ""]
-    foot = ["", "ℹ️ 🎯 — bot xulosasi; ✅ — 1xBet narxi foydali. Ehtimol kafolat emas."]
+    foot = ["", "ℹ️ 🎯 — bot xulosasi; ✅ — narx foydali (qavsda qaysi bukmekerda). Ehtimol kafolat emas."]
     return (head[0] + "\n\n" + "\n\n".join(analysis_item(lg, m, elo) for m in items)
             + "\n\n" + foot[1])
 
@@ -499,7 +500,7 @@ def handle_text(chat, text):
     elif "tahlil" in t or "kim yutadi" in t:
         send(chat, "Qaysi ligani tahlil qilaylik?", analysis_buttons())
     elif "bukmeker" in t or "1xbet" in t or "reyting" in t:
-        send(chat, "🏦 1xBet: ligani tanlang — ehtimoli yuqoridan pastga saralanadi:", bookie_league_buttons(0))
+        send(chat, "Qaysi bukmeker bo'yicha?", bookie_buttons())
     elif "tennis" in t:
         btns = tennis_buttons()
         send(chat, "Turnirni tanlang:" if btns else "Hozir faol tennis turnirlari topilmadi.", btns or None)

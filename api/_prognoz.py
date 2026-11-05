@@ -186,7 +186,12 @@ def fmt_time(iso):
 VALUE_EV, FAV_P, TOTAL_P = 0.02, 0.60, 0.60
 
 
+def short_book(b):
+    return {"Marathon Bet": "Marathon"}.get(b, b)
+
+
 def verdict_core(probs, fair, names, my_odds=None, over25=None, book="1xBet"):
+    """book — bitta nom yoki har natija uchun nomlar ro'yxati (eng yaxshi narx qaysi bukmekerda)."""
     """Bitta aniq xulosa: qiymatli tikish / prognoz / o'tkazib yuborish (+ total)."""
     n = len(probs)
     v = {"type": "skip", "i": None, "p": None, "odds": None, "ev": None, "total": None}
@@ -194,7 +199,8 @@ def verdict_core(probs, fair, names, my_odds=None, over25=None, book="1xBet"):
         evs = [fair[i] * my_odds[i] - 1 for i in range(n)]
         j = max(range(n), key=lambda i: evs[i])
         if evs[j] > VALUE_EV:
-            v.update(type="value", i=j, p=round(fair[j], 4), odds=my_odds[j], ev=round(evs[j], 4))
+            v.update(type="value", i=j, p=round(fair[j], 4), odds=my_odds[j], ev=round(evs[j], 4),
+                     book=book[j] if isinstance(book, list) else book)
     if v["type"] == "skip":
         k = max(range(n), key=lambda i: probs[i])
         if probs[k] >= FAV_P:
@@ -207,11 +213,11 @@ def verdict_core(probs, fair, names, my_odds=None, over25=None, book="1xBet"):
     if v["type"] == "value":
         what = "durang" if nm == "Durang" else f"{nm} g'alabasi"
         risk = "ko'pincha yutqazadi, lekin" if v["p"] < 0.5 else "yutish ehtimoli yuqori va"
-        txt = (f"🎯 Xulosa: {what} — {v['odds']:.2f} ({book}). Qiymatli tikish: ehtimol {v['p']*100:.0f}%, "
+        txt = (f"🎯 Xulosa: {what} — {v['odds']:.2f} ({short_book(v['book'])}). Qiymatli tikish: ehtimol {v['p']*100:.0f}%, "
                f"{risk} narx foydali (+{v['ev']*100:.1f}%).")
     elif v["type"] == "fav":
         what = "durang" if nm == "Durang" else f"{nm} yutadi"
-        txt = (f"🎯 Xulosa: {what} ({v['p']*100:.0f}%). Bu prognoz; {book} narxi foydali emas, "
+        txt = (f"🎯 Xulosa: {what} ({v['p']*100:.0f}%). Bu prognoz; narx foydali emas, "
                f"pul tikish uchun afzallik yo'q.")
     else:
         txt = "🎯 Xulosa: aniq favorit ham, foydali narx ham yo'q — o'tkazib yuborish."
@@ -226,7 +232,8 @@ def verdict_short(v, names):
     """Bir qatorli xulosa."""
     nm = None if v["i"] is None else ("durang" if names[v["i"]] == "Durang" else names[v["i"]])
     if v["type"] == "value":
-        t = f"🎯 ✅ {nm} @{v['odds']:.2f} — foydali narx (+{v['ev']*100:.0f}%), ehtimol {v['p']*100:.0f}%"
+        t = (f"🎯 ✅ {nm} @{v['odds']:.2f} ({short_book(v.get('book', ''))}) — foydali narx "
+             f"(+{v['ev']*100:.0f}%), ehtimol {v['p']*100:.0f}%")
     elif v["type"] == "fav":
         t = f"🎯 {nm} yutadi ({v['p']*100:.0f}%)" if nm != "durang" else f"🎯 Durang ({v['p']*100:.0f}%)"
     else:
@@ -237,14 +244,25 @@ def verdict_short(v, names):
     return t
 
 
-def my_odds_of(a, mine="1xBet"):
-    mb = next((b for b in a["books"] if mine.lower() in b["name"].lower()), None)
-    return mb["odds"] if mb else None
+def my_best(a, mine=None):
+    """Sizning bukmekerlaringiz ichidan har natija uchun eng yaxshi narx: (koeffitsiyentlar, bukmekerlar)."""
+    mine = mine or MINE
+    mbs = [b for b in a["books"] if any(m.lower() in b["name"].lower() for m in mine)]
+    if not mbs:
+        return None, None
+    n = len(a["fair"])
+    best = [max(mbs, key=lambda b: b["odds"][i]) for i in range(n)]
+    return [b["odds"][i] for i, b in enumerate(best)], [b["name"] for b in best]
 
 
-def verdict(a, mine="1xBet"):
+def my_odds_of(a, mine=None):
+    return my_best(a, mine)[0]
+
+
+def verdict(a, mine=None):
     names = [a["home"], "Durang", a["away"]] if a.get("draw", True) else [a["home"], a["away"]]
-    return verdict_core(a["fair"], a["fair"], names, my_odds_of(a, mine), a.get("over25"), mine)
+    odds, books = my_best(a, mine)
+    return verdict_core(a["fair"], a["fair"], names, odds, a.get("over25"), books or "")
 
 
 def check_verdict(v, result, score=None):
@@ -260,8 +278,8 @@ def check_verdict(v, result, score=None):
     return ok, tok
 
 
-def report(a, mine="1xBet"):
-    """Sodda ko'rinish: kim yutadi, hisoblar, total, 1xBet narxi."""
+def report(a, mine=None):
+    """Sodda ko'rinish: kim yutadi, hisoblar, total, eng yaxshi narx (1xBet / Marathon)."""
     draw = a.get("draw", True)
     fair = a["fair"]
     names = [a["home"], "Durang", a["away"]] if draw else [a["home"], a["away"]]
@@ -278,17 +296,20 @@ def report(a, mine="1xBet"):
         out.append("• Eng ehtimolli hisoblar: " + ", ".join(f"{i}:{j} ({p*100:.0f}%)" for i, j, p in a["top"][:2]))
         out.append(f"• Total 2.5: kam — {(1-a['over25'])*100:.0f}%, ko'p — {a['over25']*100:.0f}%. "
                    f"Ikkala jamoa uradi — {a['btts']*100:.0f}%")
-    mo = my_odds_of(a, mine)
-    out.append(f"• {mine}: " + (" / ".join(f"{o:.2f}" for o in mo) if mo else "koeffitsiyent yo'q"))
+    mo, bks = my_best(a, mine)
+    out.append("• Eng yaxshi narx: " + (" / ".join(f"{o:.2f} ({short_book(b)})" for o, b in zip(mo, bks))
+                                       if mo else "koeffitsiyent yo'q"))
     out.append(verdict(a, mine)["text"])
     return "\n".join(out)
 
 
 # ---------- Ma'lumot olish ----------
 
-# Faqat shu bukmekerlar olinadi: Pinnacle — adolatli baho uchun, 1xBet — siz o'ynaydigan bukmeker.
+# Faqat shu bukmekerlar olinadi: Pinnacle — adolatli baho uchun, 1xBet va Marathon Bet — siz o'ynaydigan bukmekerlar.
 # (10 tagacha bukmeker = 1 kredit.) O'zgartirish: ODDS_BOOKMAKERS muhit o'zgaruvchisi, masalan "pinnacle,onexbet,marathonbet"
-BOOKMAKERS = os.environ.get("ODDS_BOOKMAKERS", "pinnacle,onexbet")
+BOOKMAKERS = os.environ.get("ODDS_BOOKMAKERS", "pinnacle,onexbet,marathonbet")
+# Siz o'ynaydigan bukmekerlar (nomidagi so'z bo'yicha)
+MINE = [x.strip() for x in (os.environ.get("MY_BOOKIES") or "1xBet,Marathon Bet").split(",") if x.strip()]
 
 
 def fetch(key, league, region):

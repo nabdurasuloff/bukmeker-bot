@@ -18,7 +18,7 @@ import requests
 ROOT = os.path.join(os.path.dirname(__file__), "..")
 sys.path.insert(0, os.path.join(ROOT, "api"))
 from _bot import LEAGUES, MIN_EV, env, format_short, is_signal, my_bookies, send  # noqa: E402
-from _prognoz import API, analyse, check_verdict, fetch, fmt_time, my_odds_of, report, verdict_core  # noqa: E402
+from _prognoz import API, analyse, check_verdict, fetch, fmt_time, my_best, report, short_book, verdict_core  # noqa: E402
 from _model import blend, elo_info, load as load_elo  # noqa: E402
 
 # Kuzatiladigan ligalar (har biri kuniga ~1 kredit + natija uchun ~2 kredit)
@@ -86,7 +86,8 @@ def snapshot(preds, key):
                 rec["elo"] = [round(x, 4) for x in ei["p"]]
             names = [a["home"], "Durang", a["away"]] if a["draw"] else [a["home"], a["away"]]
             pb = blend(ei["p"], a["fair"], ei["w"]) if ei else a["fair"]
-            vd = verdict_core(pb, pb, names, my_odds_of(a), a.get("over25"))
+            mo, mb = my_best(a, my_bookies())
+            vd = verdict_core(pb, pb, names, mo, a.get("over25"), mb or "")
             vd.pop("text", None)
             rec["blend"] = [round(x, 4) for x in pb]
             rec["coupon"] = old.get("coupon")
@@ -94,7 +95,7 @@ def snapshot(preds, key):
                 o, q = vd["odds"], vd["p"]
                 f = min(max((q * o - 1) / (o - 1), 0) * 0.25, 0.05)
                 stake = max(round(BANK * f / 100) * 100, 100)
-                rec["coupon"] = {"i": vd["i"], "odds": o, "p": q, "stake": stake,
+                rec["coupon"] = {"i": vd["i"], "odds": o, "p": q, "stake": stake, "book": vd.get("book", ""),
                                  "at": NOW.isoformat(timespec="minutes")}
                 NEW_COUPON.append(gid_label(rec))
             rec["verdict"] = vd  # o'yin boshlanishiga eng yaqin xulosa saqlanadi
@@ -115,7 +116,7 @@ def gid_label(p):
     c = p["coupon"]
     nm = "durang" if names[c["i"]] == "Durang" else f"{names[c['i']]} g'alabasi"
     return (f"{p['home']} — {p['away']} · {fmt_time(p['time'])}\n"
-            f"   {nm} @{c['odds']:.2f} → {money(c['stake'])}")
+            f"   {nm} @{c['odds']:.2f} ({short_book(c.get('book') or '1xBet')}) → {money(c['stake'])}")
 
 
 def money(x):
@@ -408,7 +409,7 @@ def main():
     msg.append("\n" + format_short(st))
     send(chat, "\n".join(msg))
     if NEW_COUPON:
-        send(chat, "📝 Yangi kupon (1xBet, ordinar):\n\n" + "\n".join(f"{i}. {t}" for i, t in enumerate(NEW_COUPON, 1))
+        send(chat, "📝 Yangi kupon (ordinar):\n\n" + "\n".join(f"{i}. {t}" for i, t in enumerate(NEW_COUPON, 1))
              + "\n\nBotdagi 📝 Kupon tugmasida ham bor.")
     # Signallar alohida yuborilmaydi — kupon ularni o'z ichiga oladi (🔔 Signallar tugmasida ko'rish mumkin)
 
