@@ -217,34 +217,27 @@ def calc_items(lg, limit=10):
 
 
 def calc_text(lg, stake=10000, rate=75):
-    picks, src = calc_items(lg)
+    import math
+    picks, _ = calc_items(lg)
     if not picks:
         return f"{LEAGUES.get(lg, lg)}: 1xBet koeffitsiyenti bor yaqin o'yin topilmadi."
     n = len(picks)
-    avg = sum(p["odds"] for p in picks) / n
     total = stake * n
-    out = [f"🧮 {LEAGUES.get(lg, lg)} — {n} ta o'yin, har biriga {money(stake)} ({src})", ""]
-    for i, p in enumerate(picks, 1):
-        out.append(f"{i}. {p['m']}: {p['pick']} @{p['odds']:.2f} ({p['p']*100:.0f}%)")
-    def res(r):
-        return stake * n * r * avg - total
+    avg = sum(p["odds"] for p in picks) / n
+    real = sum(p["p"] for p in picks) / n
     exp = sum(stake * p["p"] * p["odds"] for p in picks) - total
-    expected_rate = sum(p["p"] for p in picks) / n
-    be = 1 / avg
-    out += ["", f"O'rtacha koeffitsiyent: {avg:.2f} · jami tikiladi: {money(total)}",
-            f"Zararsiz bo'lish uchun: {be*100:.0f}% o'tishi kerak ({be*n:.1f}/{n})", "",
-            f"👉 Agar {rate}% o'tsa ({rate/100*n:.1f}/{n}): {'+' if res(rate/100) > 0 else ''}{money(res(rate/100))}",
-            f"📈 Bozor kutgani — {expected_rate*100:.0f}% o'tadi: {'+' if exp > 0 else ''}{money(exp)}"]
-    if rate / 100 > expected_rate + 0.08:
-        out.append(f"⚠️ {rate}% bu o'yinlar uchun realistik emas: ularning haqiqiy ehtimoli o'rtacha "
-                   f"{expected_rate*100:.0f}%. Eng ehtimolli hisob — \"Bozor kutgani\" qatori.")
+    win = stake * n * rate / 100 * avg - total
+    need = math.ceil(n / avg - 1e-9)
+    sign = lambda v: ("+" if v > 0 else "") + money(v)
+    out = [f"🧮 {LEAGUES.get(lg, lg)} · {n} o'yin × {money(stake)} = {money(total)}", ""]
+    out += [f"{i}. {p['pick']} @{p['odds']:.2f}" for i, p in enumerate(picks, 1)]
     out += ["",
-            "Boshqa foizlarda:"]
-    for r in (50, 60, 70, 80, 90):
-        v = res(r / 100)
-        out.append(f"  {r}% → {'+' if v > 0 else ''}{money(v)}")
-    out += ["", "ℹ️ Summa yoki foizni o'zgartirish: masalan \"hisob 20000 80\" deb yozing.",
-            "Bozor kutgan foiz odatda zararsiz chegaradan biroz past — bu bukmeker marjasi."]
+            f"✅ {rate}% o'tsa: {sign(win)}",
+            f"📈 Real kutilgan ({real*100:.0f}%): {sign(exp)}",
+            f"⚖️ Zarar qilmaslik uchun: kamida {need} tasi o'tishi kerak"]
+    if rate / 100 > real + 0.08:
+        out.append(f"⚠️ {rate}% real emas — bu o'yinlar o'rtacha {real*100:.0f}% ehtimolli.")
+    out += ["", "O'zgartirish: hisob 20000 80"]
     return "\n".join(out)
 
 
