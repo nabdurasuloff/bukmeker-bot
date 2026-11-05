@@ -197,6 +197,7 @@
 2.05
 ]
 },
+"coupon": null,
 "draw": false,
 "fair": [
 0.5297,
@@ -206,7 +207,7 @@
 "lg": "basketball_nba",
 "result": null,
 "sig": null,
-"snap": "2026-11-05T06:14+00:00",
+"snap": "2026-11-05T06:29+00:00",
 "src": "1 ta bukmeker o'rtachasi",
 "time": "2026-11-06T02:10:00Z",
 "verdict": {
@@ -467,7 +468,8 @@
 ],
 "home": "Los Angeles Clippers",
 "lg": "basketball_nba",
-"result": null,
+"result": 1,
+"score": "116:117",
 "sig": null,
 "snap": "2026-11-04T20:53+00:00",
 "src": "Pinnacle",
@@ -573,41 +575,42 @@
 "away": "Miami Heat",
 "best": [
 [
-1.5,
+1.41,
 "1xBet"
 ],
 [
-2.7,
+3.06,
 "1xBet"
 ]
 ],
 "blend": [
-0.6429,
-0.3571
+0.6846,
+0.3154
 ],
 "books": {
 "1xBet": [
-1.5,
-2.7
+1.41,
+3.06
 ]
 },
+"coupon": null,
 "draw": false,
 "fair": [
-0.6429,
-0.3571
+0.6846,
+0.3154
 ],
 "home": "Golden State Warriors",
 "lg": "basketball_nba",
 "result": null,
 "sig": null,
-"snap": "2026-11-05T06:14+00:00",
+"snap": "2026-11-05T06:29+00:00",
 "src": "1 ta bukmeker o'rtachasi",
 "time": "2026-11-06T03:10:00Z",
 "verdict": {
 "ev": null,
 "i": 0,
-"odds": 1.5,
-"p": 0.6429,
+"odds": 1.41,
+"p": 0.6846,
 "total": null,
 "type": "fav"
 }
