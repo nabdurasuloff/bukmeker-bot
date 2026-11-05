@@ -25,7 +25,8 @@ SIGNAL_LEAGUES = ["soccer_epl", "soccer_spain_la_liga", "soccer_italy_serie_a", 
 MAIN_KB = {"keyboard": [[{"text": "🧠 Tahlil: kim yutadi?"}],
                         [{"text": "📋 Ligalar"}, {"text": "🎾 Tennis"}],
                         [{"text": "🏦 Bukmeker reytingi"}],
-                        [{"text": "📝 Kupon"}, {"text": "🔔 Signallar"}],
+                        [{"text": "📝 Kupon"}, {"text": "💎 Jekpot"}],
+                        [{"text": "🔔 Signallar"}],
                         [{"text": "🧮 Hisob-kitob"}, {"text": "📊 Natijalar"}],
                         [{"text": "💳 Kredit"}, {"text": "🆔 Mening ID"}],
                         [{"text": "❓ Yordam"}]],
@@ -243,6 +244,108 @@ def calc_text(lg, stake=10000, rate=75):
 
 def calc_buttons(stake, rate):
     return [[{"text": LEAGUES[k], "callback_data": f"calc:{k}:{stake}:{rate}"}] for k in ANALYSIS_LEAGUES]
+
+
+def value_legs(st=None, max_legs=5):
+    """Keyingi 7 kundagi ✅ foydali narxlar (har o'yindan bittadan), EV bo'yicha saralangan."""
+    from datetime import datetime, timezone
+    st = st if st is not None else load_stats()
+    now = datetime.now(timezone.utc).isoformat()[:19]
+    elo = load_elo()
+    legs = []
+    for lg, items in (st.get("upcoming") or {}).items():
+        for m in items:
+            if m["time"][:19] <= now or not m.get("mine"):
+                continue
+            draw = m["draw"]
+            names = [m["home"], "Durang", m["away"]] if draw else [m["home"], m["away"]]
+            ei = elo_info(lg, m["home"], m["away"], elo) if draw else None
+            pr = blend(ei["p"] if ei else None, m["fair"], ei["w"] if ei else 0.5)
+            mo, mb = [x[0] for x in m["mine"]], [x[1] for x in m["mine"]]
+            v = verdict_core(pr, pr, names, mo, None, mb)
+            if v["type"] == "value":
+                legs.append({"id": m.get("id"), "lg": lg, "m": f"{m['home']} — {m['away']}", "time": m["time"],
+                             "i": v["i"], "pick": "durang" if names[v["i"]] == "Durang" else names[v["i"]],
+                             "odds": v["odds"], "book": v.get("book", ""), "p": v["p"], "ev": v["ev"]})
+    legs.sort(key=lambda x: -x["ev"])
+    return legs[:max_legs]
+
+
+def fav_legs(st=None, n=5):
+    """Taqqoslash uchun: eng ishonchli favoritlar (narx foydali bo'lmasa ham)."""
+    from datetime import datetime, timezone
+    st = st if st is not None else load_stats()
+    now = datetime.now(timezone.utc).isoformat()[:19]
+    out = []
+    for lg, items in (st.get("upcoming") or {}).items():
+        for m in items:
+            if m["time"][:19] <= now or not m.get("mine"):
+                continue
+            k = max(range(len(m["fair"])), key=lambda i: m["fair"][i])
+            out.append({"p": m["fair"][k], "odds": m["mine"][k][0]})
+    out.sort(key=lambda x: -x["p"])
+    return out[:n]
+
+
+def combo_stats(legs):
+    """Ekspress: koeffitsiyent, ehtimol, kutilgan natija (EV)."""
+    odds = p = 1.0
+    for l in legs:
+        odds *= l["odds"]
+        p *= l["p"]
+    return odds, p, p * odds - 1
+
+
+def system_stats(legs, k):
+    """Sistema k/n: barcha k-lik ekspresslar, umumiy summa teng bo'linadi."""
+    from itertools import combinations
+    combos = list(combinations(legs, k))
+    ev = sum(combo_stats(c)[1] * combo_stats(c)[0] for c in combos) / len(combos) - 1
+    # kamida bitta k-lik o'tish ehtimoli (taxminiy, Monte-Karlo o'rniga to'liq sanab)
+    from itertools import product
+    n = len(legs)
+    p_any = 0.0
+    for outcome in product([0, 1], repeat=n):
+        if sum(outcome) >= k:
+            q = 1.0
+            for l, o in zip(legs, outcome):
+                q *= l["p"] if o else (1 - l["p"])
+            p_any += q
+    return len(combos), p_any, ev
+
+
+def jackpot_text():
+    st = load_stats()
+    if not st:
+        return "💎 Jekpot hali tayyor emas (kunlik tahlil 12:37 da)."
+    legs = value_legs(st)
+    out = ["💎 Jekpot (keyingi 7 kun, faqat ✅ foydali narxlar)", ""]
+    if len(legs) >= 2:
+        for i, l in enumerate(legs, 1):
+            out.append(f"{i}. {l['m']} · {fmt_time(l['time'])}\n   {l['pick']} @{l['odds']:.2f} ({short_book(l['book'])})")
+        odds, p, ev = combo_stats(legs)
+        out += ["", f"🎰 Ekspress ({len(legs)} ta): koeffitsiyent {odds:.1f}",
+                f"   O'tish ehtimoli: {p*100:.2f}% (~{1/p:.0f} tadan 1)",
+                f"   Kutilgan natija: {ev*100:+.0f}% {'✅ plyus' if ev > 0 else ''}"]
+        if len(legs) >= 3:
+            k = len(legs) - 1
+            nc, pa, sev = system_stats(legs, k)
+            out += [f"🎲 Sistema {k}/{len(legs)} ({nc} ta ekspress): kamida {k} tasi o'tsa yutadi",
+                    f"   Yutish ehtimoli: {pa*100:.1f}% · kutilgan natija: {sev*100:+.0f}%"]
+        out.append("   Tavsiya summa: bankning 0.5–1% idan oshmasin (yo'qotish ehtimoli juda yuqori).")
+    else:
+        out.append(f"Hozir ✅ tanlovlar yetarli emas ({len(legs)} ta, kamida 2 ta kerak) — jekpot tuzilmadi.")
+    fl = fav_legs(st)
+    if len(fl) >= 3:
+        odds, p, ev = combo_stats(fl)
+        out += ["", f"📉 Taqqoslash — eng ishonchli {len(fl)} favorit ekspressi: koeffitsiyent {odds:.2f}, "
+                    f"o'tish {p*100:.0f}%, kutilgan natija {ev*100:+.0f}% (marja ko'payadi)"]
+    jk = st.get("jackpots") or {}
+    if jk.get("n"):
+        out += ["", f"📒 Oldingi jekpotlar: {jk['won']}/{jk['n']} o'tdi · natija "
+                    f"{'+' if jk['profit'] > 0 else ''}{money(jk['profit'])}"]
+        out += jk.get("last", [])
+    return "\n".join(out)
 
 
 def coupon_text():
@@ -516,6 +619,8 @@ def handle_text(chat, text):
         rate = nums[1] if len(nums) > 1 and 0 < nums[1] <= 100 else 75
         send(chat, f"🧮 Har biriga {money(stake)}, o'tish {rate}% bo'yicha hisoblayman. Ligani tanlang:",
              calc_buttons(stake, rate))
+    elif "jekpot" in t or "jackpot" in t:
+        send(chat, jackpot_text())
     elif "kupon" in t:
         send(chat, coupon_text())
     elif "natija" in t:

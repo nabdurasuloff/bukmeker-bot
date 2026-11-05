@@ -17,7 +17,7 @@ import requests
 
 ROOT = os.path.join(os.path.dirname(__file__), "..")
 sys.path.insert(0, os.path.join(ROOT, "api"))
-from _bot import LEAGUES, MIN_EV, env, format_short, is_signal, my_bookies, send  # noqa: E402
+from _bot import LEAGUES, MIN_EV, combo_stats, env, format_short, is_signal, my_bookies, send, value_legs  # noqa: E402
 from _prognoz import API, analyse, check_verdict, fetch, fmt_time, my_best, report, short_book, verdict_core  # noqa: E402
 from _model import blend, elo_info, load as load_elo  # noqa: E402
 
@@ -28,6 +28,7 @@ STATS_PY = os.path.join(ROOT, "api", "_stats.py")
 NOW = datetime.now(timezone.utc)
 UPCOMING = {}
 NEW_COUPON = []
+JSTATS = {}
 BANK = int(float(os.environ.get("BANK") or 100000))
 META = {"upcoming_at": None}
 
@@ -72,7 +73,7 @@ def snapshot(preds, key):
             ei = elo_info(lg, a["home"], a["away"], elo) if a["draw"] else None
             if ei is None and a["draw"]:
                 print(f"Elo nomi topilmadi: {lg}: {a['home']} / {a['away']}")
-            up.append({"home": a["home"], "away": a["away"], "time": a["time"], "draw": a["draw"],
+            up.append({"id": e["id"], "home": a["home"], "away": a["away"], "time": a["time"], "draw": a["draw"],
                        "fair": [round(x, 4) for x in a["fair"]],
                        "o25": round(a["over25"], 4) if a.get("over25") is not None else None,
                        "mine": [[b["odds"], b["book"]] for b in mine["best"]] if mine else None,
@@ -314,7 +315,7 @@ def compute_stats(preds, signals=None):
         "pending": sum(1 for p in preds.values() if p.get("result") is None),
         "brier": round(brier / len(done), 4) if done else None,
         "fav": fav, "value": val, "kelly": kelly, "clv": clv, "elo": elo_cmp, "verdicts": vs,
-        "coupon": cst, "coupon_open": copen, "bank": BANK,
+        "coupon": cst, "coupon_open": copen, "bank": BANK, "jackpots": JSTATS,
         "upcoming": UPCOMING, "upcoming_at": META["upcoming_at"],
         "buckets": [b for b in bstat if b["n"]],
         "recent": [{"m": f"{p['home']} — {p['away']}", "score": p.get("score"),
@@ -343,6 +344,96 @@ def result_line(p):
         what = f"{nm} ({v['p']*100:.0f}%)"
     tail = f" · total {'✅' if tok else '❌'}" if tok is not None else ""
     return f"{'✅' if ok else '❌'} {head} · {what}{tail}"
+
+
+JACK = os.path.join(ROOT, "data", "jackpots.json")
+NEW_JACK = []
+
+
+def load_jack():
+    try:
+        with open(JACK) as f:
+            return json.load(f)
+    except Exception:
+        return []
+
+
+def jack_settle(jacks, preds):
+    """Barcha o'yinlari tugagan jekpotlarni hisoblaydi (bekor o'yin koeffitsiyenti 1 deb olinadi)."""
+    from itertools import combinations
+    done_now = []
+    for j in jacks:
+        if j.get("done"):
+            continue
+        rs = []
+        for l in j["legs"]:
+            r = (preds.get(l["id"]) or {}).get("result")
+            if r is None:
+                break
+            rs.append(1.0 if r == "void" else (l["odds"] if r == l["i"] else 0.0))
+        else:
+            ex = 1.0
+            for x in rs:
+                ex *= x
+            j["express_ret"] = round(j["stake"] * ex)
+            if j.get("k"):
+                combos = list(combinations(range(len(rs)), j["k"]))
+                per = j["stake"] / len(combos)
+                ret = 0.0
+                for c in combos:
+                    q = 1.0
+                    for i in c:
+                        q *= rs[i]
+                    ret += per * q
+                j["system_ret"] = round(ret)
+            j["hits"] = sum(1 for x in rs if x > 1)
+            j["done"] = True
+            done_now.append(j)
+    return done_now
+
+
+def jack_create(jacks, st):
+    legs = [l for l in value_legs(st) if l.get("id")]
+    if len(legs) < 2:
+        return
+    used = {l["id"] for j in jacks if not j.get("done") for l in j["legs"]}
+    if any(l["id"] in used for l in legs):
+        return  # ochiq jekpot bilan kesishadi — yangisini tuzmaymiz
+    stake = max(round(BANK * 0.005 / 100) * 100, 500)
+    odds, p, ev = combo_stats(legs)
+    j = {"at": NOW.isoformat(timespec="minutes"), "legs": legs, "stake": stake,
+         "k": len(legs) - 1 if len(legs) >= 3 else None, "odds": round(odds, 2), "p": round(p, 5), "ev": round(ev, 4)}
+    jacks.append(j)
+    NEW_JACK.append(j)
+
+
+def jack_stats(jacks):
+    done = [j for j in jacks if j.get("done")]
+    st = {"n": len(done), "won": 0, "profit": 0, "last": []}
+    for j in done:
+        ret = j.get("express_ret", 0) + j.get("system_ret", 0)
+        cost = j["stake"] * (2 if j.get("k") else 1)
+        st["won"] += (j.get("express_ret", 0) > 0) or (j.get("system_ret", 0) > 0)
+        st["profit"] += ret - cost
+    for j in sorted(done, key=lambda j: j["at"], reverse=True)[:4]:
+        n = len(j["legs"])
+        line = f"{'✅' if j.get('express_ret') else '❌'} {fmt_time(j['at'])}: {j['hits']}/{n} o'tdi · ekspress @{j['odds']:.1f}"
+        if j.get("k"):
+            line += f" · sistema {j['k']}/{n}: {'+' if j['system_ret'] > j['stake'] else ''}{money(j['system_ret'] - j['stake'])}"
+        st["last"].append(line)
+    return st
+
+
+def jack_msg(j):
+    n = len(j["legs"])
+    lines = [f"💎 Yangi jekpot ({n} ta ✅ tanlov):", ""]
+    for i, l in enumerate(j["legs"], 1):
+        lines.append(f"{i}. {l['m']} · {fmt_time(l['time'])}\n   {l['pick']} @{l['odds']:.2f} ({short_book(l['book'])})")
+    lines += ["", f"🎰 Ekspress: @{j['odds']:.1f}, o'tish ehtimoli {j['p']*100:.2f}%, virtual {money(j['stake'])}"]
+    if j.get("k"):
+        lines.append(f"🎲 Sistema {j['k']}/{n}: virtual {money(j['stake'])}")
+    lines.append("Bot natijani o'zi tekshiradi. Batafsil: 💎 Jekpot")
+    return "\n".join(lines)
 
 
 def write_stats(preds, signals):
@@ -385,13 +476,20 @@ def main():
             save(preds)
             UPCOMING.update(previous("upcoming", {}))
             META["upcoming_at"] = previous("upcoming_at", None)
+            JSTATS.update(previous("jackpots", {}))
             st = write_stats(preds, previous_signals())
         return
 
     newly = settle(preds, key)
     signals = snapshot(preds, key)
     save(preds)
+    jacks = load_jack()
+    jdone = jack_settle(jacks, preds)
+    JSTATS.update(jack_stats(jacks))
     st = write_stats(preds, signals)
+    jack_create(jacks, st)
+    with open(JACK, "w") as f:
+        json.dump(jacks, f, ensure_ascii=False, indent=0)
 
     chat = env("CHAT_ID")
     print(f"Yangi natijalar: {len(newly)}, signallar: {len(signals)}, jami: {st['matches']}")
@@ -406,8 +504,16 @@ def main():
         res = [coupon_result(p) for p in settled_c]
         msg.append(f"\n📝 Kupon: {sum(w for w, _ in res)}/{len(res)} o'tdi, natija "
                    f"{'+' if sum(x for _, x in res) > 0 else ''}{money(sum(x for _, x in res))}")
+    for j in jdone:
+        n = len(j["legs"])
+        line = f"\n💎 Jekpot: {j['hits']}/{n} o'tdi — ekspress {'✅ +' + money(j['express_ret'] - j['stake']) if j['express_ret'] else '❌'}"
+        if j.get("k"):
+            line += f", sistema {j['k']}/{n}: {'+' if j['system_ret'] > j['stake'] else ''}{money(j['system_ret'] - j['stake'])}"
+        msg.append(line)
     msg.append("\n" + format_short(st))
     send(chat, "\n".join(msg))
+    for j in NEW_JACK:
+        send(chat, jack_msg(j))
     if NEW_COUPON:
         send(chat, "📝 Yangi kupon (ordinar):\n\n" + "\n".join(f"{i}. {t}" for i, t in enumerate(NEW_COUPON, 1))
              + "\n\nBotdagi 📝 Kupon tugmasida ham bor.")
