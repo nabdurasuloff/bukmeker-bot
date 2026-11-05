@@ -177,6 +177,26 @@ def bookie_report(i, league, top_n=10):
     return "\n".join(out)
 
 
+def format_short(st):
+    """Kunlik xabar uchun qisqa xulosa (to'liq statistika — 📊 Natijalar tugmasida)."""
+    vd = (st or {}).get("verdicts") or {}
+    out = []
+    a, b, c = vd.get("fav", {}), vd.get("value", {}), vd.get("total", {})
+    if a.get("n"):
+        out.append(f"🎯 Prognozlar: {a['ok']}/{a['n']} to'g'ri ({a['ok']/a['n']*100:.0f}%, kutilgan {a['p']/a['n']*100:.0f}%)")
+    if b.get("n"):
+        out.append(f"💰 Qiymatli tikishlar: {b['ok']}/{b['n']}, natija {b['profit']:+.1f} birlik")
+    else:
+        out.append("💰 Qiymatli tikishlar: hali yo'q")
+    if c.get("n"):
+        out.append(f"⚽ Total: {c['ok']}/{c['n']} to'g'ri")
+    k = (st or {}).get("kelly")
+    if k and k.get("bets"):
+        out.append(f"🏦 Kelly bank: {k['bank']:,} so'm".replace(",", " "))
+    out.append(f"Jami {st.get('matches', 0)} ta o'yin tekshirildi. Batafsil: 📊 Natijalar")
+    return "\n".join(out)
+
+
 def format_stats(st):
     """Kuzatuv statistikasini o'qiladigan matnga aylantiradi."""
     if not st or not st.get("matches"):

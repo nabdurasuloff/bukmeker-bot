@@ -17,7 +17,7 @@ import requests
 
 ROOT = os.path.join(os.path.dirname(__file__), "..")
 sys.path.insert(0, os.path.join(ROOT, "api"))
-from _bot import LEAGUES, MIN_EV, env, format_stats, is_signal, my_bookies, send  # noqa: E402
+from _bot import LEAGUES, MIN_EV, env, format_short, is_signal, my_bookies, send  # noqa: E402
 from _prognoz import API, analyse, check_verdict, fetch, fmt_time, my_odds_of, report, verdict_core  # noqa: E402
 from _model import blend, elo_info, load as load_elo  # noqa: E402
 
@@ -276,26 +276,25 @@ def compute_stats(preds, signals=None):
 
 
 def result_line(p):
+    """Bir qatorli natija: belgi, o'yin, hisob, bot xulosasi."""
     names = [p["home"], "Durang", p["away"]] if p["draw"] else [p["home"], p["away"]]
     head = f"{p['home']} — {p['away']} {p.get('score')}"
     v = p.get("verdict")
-    if not v:
-        k = max(range(len(p["fair"])), key=lambda i: p["fair"][i])
-        return f"{'✅' if k == p['result'] else '❌'} {head} | prognoz: {names[k]} {max(p['fair'])*100:.0f}%"
+    if not v or v["type"] == "skip":
+        tail = ""
+        if v and v.get("total"):
+            _, tok = check_verdict(v, p["result"], p.get("score"))
+            if tok is not None:
+                tail = f" · total {'✅' if tok else '❌'}"
+        return f"⏭ {head}{tail}"
     ok, tok = check_verdict(v, p["result"], p.get("score"))
-    parts = []
+    nm = "durang" if names[v["i"]] == "Durang" else names[v["i"]]
     if v["type"] == "value":
-        win = v["odds"] - 1 if ok else -1
-        parts.append(f"{'✅ to‘g‘ri' if ok else '❌ xato'} — qiymatli tikish {names[v['i']]} @{v['odds']:.2f} "
-                     f"({'+' if ok else ''}{win:.2f} birlik)")
-    elif v["type"] == "fav":
-        parts.append(f"{'✅ to‘g‘ri' if ok else '❌ xato'} — prognoz: {names[v['i']]} ({v['p']*100:.0f}%)")
+        what = f"qiymat: {nm} @{v['odds']:.2f} ({'+' if ok else ''}{(v['odds'] - 1) if ok else -1:.2f})"
     else:
-        parts.append("⏭ o'tkazib yuborilgan")
-    if tok is not None:
-        t = v["total"]
-        parts.append(f"total {'kam' if t['side'] == 'under' else 'ko‘p'}: {'✅' if tok else '❌'}")
-    return f"{head}\n   Xulosa: " + "; ".join(parts)
+        what = f"{nm} ({v['p']*100:.0f}%)"
+    tail = f" · total {'✅' if tok else '❌'}" if tok is not None else ""
+    return f"{'✅' if ok else '❌'} {head} · {what}{tail}"
 
 
 def write_stats(preds, signals):
@@ -353,8 +352,8 @@ def main():
         return
     msg = ["📊 Kunlik hisobot"]
     if newly:
-        msg.append("\nOxirgi natijalar:\n" + "\n".join(result_line(p) for p in newly[:15]))
-    msg.append("\n" + format_stats(st))
+        msg.append("\n" + "\n".join(result_line(p) for p in sorted(newly, key=lambda p: p["time"])[:20]))
+    msg.append("\n" + format_short(st))
     send(chat, "\n".join(msg))
     if signals:
         send(chat, f"🔔 {len(signals)} ta signal (yaqin 36 soat):\n\n" + "\n\n".join(signals))
