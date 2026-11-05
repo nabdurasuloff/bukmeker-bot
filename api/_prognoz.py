@@ -206,8 +206,9 @@ def verdict_core(probs, fair, names, my_odds=None, over25=None, book="1xBet"):
     nm = names[v["i"]] if v["i"] is not None else None
     if v["type"] == "value":
         what = "durang" if nm == "Durang" else f"{nm} g'alabasi"
+        risk = "ko'pincha yutqazadi, lekin" if v["p"] < 0.5 else "yutish ehtimoli yuqori va"
         txt = (f"🎯 Xulosa: {what} — {v['odds']:.2f} ({book}). Qiymatli tikish: ehtimol {v['p']*100:.0f}%, "
-               f"ko'pincha yutqazadi, lekin narx foydali (+{v['ev']*100:.1f}%).")
+               f"{risk} narx foydali (+{v['ev']*100:.1f}%).")
     elif v["type"] == "fav":
         what = "durang" if nm == "Durang" else f"{nm} yutadi"
         txt = (f"🎯 Xulosa: {what} ({v['p']*100:.0f}%). Bu prognoz; {book} narxi foydali emas, "

@@ -18,8 +18,8 @@ import requests
 ROOT = os.path.join(os.path.dirname(__file__), "..")
 sys.path.insert(0, os.path.join(ROOT, "api"))
 from _bot import LEAGUES, MIN_EV, env, format_stats, is_signal, my_bookies, send  # noqa: E402
-from _prognoz import API, analyse, check_verdict, fetch, fmt_time, report, verdict  # noqa: E402
-from _model import elo_info, load as load_elo  # noqa: E402
+from _prognoz import API, analyse, check_verdict, fetch, fmt_time, my_odds_of, report, verdict_core  # noqa: E402
+from _model import blend, elo_info, load as load_elo  # noqa: E402
 
 # Kuzatiladigan ligalar (har biri kuniga ~1 kredit + natija uchun ~2 kredit)
 TRACK = ["soccer_epl", "soccer_spain_la_liga", "soccer_italy_serie_a", "basketball_nba"]
@@ -82,8 +82,11 @@ def snapshot(preds, key):
             rec["sig"] = old.get("sig")
             if ei:
                 rec["elo"] = [round(x, 4) for x in ei["p"]]
-            vd = verdict(a)
+            names = [a["home"], "Durang", a["away"]] if a["draw"] else [a["home"], a["away"]]
+            pb = blend(ei["p"], a["fair"], ei["w"]) if ei else a["fair"]
+            vd = verdict_core(pb, pb, names, my_odds_of(a), a.get("over25"))
             vd.pop("text", None)
+            rec["blend"] = [round(x, 4) for x in pb]
             rec["verdict"] = vd  # o'yin boshlanishiga eng yaqin xulosa saqlanadi
             if mine and is_signal(mine):
                 signals.append(f"[{LEAGUES.get(lg, lg)}]\n" + report(mine))

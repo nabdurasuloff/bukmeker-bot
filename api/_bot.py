@@ -4,7 +4,7 @@ import os
 import requests
 
 from _prognoz import analyse, report, fetch, fmt_time, verdict_core
-from _model import elo_info, load as load_elo
+from _model import blend, elo_info, load as load_elo
 
 REGION = "eu"
 MIN_EV = 0.02
@@ -265,8 +265,17 @@ def elo_history():
     am = sum(x["acc_mkt"] * x["n"] for x in ev) / n
     le = sum(x["ll_elo"] * x["n"] for x in ev) / n
     lm = sum(x["ll_mkt"] * x["n"] for x in ev) / n
-    return (f"📚 Tarixiy sinov ({n} ta o'yin, {len(ev)} liga): favorit to'g'ri — model {ae*100:.0f}%, bozor {am*100:.0f}%; "
-            f"log-loss {le:.3f} vs {lm:.3f} (kichigi aniqroq)")
+    bl = [x for x in ev if x.get("ll_blend")]
+    lb = sum(x["ll_blend"] * x["n"] for x in bl) / sum(x["n"] for x in bl) if bl else None
+    ws = ", ".join(f"{x.get('w', 0)*100:.0f}%" for x in ev)
+    line = (f"📚 Tarixiy sinov ({n} ta o'yin, {len(ev)} liga): favorit to'g'ri — model {ae*100:.0f}%, bozor {am*100:.0f}%. "
+            f"Log-loss (kichigi aniqroq): model {le:.3f}, bozor {lm:.3f}")
+    if lb:
+        line += f", aralash {lb:.3f} (model vazni ligalar bo'yicha: {ws})"
+    E = load_elo()
+    if E.get("alpha") is not None:
+        line += f". Reytingda xG ulushi: {(1-E['alpha'])*100:.0f}%"
+    return line
 
 
 def load_stats():
@@ -296,7 +305,7 @@ def analysis_item(lg, m, elo):
     names = [m["home"], "Durang", m["away"]] if draw else [m["home"], m["away"]]
     ei = elo_info(lg, m["home"], m["away"], elo) if draw else None
     pe, pm = (ei["p"] if ei else None), m.get("fair")
-    comb = [(pe[i] + pm[i]) / 2 for i in range(3)] if (pe and pm) else (pe or pm)
+    comb = blend(pe, pm, ei["w"] if ei else 0.5)
     n = len(comb)
     k = max(range(n), key=lambda i: comb[i])
     rest = ", ".join(f"{'durang' if names[i] == 'Durang' else names[i]} {pct(comb[i])}"
@@ -317,7 +326,7 @@ def analysis_item(lg, m, elo):
         if diff >= 0.08:
             j = max(range(3), key=lambda i: pe[i] - pm[i])
             out.append(f"• ⚠️ Model va bozor farq qiladi: model {names[j]}ga {diff*100:.0f}% ko'proq ishonadi")
-    out.append(verdict_core(comb, pm or comb, names, mo if pm else None, m.get("o25"))["text"])
+    out.append(verdict_core(comb, comb, names, mo if pm else None, m.get("o25"))["text"])
     return "\n".join(out)
 
 

@@ -70,5 +70,14 @@ def elo_info(league, home, away, elo=None):
     if not h or not a or h == a:
         return None
     rh, ra = L["ratings"][h], L["ratings"][a]
-    return {"p": ordered_logit(rh - ra, L["H"], L["s"], L["c"]), "rh": rh, "ra": ra,
+    return {"p": ordered_logit(rh - ra, L["H"], L["s"], L["c"]), "rh": rh, "ra": ra, "w": L.get("w", 0.5),
             "fh": L["form"].get(h, ""), "fa": L["form"].get(a, ""), "h": h, "a": a}
+
+
+def blend(pe, pm, w):
+    """Model (pe) va bozor (pm) ehtimollarini tarixda eng yaxshi chiqqan vaznda aralashtiradi."""
+    if pe and pm:
+        q = [w * pe[i] + (1 - w) * pm[i] for i in range(len(pm))]
+        t = sum(q)
+        return [x / t for x in q]
+    return pe or pm

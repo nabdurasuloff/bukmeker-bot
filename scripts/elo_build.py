@@ -49,8 +49,10 @@ def load(div, season):
             except ValueError:
                 return None
         mkt = [odd("AvgH"), odd("AvgD"), odd("AvgA")]
+        hxg, axg = odd("HxG"), odd("AxG")
         rows.append({"d": dt, "h": row["HomeTeam"].strip(), "a": row["AwayTeam"].strip(),
-                     "hg": hg, "ag": ag, "season": season, "mkt": mkt if all(mkt) else None})
+                     "hg": hg, "ag": ag, "season": season, "mkt": mkt if all(mkt) else None,
+                     "xg": (hxg or 0.0, axg or 0.0) if (hxg is not None or axg is not None) else None})
     return rows
 
 
@@ -62,12 +64,30 @@ def probs(x, H, s, c):
     return [ph, max(1 - ph - pa, 0.01), pa]
 
 
+def pois(k, lam):
+    return lam ** k * math.exp(-lam) / math.factorial(k)
+
+
+def xg_score(hxg, axg):
+    """xG bo'yicha 'adolatli natija': P(uy yutadi) + 0.5 * P(durang)."""
+    ph = pd = 0.0
+    for i in range(11):
+        for j in range(11):
+            q = pois(i, max(hxg, 0.05)) * pois(j, max(axg, 0.05))
+            if i > j:
+                ph += q
+            elif i == j:
+                pd += q
+    return ph + 0.5 * pd
+
+
 def margin_mult(gd):
     gd = abs(gd)
     return 1 if gd <= 1 else (1.5 if gd == 2 else (11 + gd) / 8)
 
 
-def build_league(matches):
+def build_league(matches, alpha=1.0):
+    """alpha — haqiqiy natija ulushi; (1 - alpha) — xG bo'yicha natija (xG bor o'yinlarda)."""
     matches.sort(key=lambda m: m["d"])
     R, form, first_season = {}, {}, matches[0]["season"] if matches else None
     cur, hist = None, []
@@ -83,10 +103,14 @@ def build_league(matches):
         x = R[m["h"]] - R[m["a"]]
         res = 0 if m["hg"] > m["ag"] else (1 if m["hg"] == m["ag"] else 2)
         if m["season"] != first_season:
-            hist.append((x, res, m["mkt"]))
+            hist.append((x, res, m["mkt"], m["season"]))
         exp_h = 1 / (1 + 10 ** (-(x + HFA_UPDATE) / 400))
         score = 1 if res == 0 else (0.5 if res == 1 else 0)
-        delta = K * margin_mult(m["hg"] - m["ag"]) * (score - exp_h)
+        gd = m["hg"] - m["ag"]
+        if m.get("xg") and alpha < 1:
+            score = alpha * score + (1 - alpha) * xg_score(*m["xg"])
+            gd = alpha * gd + (1 - alpha) * (m["xg"][0] - m["xg"][1])
+        delta = K * margin_mult(round(gd)) * (score - exp_h)
         R[m["h"]] += delta
         R[m["a"]] -= delta
         for t, r in ((m["h"], "✅" if res == 0 else ("➖" if res == 1 else "❌")),
@@ -103,16 +127,42 @@ def fit(hist):
             for c10 in range(10, 100, 5):
                 c = c10 / 100
                 ll = 0.0
-                for x, res, _ in hist:
+                for x, res, *_ in hist:
                     ll -= math.log(max(probs(x, H, s, c)[res], 1e-9))
                 if ll < best[0]:
                     best = (ll, H, s, c)
     return best[1], best[2], best[3]
 
 
+def mkt_probs(mkt):
+    inv = [1 / o for o in mkt]
+    return [v / sum(inv) for v in inv]
+
+
+def best_weight(hist, H, s, c):
+    """Model va bozorni aralashtirishning eng yaxshi vazni (model ulushi) — log-loss bo'yicha."""
+    rows = [(probs(x, H, s, c), mkt_probs(mkt), res) for x, res, mkt, *_ in hist if mkt]
+    if not rows:
+        return 0.5, None
+    best = (9e9, 0.5)
+    for w100 in range(0, 105, 5):
+        w = w100 / 100
+        ll = -sum(math.log(max(w * pe[r] + (1 - w) * pm[r], 1e-9)) for pe, pm, r in rows)
+        if ll < best[0]:
+            best = (ll, w)
+    return best[1], round(best[0] / len(rows), 4)
+
+
+def season_ll(hist, H, s, c, season):
+    rows = [(x, r) for x, r, mkt, ss in hist if ss == season]
+    if not rows:
+        return None, 0
+    return sum(-math.log(max(probs(x, H, s, c)[r], 1e-9)) for x, r in rows), len(rows)
+
+
 def evaluate(hist, H, s, c):
     n = ll_e = ll_m = acc_e = acc_m = 0
-    for x, res, mkt in hist:
+    for x, res, mkt, *_ in hist:
         if not mkt:
             continue
         pe = probs(x, H, s, c)
@@ -132,23 +182,50 @@ def evaluate(hist, H, s, c):
 def main():
     out = {"updated": datetime.now(timezone.utc).isoformat(timespec="minutes"), "leagues": {}}
     ss = seasons()
+    data = {}
     for lg, div in DIVS.items():
         matches = [m for s in ss for m in load(div, s)]
         if len(matches) < 200:
             print(f"{lg}: ma'lumot yetarli emas ({len(matches)})")
             continue
-        R, form, hist = build_league(matches)
-        H, s, c = fit(hist)
+        data[lg] = matches
+    # 1) Har liga uchun H, s, c — faqat natijalar bilan (alpha=1)
+    params = {}
+    for lg, matches in data.items():
+        _, _, hist = build_league(list(matches), 1.0)
+        params[lg] = fit(hist)
+    # 2) xG ulushini tanlash: joriy mavsum o'yinlarida (barcha ligalar birga) log-loss bo'yicha
+    alpha_ll = {}
+    for a10 in (10, 8, 6, 4, 2):
+        alpha = a10 / 10
+        tot, n = 0.0, 0
+        for lg, matches in data.items():
+            _, _, hist = build_league(list(matches), alpha)
+            ll, k = season_ll(hist, *params[lg], ss[-1])
+            if ll is not None:
+                tot, n = tot + ll, n + k
+        alpha_ll[alpha] = round(tot / n, 4) if n else None
+    valid = {a: v for a, v in alpha_ll.items() if v is not None}
+    alpha = min(valid, key=valid.get) if valid else 1.0
+    print(f"xG ulushi tanlovi (joriy mavsum log-loss): {alpha_ll} -> natija ulushi {alpha}")
+    out["alpha"] = alpha
+    out["alpha_ll"] = alpha_ll
+    # 3) Yakuniy reytinglar, aralashtirish vazni va baho
+    for lg, matches in data.items():
+        R, form, hist = build_league(list(matches), alpha)
+        H, s, c = params[lg]
         ev = evaluate(hist, H, s, c)
-        current = {m["h"] for m in matches if m["season"] == ss[-1]} | \
-                  {m["a"] for m in matches if m["season"] == ss[-1]}
+        w, ll_b = best_weight(hist, H, s, c)
+        ev["w"], ev["ll_blend"] = w, ll_b
+        cur = ss[-1]
+        current = {m["h"] for m in matches if m["season"] == cur} | {m["a"] for m in matches if m["season"] == cur}
         out["leagues"][lg] = {
-            "H": H, "s": s, "c": c, "eval": ev,
+            "H": H, "s": s, "c": c, "w": w, "eval": ev,
             "ratings": {t: round(R[t]) for t in sorted(current, key=lambda t: -R[t])},
             "form": {t: form.get(t, "") for t in current},
         }
         top = list(out["leagues"][lg]["ratings"].items())[:3]
-        print(f"{lg}: {len(matches)} o'yin, H={H} s={s} c={c}, baho={ev}, top={top}")
+        print(f"{lg}: {len(matches)} o'yin, H={H} s={s} c={c}, model vazni={w}, baho={ev}, top={top}")
     with open(OUT, "w") as f:
         f.write("# Avtomatik yaratiladi (scripts/elo_build.py). Qo'lda o'zgartirmang.\n")
         f.write("ELO = " + pprint.pformat(out, width=110, sort_dicts=False) + "\n")
