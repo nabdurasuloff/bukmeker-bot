@@ -106,6 +106,23 @@ def implied_lambdas(p1, p2):
 COMMISSION = {"betfair": 0.05, "matchbook": 0.02, "smarkets": 0.02}
 
 
+def devig_power(odds):
+    """Marjani "darajali" usulda olib tashlaydi: p_i = (1/o_i)^k, yig'indi = 1.
+    Oddiy (proporsional) usuldan farqli o'laroq, autsayderlarga ko'proq marja yuklaydi —
+    bukmekerlar marjani asosan autsayderlarga qo'yadi (favorit-autsayder effekti)."""
+    inv = [1 / o for o in odds]
+    lo, hi = 0.5, 3.0
+    for _ in range(60):
+        k = (lo + hi) / 2
+        if sum(x ** k for x in inv) > 1:
+            lo = k
+        else:
+            hi = k
+    q = [x ** ((lo + hi) / 2) for x in inv]
+    t = sum(q)
+    return [x / t for x in q]
+
+
 def net_odds(name, odd):
     c = next((v for k, v in COMMISSION.items() if k in name.lower()), 0)
     return round(1 + (odd - 1) * (1 - c), 3) if c else odd
@@ -134,7 +151,7 @@ def analyse(event, only=None):
                 inv = [1 / o for o in odds]
                 over = sum(inv)
                 books.append({"name": name, "odds": odds,
-                              "fair": [x / over for x in inv], "margin": over - 1})
+                              "fair": devig_power(odds), "margin": over - 1})
     if not books:
         return None
 

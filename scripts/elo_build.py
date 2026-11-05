@@ -135,8 +135,10 @@ def fit(hist):
 
 
 def mkt_probs(mkt):
-    inv = [1 / o for o in mkt]
-    return [v / sum(inv) for v in inv]
+    import sys
+    sys.path.insert(0, os.path.join(ROOT, "api"))
+    from _prognoz import devig_power
+    return devig_power(mkt)
 
 
 def best_weight(hist, H, s, c):
@@ -166,8 +168,7 @@ def evaluate(hist, H, s, c):
         if not mkt:
             continue
         pe = probs(x, H, s, c)
-        inv = [1 / o for o in mkt]
-        pm = [v / sum(inv) for v in inv]
+        pm = mkt_probs(mkt)
         n += 1
         ll_e -= math.log(max(pe[res], 1e-9))
         ll_m -= math.log(max(pm[res], 1e-9))
