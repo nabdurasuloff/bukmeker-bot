@@ -363,7 +363,7 @@ def analysis_text(lg, live=False, limit=10):
     items = sorted(items, key=lambda m: m["time"])[:limit]
     head = [f"🧠 {LEAGUES.get(lg, lg)} — {len(items)} ta o'yin", "", ""]
     foot = ["", "ℹ️ 🎯 — bot xulosasi; ✅ — 1xBet narxi foydali. Ehtimol kafolat emas."]
-    return ("\n".join(head[:2]) + "\n\n" + "\n\n".join(analysis_item(lg, m, elo) for m in items)
+    return (head[0] + "\n\n" + "\n\n".join(analysis_item(lg, m, elo) for m in items)
             + "\n\n" + foot[1])
 
 
