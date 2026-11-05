@@ -22,7 +22,7 @@ LEAGUES = {
 }
 SIGNAL_LEAGUES = ["soccer_epl", "soccer_spain_la_liga", "soccer_italy_serie_a", "basketball_nba"]
 
-MAIN_KB = {"keyboard": [[{"text": "🧠 Tahlil: kim yutadi?"}],
+MAIN_KB = {"keyboard": [[{"text": "🧠 Tahlil: kim yutadi?"}, {"text": "🔒 Ishonchli"}],
                         [{"text": "📋 Ligalar"}, {"text": "🎾 Tennis"}],
                         [{"text": "🏦 Bukmeker reytingi"}],
                         [{"text": "📝 Kupon"}, {"text": "💎 Jekpot"}],
@@ -312,6 +312,55 @@ def system_stats(legs, k):
                 q *= l["p"] if o else (1 - l["p"])
             p_any += q
     return len(combos), p_any, ev
+
+
+def sure_text(min_p=0.70, top=10):
+    """Barcha ligalardan eng ishonchli prognozlar (0 kredit)."""
+    from datetime import datetime, timezone
+    st = load_stats()
+    if not st.get("upcoming"):
+        return "🔒 Ma'lumot hali tayyor emas (kunlik tahlil 12:37 da)."
+    now = datetime.now(timezone.utc).isoformat()[:19]
+    elo = load_elo()
+    wins, dcs, tots = [], [], []
+    for lg, items in st["upcoming"].items():
+        for m in items:
+            if m["time"][:19] <= now:
+                continue
+            draw = m["draw"]
+            names = [m["home"], "Durang", m["away"]] if draw else [m["home"], m["away"]]
+            ei = elo_info(lg, m["home"], m["away"], elo) if draw else None
+            pr = blend(ei["p"] if ei else None, m["fair"], ei["w"] if ei else 0.5)
+            k = max(range(len(pr)), key=lambda i: pr[i])
+            game = f"{m['home']} — {m['away']} · {fmt_time(m['time'])}"
+            odds = m["mine"][k][0] if m.get("mine") else None
+            if pr[k] >= min_p and names[k] != "Durang":
+                wins.append((pr[k], f"{names[k]} yutadi — {pct(pr[k])}" + (f" @{odds:.2f}" if odds else "")
+                             + f"\n   {game}"))
+            if draw:
+                for side, q in ((m["home"], pr[0] + pr[1]), (m["away"], pr[2] + pr[1])):
+                    if q >= 0.85 and not (pr[k] >= min_p and names[k] == side):
+                        dcs.append((q, f"{side} yutadi yoki durang — {pct(q)}\n   {game}"))
+            if m.get("o25") is not None:
+                side, q = ("kam", 1 - m["o25"]) if m["o25"] < 0.5 else ("ko‘p", m["o25"])
+                if q >= 0.65:
+                    tots.append((q, f"Total 2.5 dan {side} — {pct(q)}\n   {game}"))
+    out = ["🔒 Eng ishonchli prognozlar (keyingi 7 kun)", ""]
+    if wins:
+        out.append("🏆 Kim yutadi:")
+        out += [f"{i}. {t}" for i, (_, t) in enumerate(sorted(wins, reverse=True)[:top], 1)]
+    else:
+        out.append(f"🏆 {pct(min_p)}+ ehtimolli g'alaba topilmadi.")
+    if dcs:
+        out += ["", "🛡 Yutadi yoki durang (ikki natija):"]
+        out += [f"{i}. {t}" for i, (_, t) in enumerate(sorted(dcs, reverse=True)[:5], 1)]
+    if tots:
+        out += ["", "⚽ Total:"]
+        out += [f"{i}. {t}" for i, (_, t) in enumerate(sorted(tots, reverse=True)[:5], 1)]
+    out += ["", "ℹ️ \"Ishonchli\" — 100% emas: 75% degani 4 tadan 1 tasi baribir xato chiqadi. "
+                "Bunday prognozlar ko'p o'tadi, lekin koeffitsiyenti past — foyda kafolatlanmaydi. "
+                "Ularning qanchalik to'g'ri chiqqanini 📊 Natijalar'da ko'rasiz."]
+    return "\n".join(out)
 
 
 def jackpot_text():
@@ -619,6 +668,8 @@ def handle_text(chat, text):
         rate = nums[1] if len(nums) > 1 and 0 < nums[1] <= 100 else 75
         send(chat, f"🧮 Har biriga {money(stake)}, o'tish {rate}% bo'yicha hisoblayman. Ligani tanlang:",
              calc_buttons(stake, rate))
+    elif "ishonchli" in t or "aniq" in t:
+        send(chat, sure_text())
     elif "jekpot" in t or "jackpot" in t:
         send(chat, jackpot_text())
     elif "kupon" in t:
