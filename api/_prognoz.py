@@ -134,7 +134,10 @@ def analyse(event, only=None):
     only — faqat shu bukmekerlar (nomidagi so'z bo'yicha) koeffitsiyentlari "eng yaxshi" deb olinadi.
     """
     home, away = event["home_team"], event["away_team"]
-    has_draw = any(o.get("name") == "Draw"
+    # Xokkey: natija qo'shimcha vaqt bilan keladi, shuning uchun faqat 2 natijali (OT bilan) narxlar olinadi.
+    # 60 daqiqalik (durangli) narxlar e'tiborga olinmaydi.
+    two_way_only = (event.get("sport_key") or "").startswith("icehockey")
+    has_draw = (not two_way_only) and any(o.get("name") == "Draw"
                    for b in event.get("bookmakers", []) for mk in b.get("markets", [])
                    if mk.get("key") == "h2h" for o in mk.get("outcomes", []))
     keys = [home, "Draw", away] if has_draw else [home, away]
@@ -145,6 +148,8 @@ def analyse(event, only=None):
             if mk.get("key") != "h2h":
                 continue
             prices = {o["name"]: o["price"] for o in mk.get("outcomes", [])}
+            if two_way_only and "Draw" in prices:
+                continue
             if all(k in prices and prices[k] > 1 for k in keys):
                 name = b.get("title", "?")
                 odds = [net_odds(name, prices[k]) for k in keys]
