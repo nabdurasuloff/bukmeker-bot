@@ -22,7 +22,7 @@ from _prognoz import API, analyse, check_verdict, fetch, fmt_time, my_best, repo
 from _model import blend, elo_info, load as load_elo  # noqa: E402
 
 # Kuzatiladigan ligalar (har biri kuniga ~1 kredit + natija uchun ~2 kredit)
-TRACK = ["soccer_epl", "soccer_spain_la_liga", "soccer_italy_serie_a", "basketball_nba"]
+TRACK = ["soccer_epl", "soccer_spain_la_liga", "soccer_italy_serie_a", "basketball_nba", "icehockey_nhl"]
 DATA = os.path.join(ROOT, "data", "predictions.json")
 STATS_PY = os.path.join(ROOT, "api", "_stats.py")
 NOW = datetime.now(timezone.utc)
@@ -480,7 +480,10 @@ def main():
             st = write_stats(preds, previous_signals())
         return
 
-    newly = settle(preds, key)
+    # Natijalar 2 kunda bir marta tekshiriladi (har liga so'rovi 2 kredit) — kredit tejash uchun.
+    # daysFrom=3 bo'lgani uchun hech qaysi o'yin tushib qolmaydi.
+    settle_day = NOW.date().toordinal() % 2 == 0 or os.environ.get("FORCE_SETTLE")
+    newly = settle(preds, key) if settle_day else []
     signals = snapshot(preds, key)
     save(preds)
     jacks = load_jack()
@@ -496,7 +499,7 @@ def main():
     if not chat:
         print("CHAT_ID yo'q — Telegramga yuborilmadi")
         return
-    msg = ["📊 Kunlik hisobot"]
+    msg = ["📊 Kunlik hisobot" + ("" if settle_day else " (natijalar ertaga tekshiriladi)")]
     if newly:
         msg.append("\n" + "\n".join(result_line(p) for p in sorted(newly, key=lambda p: p["time"])[:20]))
     settled_c = [p for p in newly if p.get("coupon")]

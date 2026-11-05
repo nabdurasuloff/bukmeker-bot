@@ -19,8 +19,9 @@ LEAGUES = {
     "soccer_uefa_champs_league": "🏆 Chempionlar ligasi",
     "basketball_nba": "🏀 NBA",
     "basketball_euroleague": "🏀 Yevroliga",
+    "icehockey_nhl": "🏒 NHL",
 }
-SIGNAL_LEAGUES = ["soccer_epl", "soccer_spain_la_liga", "soccer_italy_serie_a", "basketball_nba"]
+SIGNAL_LEAGUES = ["soccer_epl", "soccer_spain_la_liga", "soccer_italy_serie_a", "basketball_nba", "icehockey_nhl"]
 
 MAIN_KB = {"keyboard": [[{"text": "🧠 Tahlil: kim yutadi?"}, {"text": "🔒 Ishonchli"}],
                         [{"text": "📋 Ligalar"}, {"text": "🎾 Tennis"}],
@@ -40,7 +41,7 @@ HELP = (
     "• Arbitraj — barcha natijalarga tikkanda foyda qoladigan holat.\n"
     "• Kutilgan gollar — koeffitsiyentlardan Puasson modeli orqali hisoblangan.\n\n"
     "Har bir liga yoki turnir so'rovi 1 API kredit. \"Signallar\" va \"Natijalar\" kunlik saqlangan ma'lumotni ko'rsatadi (0 kredit), "
-    "\"🔄 Hozir qayta tekshirish\" — 4 kredit. Betfair/Matchbook narxlari komissiya chegirilgan holda. "
+    "\"🔄 Hozir qayta tekshirish\" — 5 kredit. Betfair/Matchbook narxlari komissiya chegirilgan holda. "
     "Bot har kuni prognozlarni yozib, o'yindan keyin tekshiradi.\n\n"
     "⚠️ Bu statistikani o'rganish vositasi. Musbat EV yutishni kafolatlamaydi."
 )
@@ -555,7 +556,7 @@ def load_stats():
 
 ANALYSIS_LEAGUES = ["soccer_epl", "soccer_spain_la_liga", "soccer_italy_serie_a",
                     "soccer_germany_bundesliga", "soccer_france_ligue_one", "soccer_uefa_champs_league",
-                    "basketball_nba"]
+                    "basketball_nba", "icehockey_nhl"]
 
 
 def analysis_buttons():
@@ -577,7 +578,8 @@ def analysis_item(lg, m, elo):
     mb = [x[1] for x in m["mine"]] if m.get("mine") else ""
     probs = " · ".join(f"{'durang' if names[i] == 'Durang' else names[i]} {pct(comb[i])}" for i in range(len(comb)))
     v = verdict_core(comb, comb, names, mo if pm else None, m.get("o25"), mb)
-    return (f"{'⚽' if draw else '🏀'} {m['home']} — {m['away']} · {fmt_time(m['time'])}\n"
+    icon = "⚽" if draw else ("🏒" if lg.startswith("icehockey") else "🏀")
+    return (f"{icon} {m['home']} — {m['away']} · {fmt_time(m['time'])}\n"
             f"{probs}\n{verdict_short(v, names)}")
 
 
@@ -660,7 +662,7 @@ def handle_text(chat, text):
         send(chat, "Ligani tanlang:", league_buttons())
     elif "signal" in t:
         send(chat, saved_signals(),
-             [[{"text": "🔄 Hozir qayta tekshirish (4 kredit)", "callback_data": "live_signals"}]])
+             [[{"text": "🔄 Hozir qayta tekshirish (5 kredit)", "callback_data": "live_signals"}]])
     elif "hisob" in t:
         import re as _re
         nums = [int(x) for x in _re.findall(r"\d+", t.replace(" 000", "000"))]
