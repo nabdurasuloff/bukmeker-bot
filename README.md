@@ -20,6 +20,9 @@
 
 Kodni GitHub'ga yuklasangiz, Vercel o'zi yangilaydi.
 
+## Kupon
+Bot qiymatli tikishlarni 📝 Kupon'ga yozadi (summa — Kelly, bank `BANK` secret'idan, standart 100 000 so'm) va o'yindan keyin o'tgan/o'tmaganini hisoblaydi. Avtomatik tikish yo'q — kuponni 1xBet'ga o'zingiz kiritasiz.
+
 ## Kredit sarfi
 Kunlik kuzatuv: 4 liga × 1 kredit + natijalar uchun ~2 kredit har bir ligaga ≈ kuniga 8–12 (oyiga ~300).
 Botdagi har bir liga tugmasi = 1 kredit, "Signallar" = 3 kredit, "Natijalar" = 0.

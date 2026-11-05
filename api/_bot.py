@@ -25,7 +25,8 @@ SIGNAL_LEAGUES = ["soccer_epl", "soccer_spain_la_liga", "soccer_italy_serie_a", 
 MAIN_KB = {"keyboard": [[{"text": "🧠 Tahlil: kim yutadi?"}],
                         [{"text": "📋 Ligalar"}, {"text": "🎾 Tennis"}],
                         [{"text": "🏦 1xBet reytingi"}],
-                        [{"text": "🔔 Signallar"}, {"text": "📊 Natijalar"}],
+                        [{"text": "📝 Kupon"}, {"text": "🔔 Signallar"}],
+                        [{"text": "📊 Natijalar"}],
                         [{"text": "💳 Kredit"}, {"text": "🆔 Mening ID"}],
                         [{"text": "❓ Yordam"}]],
            "resize_keyboard": True}
@@ -177,6 +178,34 @@ def bookie_report(i, league, top_n=10):
     return "\n".join(out)
 
 
+def money(x):
+    return f"{int(round(x)):,} so'm".replace(",", " ")
+
+
+def coupon_text():
+    st = load_stats()
+    if not st:
+        return "📝 Kupon hali tayyor emas (kunlik tahlil 12:37 da)."
+    bank = st.get("bank", 100000)
+    op = st.get("coupon_open") or []
+    out = [f"📝 Kupon (1xBet, ordinar) — bank {money(bank)}", ""]
+    if op:
+        out += [f"{i}. {c['label']}" for i, c in enumerate(op, 1)]
+        out.append(f"\nJami: {len(op)} ta, {money(sum(c['stake'] for c in op))}. "
+                   f"Hammasi o'tsa: +{money(sum(c['win'] for c in op))}")
+    else:
+        out.append("Hozir ochiq kupon yo'q — 1xBet'da foydali narx topilmadi. Bu normal holat.")
+    c = st.get("coupon") or {}
+    if c.get("n"):
+        roi = c["profit"] / c["staked"] * 100 if c["staked"] else 0
+        out.append(f"\n📒 Oldingi kuponlar: {c['won']}/{c['n']} o'tdi · tikilgan {money(c['staked'])} · "
+                   f"natija {'+' if c['profit'] > 0 else ''}{money(c['profit'])} ({roi:+.1f}%)")
+        out += c.get("last", [])
+    out.append("\nℹ️ Summalar Kelly bo'yicha (bitta tikish bankning 5% idan oshmaydi). Kupon har kuni 12:37 da yangilanadi. "
+               "Qiymatli tikishlar ko'pincha o'tmaydi — natijani 50+ kupondan keyin baholang.")
+    return "\n".join(out)
+
+
 def format_short(st):
     """Kunlik xabar uchun qisqa xulosa (to'liq statistika — 📊 Natijalar tugmasida)."""
     vd = (st or {}).get("verdicts") or {}
@@ -193,6 +222,9 @@ def format_short(st):
     k = (st or {}).get("kelly")
     if k and k.get("bets"):
         out.append(f"🏦 Kelly bank: {k['bank']:,} so'm".replace(",", " "))
+    c = (st or {}).get("coupon") or {}
+    if c.get("n"):
+        out.append(f"📝 Kuponlar jami: {c['won']}/{c['n']} o'tdi, {'+' if c['profit'] > 0 else ''}{money(c['profit'])}")
     out.append(f"Jami {st.get('matches', 0)} ta o'yin tekshirildi. Batafsil: 📊 Natijalar")
     return "\n".join(out)
 
@@ -413,6 +445,8 @@ def handle_text(chat, text):
     elif "signal" in t:
         send(chat, saved_signals(),
              [[{"text": "🔄 Hozir qayta tekshirish (4 kredit)", "callback_data": "live_signals"}]])
+    elif "kupon" in t:
+        send(chat, coupon_text())
     elif "natija" in t:
         send(chat, format_stats(load_stats()))
     elif "kredit" in t:

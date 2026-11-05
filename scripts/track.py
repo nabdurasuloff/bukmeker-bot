@@ -27,6 +27,8 @@ DATA = os.path.join(ROOT, "data", "predictions.json")
 STATS_PY = os.path.join(ROOT, "api", "_stats.py")
 NOW = datetime.now(timezone.utc)
 UPCOMING = {}
+NEW_COUPON = []
+BANK = int(float(os.environ.get("BANK") or 100000))
 META = {"upcoming_at": None}
 
 
@@ -87,6 +89,14 @@ def snapshot(preds, key):
             vd = verdict_core(pb, pb, names, my_odds_of(a), a.get("over25"))
             vd.pop("text", None)
             rec["blend"] = [round(x, 4) for x in pb]
+            rec["coupon"] = old.get("coupon")
+            if vd["type"] == "value" and not rec["coupon"]:
+                o, q = vd["odds"], vd["p"]
+                f = min(max((q * o - 1) / (o - 1), 0) * 0.25, 0.05)
+                stake = max(round(BANK * f / 100) * 100, 100)
+                rec["coupon"] = {"i": vd["i"], "odds": o, "p": q, "stake": stake,
+                                 "at": NOW.isoformat(timespec="minutes")}
+                NEW_COUPON.append(gid_label(rec))
             rec["verdict"] = vd  # o'yin boshlanishiga eng yaqin xulosa saqlanadi
             if mine and is_signal(mine):
                 signals.append(f"[{LEAGUES.get(lg, lg)}]\n" + report(mine))
@@ -98,6 +108,24 @@ def snapshot(preds, key):
                                   "at": NOW.isoformat(timespec="minutes")}
             preds[e["id"]] = rec
     return signals
+
+
+def gid_label(p):
+    names = [p["home"], "Durang", p["away"]] if p["draw"] else [p["home"], p["away"]]
+    c = p["coupon"]
+    nm = "durang" if names[c["i"]] == "Durang" else f"{names[c['i']]} g'alabasi"
+    return (f"{p['home']} — {p['away']} · {fmt_time(p['time'])}\n"
+            f"   {nm} @{c['odds']:.2f} → {money(c['stake'])}")
+
+
+def money(x):
+    return f"{int(round(x)):,} so'm".replace(",", " ")
+
+
+def coupon_result(p):
+    c = p["coupon"]
+    won = c["i"] == p["result"]
+    return won, (c["stake"] * (c["odds"] - 1) if won else -c["stake"])
 
 
 def record(lg, a):
@@ -250,6 +278,24 @@ def compute_stats(preds, signals=None):
         if tok is not None:
             vs["total"]["n"] += 1
             vs["total"]["ok"] += bool(tok)
+    cp = [p for p in done if p.get("coupon")]
+    cst = {"n": len(cp), "won": 0, "staked": 0, "profit": 0.0, "last": []}
+    for p in sorted(cp, key=lambda p: p["time"]):
+        won, pr = coupon_result(p)
+        cst["won"] += won
+        cst["staked"] += p["coupon"]["stake"]
+        cst["profit"] += pr
+    for p in sorted(cp, key=lambda p: p["time"], reverse=True)[:6]:
+        won, pr = coupon_result(p)
+        names = [p["home"], "Durang", p["away"]] if p["draw"] else [p["home"], p["away"]]
+        cst["last"].append(f"{'✅' if won else '❌'} {p['home']} — {p['away']} {p.get('score')} · "
+                           f"{names[p['coupon']['i']]} @{p['coupon']['odds']:.2f} → {'+' if pr > 0 else ''}{money(pr)}")
+    cst["profit"] = round(cst["profit"])
+    opened = [p for p in preds.values() if p.get("coupon") and p.get("result") is None
+              and parse(p["time"]) > NOW]
+    copen = [{"label": gid_label(p), "stake": p["coupon"]["stake"],
+              "win": round(p["coupon"]["stake"] * (p["coupon"]["odds"] - 1)), "time": p["time"]}
+             for p in sorted(opened, key=lambda p: p["time"])]
     eb = [p for p in done if p.get("elo")]
     def brier_of(pr, res):
         return sum((pr[i] - (1 if i == res else 0)) ** 2 for i in range(len(pr)))
@@ -267,6 +313,7 @@ def compute_stats(preds, signals=None):
         "pending": sum(1 for p in preds.values() if p.get("result") is None),
         "brier": round(brier / len(done), 4) if done else None,
         "fav": fav, "value": val, "kelly": kelly, "clv": clv, "elo": elo_cmp, "verdicts": vs,
+        "coupon": cst, "coupon_open": copen, "bank": BANK,
         "upcoming": UPCOMING, "upcoming_at": META["upcoming_at"],
         "buckets": [b for b in bstat if b["n"]],
         "recent": [{"m": f"{p['home']} — {p['away']}", "score": p.get("score"),
@@ -353,10 +400,17 @@ def main():
     msg = ["📊 Kunlik hisobot"]
     if newly:
         msg.append("\n" + "\n".join(result_line(p) for p in sorted(newly, key=lambda p: p["time"])[:20]))
+    settled_c = [p for p in newly if p.get("coupon")]
+    if settled_c:
+        res = [coupon_result(p) for p in settled_c]
+        msg.append(f"\n📝 Kupon: {sum(w for w, _ in res)}/{len(res)} o'tdi, natija "
+                   f"{'+' if sum(x for _, x in res) > 0 else ''}{money(sum(x for _, x in res))}")
     msg.append("\n" + format_short(st))
     send(chat, "\n".join(msg))
-    if signals:
-        send(chat, f"🔔 {len(signals)} ta signal (yaqin 36 soat):\n\n" + "\n\n".join(signals))
+    if NEW_COUPON:
+        send(chat, "📝 Yangi kupon (1xBet, ordinar):\n\n" + "\n".join(f"{i}. {t}" for i, t in enumerate(NEW_COUPON, 1))
+             + "\n\nBotdagi 📝 Kupon tugmasida ham bor.")
+    # Signallar alohida yuborilmaydi — kupon ularni o'z ichiga oladi (🔔 Signallar tugmasida ko'rish mumkin)
 
 
 if __name__ == "__main__":
