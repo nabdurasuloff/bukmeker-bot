@@ -26,7 +26,7 @@ MAIN_KB = {"keyboard": [[{"text": "🧠 Tahlil: kim yutadi?"}],
                         [{"text": "📋 Ligalar"}, {"text": "🎾 Tennis"}],
                         [{"text": "🏦 1xBet reytingi"}],
                         [{"text": "📝 Kupon"}, {"text": "🔔 Signallar"}],
-                        [{"text": "📊 Natijalar"}],
+                        [{"text": "🧮 Hisob-kitob"}, {"text": "📊 Natijalar"}],
                         [{"text": "💳 Kredit"}, {"text": "🆔 Mening ID"}],
                         [{"text": "❓ Yordam"}]],
            "resize_keyboard": True}
@@ -180,6 +180,76 @@ def bookie_report(i, league, top_n=10):
 
 def money(x):
     return f"{int(round(x)):,} so'm".replace(",", " ")
+
+
+def calc_items(lg, limit=10):
+    """Yaqin o'yinlar: har biri uchun eng ehtimolli natija, uning ehtimoli va 1xBet koeffitsiyenti."""
+    st = load_stats()
+    items = (st.get("upcoming") or {}).get(lg)
+    src = "kunlik ma'lumot, 0 kredit"
+    if not items:
+        events, _ = fetch(env("ODDS_API_KEY"), lg, REGION)
+        items = []
+        for e in upcoming_only(events):
+            a = analyse(e)
+            mine = analyse(e, only=my_bookies())
+            if a:
+                items.append({"home": a["home"], "away": a["away"], "time": a["time"], "draw": a["draw"],
+                              "fair": a["fair"],
+                              "mine": [[b["odds"], b["book"]] for b in mine["best"]] if mine else None})
+        src = "jonli, 1 kredit"
+    from datetime import datetime, timezone
+    now = datetime.now(timezone.utc).isoformat()[:19]
+    elo = load_elo()
+    picks = []
+    for m in sorted(items, key=lambda m: m["time"]):
+        if m["time"][:19] <= now or not m.get("mine"):
+            continue
+        ei = elo_info(lg, m["home"], m["away"], elo) if m["draw"] else None
+        pr = blend(ei["p"] if ei else None, m["fair"], ei["w"] if ei else 0.5)
+        k = max(range(len(pr)), key=lambda i: pr[i])
+        names = [m["home"], "Durang", m["away"]] if m["draw"] else [m["home"], m["away"]]
+        picks.append({"m": f"{m['home']} — {m['away']}", "pick": names[k], "p": pr[k],
+                      "odds": m["mine"][k][0]})
+        if len(picks) >= limit:
+            break
+    return picks, src
+
+
+def calc_text(lg, stake=10000, rate=75):
+    picks, src = calc_items(lg)
+    if not picks:
+        return f"{LEAGUES.get(lg, lg)}: 1xBet koeffitsiyenti bor yaqin o'yin topilmadi."
+    n = len(picks)
+    avg = sum(p["odds"] for p in picks) / n
+    total = stake * n
+    out = [f"🧮 {LEAGUES.get(lg, lg)} — {n} ta o'yin, har biriga {money(stake)} ({src})", ""]
+    for i, p in enumerate(picks, 1):
+        out.append(f"{i}. {p['m']}: {p['pick']} @{p['odds']:.2f} ({p['p']*100:.0f}%)")
+    def res(r):
+        return stake * n * r * avg - total
+    exp = sum(stake * p["p"] * p["odds"] for p in picks) - total
+    expected_rate = sum(p["p"] for p in picks) / n
+    be = 1 / avg
+    out += ["", f"O'rtacha koeffitsiyent: {avg:.2f} · jami tikiladi: {money(total)}",
+            f"Zararsiz bo'lish uchun: {be*100:.0f}% o'tishi kerak ({be*n:.1f}/{n})", "",
+            f"👉 Agar {rate}% o'tsa ({rate/100*n:.1f}/{n}): {'+' if res(rate/100) > 0 else ''}{money(res(rate/100))}",
+            f"📈 Bozor kutgani — {expected_rate*100:.0f}% o'tadi: {'+' if exp > 0 else ''}{money(exp)}"]
+    if rate / 100 > expected_rate + 0.08:
+        out.append(f"⚠️ {rate}% bu o'yinlar uchun realistik emas: ularning haqiqiy ehtimoli o'rtacha "
+                   f"{expected_rate*100:.0f}%. Eng ehtimolli hisob — \"Bozor kutgani\" qatori.")
+    out += ["",
+            "Boshqa foizlarda:"]
+    for r in (50, 60, 70, 80, 90):
+        v = res(r / 100)
+        out.append(f"  {r}% → {'+' if v > 0 else ''}{money(v)}")
+    out += ["", "ℹ️ Summa yoki foizni o'zgartirish: masalan \"hisob 20000 80\" deb yozing.",
+            "Bozor kutgan foiz odatda zararsiz chegaradan biroz past — bu bukmeker marjasi."]
+    return "\n".join(out)
+
+
+def calc_buttons(stake, rate):
+    return [[{"text": LEAGUES[k], "callback_data": f"calc:{k}:{stake}:{rate}"}] for k in ANALYSIS_LEAGUES]
 
 
 def coupon_text():
@@ -445,6 +515,13 @@ def handle_text(chat, text):
     elif "signal" in t:
         send(chat, saved_signals(),
              [[{"text": "🔄 Hozir qayta tekshirish (4 kredit)", "callback_data": "live_signals"}]])
+    elif "hisob" in t:
+        import re as _re
+        nums = [int(x) for x in _re.findall(r"\d+", t.replace(" 000", "000"))]
+        stake = nums[0] if nums and nums[0] >= 100 else 10000
+        rate = nums[1] if len(nums) > 1 and 0 < nums[1] <= 100 else 75
+        send(chat, f"🧮 Har biriga {money(stake)}, o'tish {rate}% bo'yicha hisoblayman. Ligani tanlang:",
+             calc_buttons(stake, rate))
     elif "kupon" in t:
         send(chat, coupon_text())
     elif "natija" in t:
@@ -468,6 +545,10 @@ def handle_callback(cb):
         lg = data.split(":", 1)[1]
         send(chat, analysis_text(lg, live=live),
              [[{"text": "🔄 Jonli yangilash (1 kredit)", "callback_data": f"anl:{lg}"}]] if not live else None)
+        return
+    if data.startswith("calc:"):
+        _, lg, stake, rate = data.split(":")
+        send(chat, calc_text(lg, int(stake), int(rate)))
         return
     if data == "live_signals":
         send(chat, "⏳ Tekshiryapman...")
