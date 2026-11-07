@@ -43,6 +43,102 @@
 "type": "skip"
 }
 },
+"08d47dd5e50e83839e395e49870d6a0d": {
+"away": "San Antonio Spurs",
+"best": [
+[
+2.87,
+"Pinnacle"
+],
+[
+1.47,
+"1xBet"
+]
+],
+"blend": [
+0.3318,
+0.6682
+],
+"books": {
+"1xBet": [
+2.82,
+1.47
+],
+"Marathon Bet": [
+2.78,
+1.46
+],
+"Pinnacle": [
+2.87,
+1.47
+]
+},
+"coupon": null,
+"draw": false,
+"fair": [
+0.3318,
+0.6682
+],
+"home": "Portland Trail Blazers",
+"lg": "basketball_nba",
+"result": null,
+"sig": null,
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-08T03:00:00Z",
+"verdict": {
+"ev": null,
+"i": 1,
+"odds": 1.47,
+"p": 0.6682,
+"total": null,
+"type": "fav"
+}
+},
+"08d54b8e2b0d49e172fd8d2087576066": {
+"away": "Chicago Blackhawks",
+"best": [
+[
+1.22,
+"Pinnacle"
+],
+[
+4.83,
+"Pinnacle"
+]
+],
+"blend": [
+0.8105,
+0.1895
+],
+"books": {
+"Pinnacle": [
+1.22,
+4.83
+]
+},
+"coupon": null,
+"draw": false,
+"fair": [
+0.8105,
+0.1895
+],
+"home": "Carolina Hurricanes",
+"lg": "icehockey_nhl",
+"result": null,
+"sig": null,
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-08T01:10:00Z",
+"verdict": {
+"ev": null,
+"i": 0,
+"odds": null,
+"p": 0.8105,
+"total": null,
+"type": "fav"
+}
+},
 "0b5966b7b96eb844618eea8f215a0c71": {
 "away": "Utah Jazz",
 "best": [
@@ -85,6 +181,153 @@
 "p": 0.6439,
 "total": null,
 "type": "fav"
+}
+},
+"0cfbab01e152f81e34f9014e02c7eb79": {
+"away": "Liverpool",
+"best": [
+[
+5.83,
+"Pinnacle"
+],
+[
+4.62,
+"1xBet"
+],
+[
+1.62,
+"1xBet"
+]
+],
+"blend": [
+0.1774,
+0.2223,
+0.6003
+],
+"books": {
+"1xBet": [
+5.54,
+4.62,
+1.62
+],
+"Marathon Bet": [
+5.45,
+4.55,
+1.59
+],
+"Pinnacle": [
+5.83,
+4.51,
+1.56
+]
+},
+"coupon": {
+"at": "2026-11-07T14:18+00:00",
+"book": "1xBet",
+"i": 1,
+"odds": 4.62,
+"p": 0.2223,
+"stake": 200
+},
+"draw": true,
+"elo": [
+0.2456,
+0.2738,
+0.4806
+],
+"fair": [
+0.1604,
+0.2094,
+0.6303
+],
+"home": "Crystal Palace",
+"lg": "soccer_epl",
+"result": null,
+"sig": {
+"at": "2026-11-07T14:18+00:00",
+"book": "1xBet",
+"ev": 0.021,
+"fair": 0.6303,
+"i": 2,
+"odds": 1.62
+},
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-08T14:00:00Z",
+"verdict": {
+"book": "1xBet",
+"ev": 0.0268,
+"i": 1,
+"odds": 4.62,
+"p": 0.2223,
+"total": null,
+"type": "value"
+}
+},
+"0d2e199bfba0db42871696c10037bad3": {
+"away": "Levante",
+"best": [
+[
+1.94,
+"1xBet"
+],
+[
+3.83,
+"Pinnacle"
+],
+[
+4.21,
+"1xBet"
+]
+],
+"blend": [
+0.5158,
+0.2503,
+0.2339
+],
+"books": {
+"1xBet": [
+1.94,
+3.8,
+4.21
+],
+"Marathon Bet": [
+1.89,
+3.7,
+4.1
+],
+"Pinnacle": [
+1.9,
+3.83,
+4.09
+]
+},
+"coupon": null,
+"draw": true,
+"elo": [
+0.5312,
+0.2588,
+0.21
+],
+"fair": [
+0.5158,
+0.2503,
+0.2339
+],
+"home": "Celta Vigo",
+"lg": "soccer_spain_la_liga",
+"result": null,
+"sig": null,
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-08T17:30:00Z",
+"verdict": {
+"ev": null,
+"i": null,
+"odds": null,
+"p": null,
+"total": null,
+"type": "skip"
 }
 },
 "0d53a5dbd9d4f4716e923b97e92dfb0d": {
@@ -310,42 +553,160 @@
 "type": "fav"
 }
 },
-"262c2c99c38456b8a70cb9daa32f2f6d": {
-"away": "Deportivo La Coruña",
+"1f21bf798afede04880e7a391f3990ed": {
+"away": "San Jose Sharks",
 "best": [
 [
-2.42,
-"1xBet"
+1.33,
+"Pinnacle"
 ],
 [
-3.43,
-"1xBet"
-],
-[
-3.26,
+3.6,
 "Pinnacle"
 ]
 ],
 "blend": [
-0.4155,
-0.2877,
-0.2968
+0.7405,
+0.2595
+],
+"books": {
+"Pinnacle": [
+1.33,
+3.6
+]
+},
+"coupon": null,
+"draw": false,
+"fair": [
+0.7405,
+0.2595
+],
+"home": "Dallas Stars",
+"lg": "icehockey_nhl",
+"result": null,
+"sig": null,
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-08T01:10:00Z",
+"verdict": {
+"ev": null,
+"i": 0,
+"odds": null,
+"p": 0.7405,
+"total": null,
+"type": "fav"
+}
+},
+"23bf8ea47358ef82f65aa7398a2b3921": {
+"away": "Lazio",
+"best": [
+[
+2.37,
+"Pinnacle"
+],
+[
+3.73,
+"1xBet"
+],
+[
+3.15,
+"1xBet"
+]
+],
+"blend": [
+0.4064,
+0.2696,
+0.324
 ],
 "books": {
 "1xBet": [
-2.42,
-3.43,
-3.21
+2.33,
+3.73,
+3.15
 ],
 "Marathon Bet": [
-2.36,
-3.34,
-3.12
+2.26,
+3.62,
+3.06
 ],
 "Pinnacle": [
-2.35,
-3.36,
-3.26
+2.37,
+3.61,
+3.02
+]
+},
+"coupon": {
+"at": "2026-11-07T14:18+00:00",
+"book": "1xBet",
+"i": 2,
+"odds": 3.15,
+"p": 0.324,
+"stake": 200
+},
+"draw": true,
+"elo": [
+0.3576,
+0.2913,
+0.3511
+],
+"fair": [
+0.4118,
+0.2672,
+0.321
+],
+"home": "Napoli",
+"lg": "soccer_italy_serie_a",
+"result": null,
+"sig": null,
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-08T11:30:00Z",
+"verdict": {
+"book": "1xBet",
+"ev": 0.0206,
+"i": 2,
+"odds": 3.15,
+"p": 0.324,
+"total": null,
+"type": "value"
+}
+},
+"262c2c99c38456b8a70cb9daa32f2f6d": {
+"away": "Deportivo La Coruña",
+"best": [
+[
+2.54,
+"1xBet"
+],
+[
+3.34,
+"1xBet"
+],
+[
+3.1,
+"1xBet"
+]
+],
+"blend": [
+0.387,
+0.2976,
+0.3154
+],
+"books": {
+"1xBet": [
+2.54,
+3.34,
+3.1
+],
+"Marathon Bet": [
+2.47,
+3.25,
+3.02
+],
+"Pinnacle": [
+2.53,
+3.27,
+3.09
 ]
 },
 "coupon": null,
@@ -356,15 +717,15 @@
 0.2628
 ],
 "fair": [
-0.4155,
-0.2877,
-0.2968
+0.387,
+0.2976,
+0.3154
 ],
 "home": "Espanyol",
 "lg": "soccer_spain_la_liga",
 "result": null,
 "sig": null,
-"snap": "2026-11-06T15:18+00:00",
+"snap": "2026-11-07T14:18+00:00",
 "src": "Pinnacle",
 "time": "2026-11-07T15:15:00Z",
 "verdict": {
@@ -373,7 +734,7 @@
 "odds": null,
 "p": null,
 "total": {
-"p": 0.6174,
+"p": 0.6442,
 "side": "under"
 },
 "type": "skip"
@@ -467,6 +828,116 @@
 "snap": "2026-11-05T15:45+00:00",
 "src": "Pinnacle",
 "time": "2026-11-06T02:10:00Z",
+"verdict": {
+"ev": null,
+"i": null,
+"odds": null,
+"p": null,
+"total": null,
+"type": "skip"
+}
+},
+"2ccc92070bd6f92703efc538ba500d21": {
+"away": "Detroit Red Wings",
+"best": [
+[
+1.48,
+"Pinnacle"
+],
+[
+2.86,
+"Pinnacle"
+]
+],
+"blend": [
+0.665,
+0.335
+],
+"books": {
+"Pinnacle": [
+1.48,
+2.86
+]
+},
+"coupon": null,
+"draw": false,
+"fair": [
+0.665,
+0.335
+],
+"home": "Colorado Avalanche",
+"lg": "icehockey_nhl",
+"result": null,
+"sig": null,
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-08T02:10:00Z",
+"verdict": {
+"ev": null,
+"i": 0,
+"odds": null,
+"p": 0.665,
+"total": null,
+"type": "fav"
+}
+},
+"339a6465fa5153fd8f31e487cf557cf0": {
+"away": "Rayo Vallecano",
+"best": [
+[
+1.76,
+"1xBet"
+],
+[
+4.26,
+"1xBet"
+],
+[
+4.67,
+"1xBet"
+]
+],
+"blend": [
+0.5601,
+0.2268,
+0.2131
+],
+"books": {
+"1xBet": [
+1.76,
+4.26,
+4.67
+],
+"Marathon Bet": [
+1.72,
+4.15,
+4.55
+],
+"Pinnacle": [
+1.75,
+4.19,
+4.45
+]
+},
+"coupon": null,
+"draw": true,
+"elo": [
+0.4844,
+0.2728,
+0.2428
+],
+"fair": [
+0.5601,
+0.2268,
+0.2131
+],
+"home": "Real Sociedad",
+"lg": "soccer_spain_la_liga",
+"result": null,
+"sig": null,
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-08T15:15:00Z",
 "verdict": {
 "ev": null,
 "i": null,
@@ -576,14 +1047,14 @@
 "1xBet"
 ],
 [
-3.64,
-"Pinnacle"
+3.58,
+"1xBet"
 ]
 ],
 "blend": [
-0.4675,
-0.2622,
-0.2703
+0.4632,
+0.2614,
+0.2754
 ],
 "books": {
 "1xBet": [
@@ -597,9 +1068,9 @@
 3.48
 ],
 "Pinnacle": [
-2.04,
-3.75,
-3.64
+2.07,
+3.79,
+3.58
 ]
 },
 "coupon": {
@@ -617,25 +1088,230 @@
 0.2948
 ],
 "fair": [
-0.4797,
-0.2562,
-0.2641
+0.4743,
+0.2552,
+0.2705
 ],
 "home": "Fulham",
 "lg": "soccer_epl",
 "result": null,
 "sig": null,
-"snap": "2026-11-06T15:18+00:00",
+"snap": "2026-11-07T14:18+00:00",
 "src": "Pinnacle",
 "time": "2026-11-07T15:00:00Z",
 "verdict": {
-"book": "1xBet",
-"ev": 0.0227,
-"i": 1,
-"odds": 3.9,
-"p": 0.2622,
+"ev": null,
+"i": null,
+"odds": null,
+"p": null,
 "total": null,
-"type": "value"
+"type": "skip"
+}
+},
+"39099dc03208d0771daaab5f7993478a": {
+"away": "Orlando Magic",
+"best": [
+[
+1.47,
+"Marathon Bet"
+],
+[
+2.92,
+"1xBet"
+]
+],
+"blend": [
+0.6692,
+0.3308
+],
+"books": {
+"1xBet": [
+1.44,
+2.92
+],
+"Marathon Bet": [
+1.47,
+2.75
+],
+"Pinnacle": [
+1.47,
+2.89
+]
+},
+"coupon": null,
+"draw": false,
+"fair": [
+0.6692,
+0.3308
+],
+"home": "Golden State Warriors",
+"lg": "basketball_nba",
+"result": null,
+"sig": null,
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-08T01:40:00Z",
+"verdict": {
+"ev": null,
+"i": 0,
+"odds": 1.47,
+"p": 0.6692,
+"total": null,
+"type": "fav"
+}
+},
+"3a4608abdf257d2a0024b944757d9dc9": {
+"away": "Chelsea",
+"best": [
+[
+3.78,
+"1xBet"
+],
+[
+3.82,
+"1xBet"
+],
+[
+2.04,
+"1xBet"
+]
+],
+"blend": [
+0.262,
+0.2613,
+0.4767
+],
+"books": {
+"1xBet": [
+3.78,
+3.82,
+2.04
+],
+"Marathon Bet": [
+3.68,
+3.72,
+1.99
+],
+"Pinnacle": [
+3.78,
+3.76,
+1.99
+]
+},
+"coupon": null,
+"draw": true,
+"elo": [
+0.2959,
+0.2866,
+0.4174
+],
+"fair": [
+0.2535,
+0.2549,
+0.4916
+],
+"home": "Sunderland",
+"lg": "soccer_epl",
+"result": null,
+"sig": null,
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-08T14:00:00Z",
+"verdict": {
+"ev": null,
+"i": null,
+"odds": null,
+"p": null,
+"total": null,
+"type": "skip"
+}
+},
+"41bd62e63799d7bb81e18169092a82bd": {
+"away": "Pittsburgh Penguins",
+"best": [
+[
+1.85,
+"Pinnacle"
+],
+[
+2.07,
+"Pinnacle"
+]
+],
+"blend": [
+0.529,
+0.471
+],
+"books": {
+"Pinnacle": [
+1.85,
+2.07
+]
+},
+"coupon": null,
+"draw": false,
+"fair": [
+0.529,
+0.471
+],
+"home": "Los Angeles Kings",
+"lg": "icehockey_nhl",
+"result": null,
+"sig": null,
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-08T02:10:00Z",
+"verdict": {
+"ev": null,
+"i": null,
+"odds": null,
+"p": null,
+"total": null,
+"type": "skip"
+}
+},
+"422f0f2b990a051c35afd2ea6e9abe24": {
+"away": "Florida Panthers",
+"best": [
+[
+1.84,
+"Pinnacle"
+],
+[
+2.08,
+"Pinnacle"
+]
+],
+"blend": [
+0.5317,
+0.4683
+],
+"books": {
+"Pinnacle": [
+1.84,
+2.08
+]
+},
+"coupon": null,
+"draw": false,
+"fair": [
+0.5317,
+0.4683
+],
+"home": "Washington Capitals",
+"lg": "icehockey_nhl",
+"result": null,
+"sig": null,
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-07T17:40:00Z",
+"verdict": {
+"ev": null,
+"i": null,
+"odds": null,
+"p": null,
+"total": null,
+"type": "skip"
 }
 },
 "446de9651d2d2948326d970e9f858a33": {
@@ -923,7 +1599,7 @@
 "away": "Manchester City",
 "best": [
 [
-4.59,
+4.84,
 "Pinnacle"
 ],
 [
@@ -936,9 +1612,9 @@
 ]
 ],
 "blend": [
-0.2037,
-0.2365,
-0.5598
+0.1972,
+0.238,
+0.5648
 ],
 "books": {
 "1xBet": [
@@ -952,9 +1628,9 @@
 1.75
 ],
 "Pinnacle": [
-4.59,
-4.08,
-1.75
+4.84,
+4.1,
+1.74
 ]
 },
 "coupon": null,
@@ -965,15 +1641,15 @@
 0.5581
 ],
 "fair": [
-0.2065,
-0.2333,
-0.5603
+0.1983,
+0.2351,
+0.5665
 ],
 "home": "Nottingham Forest",
 "lg": "soccer_epl",
 "result": null,
 "sig": null,
-"snap": "2026-11-06T15:18+00:00",
+"snap": "2026-11-07T14:18+00:00",
 "src": "Pinnacle",
 "time": "2026-11-07T17:30:00Z",
 "verdict": {
@@ -989,38 +1665,38 @@
 "away": "Real Madrid",
 "best": [
 [
-10.4,
-"1xBet"
-],
-[
-6.71,
+11.65,
 "Pinnacle"
 ],
 [
-1.33,
+6.45,
+"1xBet"
+],
+[
+1.29,
 "1xBet"
 ]
 ],
 "blend": [
-0.0958,
-0.1338,
-0.7704
+0.0754,
+0.1407,
+0.784
 ],
 "books": {
 "1xBet": [
-10.4,
-5.98,
-1.33
+11.6,
+6.45,
+1.29
 ],
 "Marathon Bet": [
-10.25,
-5.9,
-1.31
+11.5,
+6.35,
+1.27
 ],
 "Pinnacle": [
-9.21,
-6.71,
-1.28
+11.65,
+6.44,
+1.26
 ]
 },
 "coupon": {
@@ -1038,9 +1714,9 @@
 0.5866
 ],
 "fair": [
-0.0958,
-0.1338,
-0.7704
+0.0754,
+0.1407,
+0.784
 ],
 "home": "Valencia",
 "lg": "soccer_spain_la_liga",
@@ -1053,20 +1729,19 @@
 "i": 2,
 "odds": 1.33
 },
-"snap": "2026-11-06T15:18+00:00",
+"snap": "2026-11-07T14:18+00:00",
 "src": "Pinnacle",
 "time": "2026-11-07T20:00:00Z",
 "verdict": {
-"book": "1xBet",
-"ev": 0.0247,
+"ev": null,
 "i": 2,
-"odds": 1.33,
-"p": 0.7704,
+"odds": 1.29,
+"p": 0.784,
 "total": {
-"p": 0.7466,
+"p": 0.6331,
 "side": "over"
 },
-"type": "value"
+"type": "fav"
 }
 },
 "5c87852253fd11eea5d34ad723356607": {
@@ -1240,6 +1915,72 @@
 "type": "fav"
 }
 },
+"5ea6b7050b00fcc1832f7938794dd755": {
+"away": "Atalanta BC",
+"best": [
+[
+3.44,
+"1xBet"
+],
+[
+4.01,
+"1xBet"
+],
+[
+2.12,
+"Pinnacle"
+]
+],
+"blend": [
+0.279,
+0.2483,
+0.4726
+],
+"books": {
+"1xBet": [
+3.44,
+4.01,
+2.1
+],
+"Marathon Bet": [
+3.34,
+3.9,
+2.04
+],
+"Pinnacle": [
+3.33,
+3.86,
+2.12
+]
+},
+"coupon": null,
+"draw": true,
+"elo": [
+0.1824,
+0.2431,
+0.5744
+],
+"fair": [
+0.2898,
+0.2489,
+0.4613
+],
+"home": "Monza",
+"lg": "soccer_italy_serie_a",
+"result": null,
+"sig": null,
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-08T14:00:00Z",
+"verdict": {
+"ev": null,
+"i": null,
+"odds": null,
+"p": null,
+"total": null,
+"type": "skip"
+}
+},
 "62a92e31b546d31ba57caf792815bf65": {
 "away": "Utah Jazz",
 "best": [
@@ -1290,6 +2031,75 @@
 "p": 0.7027,
 "total": null,
 "type": "fav"
+}
+},
+"657fd1ac35832f65fcc6feba93970e10": {
+"away": "Como",
+"best": [
+[
+1.96,
+"1xBet"
+],
+[
+4.21,
+"1xBet"
+],
+[
+3.73,
+"1xBet"
+]
+],
+"blend": [
+0.5093,
+0.2328,
+0.258
+],
+"books": {
+"1xBet": [
+1.96,
+4.21,
+3.73
+],
+"Marathon Bet": [
+1.93,
+4.15,
+3.68
+],
+"Pinnacle": [
+1.92,
+4.18,
+3.68
+]
+},
+"coupon": null,
+"draw": true,
+"elo": [
+0.5,
+0.2685,
+0.2315
+],
+"fair": [
+0.5103,
+0.2288,
+0.2609
+],
+"home": "Inter Milan",
+"lg": "soccer_italy_serie_a",
+"result": null,
+"sig": null,
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-08T17:00:00Z",
+"verdict": {
+"ev": null,
+"i": null,
+"odds": null,
+"p": null,
+"total": {
+"p": 0.603,
+"side": "over"
+},
+"type": "skip"
 }
 },
 "6828fb175fa928f75d7978128372c817": {
@@ -1425,16 +2235,112 @@
 "type": "fav"
 }
 },
+"6f96012d11d189a02761d58e0c314906": {
+"away": "New Jersey Devils",
+"best": [
+[
+2.32,
+"Pinnacle"
+],
+[
+1.68,
+"Pinnacle"
+]
+],
+"blend": [
+0.4169,
+0.5831
+],
+"books": {
+"Pinnacle": [
+2.32,
+1.68
+]
+},
+"coupon": null,
+"draw": false,
+"fair": [
+0.4169,
+0.5831
+],
+"home": "New York Islanders",
+"lg": "icehockey_nhl",
+"result": null,
+"sig": null,
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-08T00:10:00Z",
+"verdict": {
+"ev": null,
+"i": null,
+"odds": null,
+"p": null,
+"total": null,
+"type": "skip"
+}
+},
+"6faeaee3bdf2a167eb67f93c44d3ef37": {
+"away": "Washington Wizards",
+"best": [
+[
+1.19,
+"1xBet"
+],
+[
+5.4,
+"Pinnacle"
+]
+],
+"blend": [
+0.8421,
+0.1579
+],
+"books": {
+"1xBet": [
+1.19,
+5.14
+],
+"Marathon Bet": [
+1.17,
+5.3
+],
+"Pinnacle": [
+1.17,
+5.4
+]
+},
+"coupon": null,
+"draw": false,
+"fair": [
+0.8421,
+0.1579
+],
+"home": "Oklahoma City Thunder",
+"lg": "basketball_nba",
+"result": null,
+"sig": null,
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-08T01:10:00Z",
+"verdict": {
+"ev": null,
+"i": 0,
+"odds": 1.19,
+"p": 0.8421,
+"total": null,
+"type": "fav"
+}
+},
 "71ca5141a1c532e390c6fa14e080d8bd": {
 "away": "Athletic Bilbao",
 "best": [
 [
-3.7,
+3.93,
 "Pinnacle"
 ],
 [
-3.6,
-"Pinnacle"
+3.54,
+"1xBet"
 ],
 [
 2.18,
@@ -1442,9 +2348,9 @@
 ]
 ],
 "blend": [
-0.2599,
-0.2674,
-0.4727
+0.2463,
+0.2789,
+0.4748
 ],
 "books": {
 "1xBet": [
@@ -1458,8 +2364,8 @@
 2.12
 ],
 "Pinnacle": [
-3.7,
-3.6,
+3.93,
+3.48,
 2.07
 ]
 },
@@ -1478,9 +2384,9 @@
 0.343
 ],
 "fair": [
-0.2599,
-0.2674,
-0.4727
+0.2463,
+0.2789,
+0.4748
 ],
 "home": "CA Osasuna",
 "lg": "soccer_spain_la_liga",
@@ -1493,17 +2399,64 @@
 "i": 2,
 "odds": 2.18
 },
-"snap": "2026-11-06T15:18+00:00",
+"snap": "2026-11-07T14:18+00:00",
 "src": "Pinnacle",
 "time": "2026-11-07T17:30:00Z",
 "verdict": {
 "book": "1xBet",
-"ev": 0.0305,
+"ev": 0.035,
 "i": 2,
 "odds": 2.18,
-"p": 0.4727,
-"total": null,
+"p": 0.4748,
+"total": {
+"p": 0.6174,
+"side": "under"
+},
 "type": "value"
+}
+},
+"71da6461cbc3fc6a42b98080244958e7": {
+"away": "St Louis Blues",
+"best": [
+[
+2.01,
+"Pinnacle"
+],
+[
+1.9,
+"Pinnacle"
+]
+],
+"blend": [
+0.4854,
+0.5146
+],
+"books": {
+"Pinnacle": [
+2.01,
+1.9
+]
+},
+"coupon": null,
+"draw": false,
+"fair": [
+0.4854,
+0.5146
+],
+"home": "Nashville Predators",
+"lg": "icehockey_nhl",
+"result": null,
+"sig": null,
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-07T18:10:00Z",
+"verdict": {
+"ev": null,
+"i": null,
+"odds": null,
+"p": null,
+"total": null,
+"type": "skip"
 }
 },
 "72c786e70ad9360fdc41e4c2a50fa788": {
@@ -1548,6 +2501,266 @@
 "p": 0.6551,
 "total": null,
 "type": "fav"
+}
+},
+"79334eedea6908f995f13dd5a8f11d20": {
+"away": "New York Rangers",
+"best": [
+[
+2.17,
+"Pinnacle"
+],
+[
+1.78,
+"Pinnacle"
+]
+],
+"blend": [
+0.449,
+0.551
+],
+"books": {
+"Pinnacle": [
+2.17,
+1.78
+]
+},
+"coupon": null,
+"draw": false,
+"fair": [
+0.449,
+0.551
+],
+"home": "Seattle Kraken",
+"lg": "icehockey_nhl",
+"result": null,
+"sig": null,
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-07T22:10:00Z",
+"verdict": {
+"ev": null,
+"i": null,
+"odds": null,
+"p": null,
+"total": null,
+"type": "skip"
+}
+},
+"79ed3df594d7b352ef027128b1ba5d0a": {
+"away": "Bournemouth",
+"best": [
+[
+4.09,
+"Pinnacle"
+],
+[
+3.96,
+"1xBet"
+],
+[
+1.97,
+"1xBet"
+]
+],
+"blend": [
+0.2328,
+0.2581,
+0.509
+],
+"books": {
+"1xBet": [
+3.9,
+3.96,
+1.97
+],
+"Marathon Bet": [
+3.8,
+3.85,
+1.92
+],
+"Pinnacle": [
+4.09,
+3.75,
+1.92
+]
+},
+"coupon": {
+"at": "2026-11-07T14:18+00:00",
+"book": "1xBet",
+"i": 1,
+"odds": 3.96,
+"p": 0.2581,
+"stake": 200
+},
+"draw": true,
+"elo": [
+0.2285,
+0.2673,
+0.5042
+],
+"fair": [
+0.2339,
+0.2558,
+0.5103
+],
+"home": "Ipswich Town",
+"lg": "soccer_epl",
+"result": null,
+"sig": null,
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-08T14:00:00Z",
+"verdict": {
+"book": "1xBet",
+"ev": 0.0221,
+"i": 1,
+"odds": 3.96,
+"p": 0.2581,
+"total": null,
+"type": "value"
+}
+},
+"7a68b099b47ed7724062b661cd9af464": {
+"away": "AC Milan",
+"best": [
+[
+4.83,
+"1xBet"
+],
+[
+3.73,
+"1xBet"
+],
+[
+1.85,
+"1xBet"
+]
+],
+"blend": [
+0.1969,
+0.2671,
+0.536
+],
+"books": {
+"1xBet": [
+4.83,
+3.73,
+1.85
+],
+"Marathon Bet": [
+4.7,
+3.62,
+1.8
+],
+"Pinnacle": [
+4.8,
+3.56,
+1.84
+]
+},
+"coupon": null,
+"draw": true,
+"elo": [
+0.1878,
+0.2465,
+0.5657
+],
+"fair": [
+0.1979,
+0.2694,
+0.5327
+],
+"home": "Genoa",
+"lg": "soccer_italy_serie_a",
+"result": null,
+"sig": null,
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-08T14:00:00Z",
+"verdict": {
+"ev": null,
+"i": null,
+"odds": null,
+"p": null,
+"total": {
+"p": 0.6174,
+"side": "under"
+},
+"type": "skip"
+}
+},
+"7f50eb7deaebfbcd45c3f4e7cd3724e4": {
+"away": "Juventus",
+"best": [
+[
+3.71,
+"1xBet"
+],
+[
+3.69,
+"1xBet"
+],
+[
+2.15,
+"Pinnacle"
+]
+],
+"blend": [
+0.2698,
+0.2692,
+0.4611
+],
+"books": {
+"1xBet": [
+3.71,
+3.69,
+2.1
+],
+"Marathon Bet": [
+3.65,
+3.64,
+2.07
+],
+"Pinnacle": [
+3.5,
+3.57,
+2.15
+]
+},
+"coupon": null,
+"draw": true,
+"elo": [
+0.219,
+0.2631,
+0.5178
+],
+"fair": [
+0.2754,
+0.2698,
+0.4548
+],
+"home": "Fiorentina",
+"lg": "soccer_italy_serie_a",
+"result": null,
+"sig": {
+"at": "2026-11-07T14:18+00:00",
+"book": "1xBet",
+"ev": 0.0217,
+"fair": 0.2754,
+"i": 0,
+"odds": 3.71
+},
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-08T19:45:00Z",
+"verdict": {
+"ev": null,
+"i": null,
+"odds": null,
+"p": null,
+"total": null,
+"type": "skip"
 }
 },
 "8094c7dc6557caf1cc19194bf69477bb": {
@@ -1598,38 +2811,38 @@
 "away": "Bologna",
 "best": [
 [
-4.63,
+5.51,
+"Pinnacle"
+],
+[
+3.79,
 "1xBet"
 ],
 [
-3.69,
-"1xBet"
-],
-[
-1.89,
+1.77,
 "1xBet"
 ]
 ],
 "blend": [
-0.2131,
-0.2696,
-0.5173
+0.1799,
+0.2661,
+0.5539
 ],
 "books": {
 "1xBet": [
-4.63,
-3.69,
-1.89
+5.35,
+3.79,
+1.77
 ],
 "Marathon Bet": [
-4.5,
-3.58,
-1.84
+5.2,
+3.68,
+1.72
 ],
 "Pinnacle": [
-4.55,
-3.57,
-1.88
+5.51,
+3.63,
+1.75
 ]
 },
 "coupon": null,
@@ -1640,15 +2853,15 @@
 0.4804
 ],
 "fair": [
-0.2095,
-0.2691,
-0.5214
+0.1726,
+0.2653,
+0.5621
 ],
 "home": "Parma",
 "lg": "soccer_italy_serie_a",
 "result": null,
 "sig": null,
-"snap": "2026-11-06T15:18+00:00",
+"snap": "2026-11-07T14:18+00:00",
 "src": "Pinnacle",
 "time": "2026-11-07T17:00:00Z",
 "verdict": {
@@ -1657,10 +2870,91 @@
 "odds": null,
 "p": null,
 "total": {
-"p": 0.6067,
+"p": 0.6362,
 "side": "under"
 },
 "type": "skip"
+}
+},
+"81ad04996f63fb60b494d243b13ac586": {
+"away": "Getafe",
+"best": [
+[
+1.5,
+"1xBet"
+],
+[
+4.75,
+"Pinnacle"
+],
+[
+7.62,
+"Pinnacle"
+]
+],
+"blend": [
+0.6834,
+0.1966,
+0.12
+],
+"books": {
+"1xBet": [
+1.5,
+4.67,
+7.4
+],
+"Marathon Bet": [
+1.46,
+4.55,
+7.2
+],
+"Pinnacle": [
+1.44,
+4.75,
+7.62
+]
+},
+"coupon": {
+"at": "2026-11-07T14:18+00:00",
+"book": "1xBet",
+"i": 0,
+"odds": 1.5,
+"p": 0.6834,
+"stake": 1300
+},
+"draw": true,
+"elo": [
+0.6077,
+0.2295,
+0.1628
+],
+"fair": [
+0.6834,
+0.1966,
+0.12
+],
+"home": "Villarreal",
+"lg": "soccer_spain_la_liga",
+"result": null,
+"sig": {
+"at": "2026-11-07T14:18+00:00",
+"book": "1xBet",
+"ev": 0.0251,
+"fair": 0.6834,
+"i": 0,
+"odds": 1.5
+},
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-08T17:30:00Z",
+"verdict": {
+"book": "1xBet",
+"ev": 0.0251,
+"i": 0,
+"odds": 1.5,
+"p": 0.6834,
+"total": null,
+"type": "value"
 }
 },
 "83d77fe350d56a036fd7a3404e78249a": {
@@ -1719,22 +3013,22 @@
 "away": "Hull City",
 "best": [
 [
-1.2,
+1.17,
 "1xBet"
 ],
 [
-8.31,
+8.75,
+"1xBet"
+],
+[
+23.5,
 "Pinnacle"
-],
-[
-18.5,
-"1xBet"
 ]
 ],
 "blend": [
-0.8287,
-0.1157,
-0.0556
+0.8363,
+0.116,
+0.0477
 ],
 "books": {
 "1xBet": [
@@ -1748,12 +3042,11 @@
 22.0
 ],
 "Pinnacle": [
-1.16,
-8.14,
-21.27
+1.15,
+8.5,
+23.5
 ]
 },
-"closed": true,
 "coupon": {
 "at": "2026-11-06T15:18+00:00",
 "book": "1xBet",
@@ -1769,9 +3062,9 @@
 0.0988
 ],
 "fair": [
-0.8539,
-0.1074,
-0.0387
+0.862,
+0.103,
+0.035
 ],
 "home": "Arsenal",
 "lg": "soccer_epl",
@@ -1784,17 +3077,17 @@
 "i": 0,
 "odds": 1.2
 },
-"snap": "2026-11-07T13:55+00:00",
+"snap": "2026-11-07T14:18+00:00",
 "src": "Pinnacle",
 "time": "2026-11-07T15:00:00Z",
 "verdict": {
 "book": "1xBet",
-"ev": 0.0283,
+"ev": 0.05,
 "i": 2,
-"odds": 18.5,
-"p": 0.0556,
+"odds": 22.0,
+"p": 0.0477,
 "total": {
-"p": 0.6899,
+"p": 0.6218,
 "side": "over"
 },
 "type": "value"
@@ -1944,6 +3237,160 @@
 "i": 0,
 "odds": 1.17,
 "p": 0.8207,
+"total": null,
+"type": "fav"
+}
+},
+"8cc95915d5faf0205f042002d771ad88": {
+"away": "Utah Mammoth",
+"best": [
+[
+2.05,
+"Pinnacle"
+],
+[
+1.86,
+"Pinnacle"
+]
+],
+"blend": [
+0.4748,
+0.5252
+],
+"books": {
+"Pinnacle": [
+2.05,
+1.86
+]
+},
+"coupon": null,
+"draw": false,
+"fair": [
+0.4748,
+0.5252
+],
+"home": "Ottawa Senators",
+"lg": "icehockey_nhl",
+"result": null,
+"sig": null,
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-08T00:10:00Z",
+"verdict": {
+"ev": null,
+"i": null,
+"odds": null,
+"p": null,
+"total": null,
+"type": "skip"
+}
+},
+"8e3ca98e29be84dd4a882ed05f50fa79": {
+"away": "Brentford",
+"best": [
+[
+1.98,
+"1xBet"
+],
+[
+4.05,
+"1xBet"
+],
+[
+3.89,
+"Pinnacle"
+]
+],
+"blend": [
+0.5062,
+0.2486,
+0.2452
+],
+"books": {
+"1xBet": [
+1.98,
+4.05,
+3.78
+],
+"Marathon Bet": [
+1.93,
+3.94,
+3.68
+],
+"Pinnacle": [
+1.92,
+3.95,
+3.89
+]
+},
+"coupon": null,
+"draw": true,
+"elo": [
+0.4889,
+0.2716,
+0.2395
+],
+"fair": [
+0.5106,
+0.2428,
+0.2466
+],
+"home": "Brighton and Hove Albion",
+"lg": "soccer_epl",
+"result": null,
+"sig": null,
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-08T14:00:00Z",
+"verdict": {
+"ev": null,
+"i": null,
+"odds": null,
+"p": null,
+"total": null,
+"type": "skip"
+}
+},
+"8fe46a5692910faf8de7ac94676f4029": {
+"away": "Vancouver Canucks",
+"best": [
+[
+1.28,
+"Pinnacle"
+],
+[
+4.0,
+"Pinnacle"
+]
+],
+"blend": [
+0.7698,
+0.2302
+],
+"books": {
+"Pinnacle": [
+1.28,
+4.0
+]
+},
+"coupon": null,
+"draw": false,
+"fair": [
+0.7698,
+0.2302
+],
+"home": "Edmonton Oilers",
+"lg": "icehockey_nhl",
+"result": null,
+"sig": null,
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-08T03:10:00Z",
+"verdict": {
+"ev": null,
+"i": 0,
+"odds": null,
+"p": 0.7698,
 "total": null,
 "type": "fav"
 }
@@ -2269,6 +3716,124 @@
 "type": "fav"
 }
 },
+"af8d920f175d73f12933c64ae296573f": {
+"away": "Houston Rockets",
+"best": [
+[
+3.39,
+"Pinnacle"
+],
+[
+1.38,
+"1xBet"
+]
+],
+"blend": [
+0.2766,
+0.7234
+],
+"books": {
+"1xBet": [
+3.21,
+1.38
+],
+"Marathon Bet": [
+3.24,
+1.36
+],
+"Pinnacle": [
+3.39,
+1.36
+]
+},
+"coupon": null,
+"draw": false,
+"fair": [
+0.2766,
+0.7234
+],
+"home": "Phoenix Suns",
+"lg": "basketball_nba",
+"result": null,
+"sig": null,
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-08T02:10:00Z",
+"verdict": {
+"ev": null,
+"i": 1,
+"odds": 1.38,
+"p": 0.7234,
+"total": null,
+"type": "fav"
+}
+},
+"b0a4b5448a7e02d9ad1eaa817599fff0": {
+"away": "Aston Villa",
+"best": [
+[
+2.23,
+"1xBet"
+],
+[
+3.96,
+"1xBet"
+],
+[
+3.25,
+"Pinnacle"
+]
+],
+"blend": [
+0.4448,
+0.2554,
+0.2998
+],
+"books": {
+"1xBet": [
+2.23,
+3.96,
+3.19
+],
+"Marathon Bet": [
+2.19,
+3.9,
+3.14
+],
+"Pinnacle": [
+2.14,
+3.88,
+3.25
+]
+},
+"coupon": null,
+"draw": true,
+"elo": [
+0.3986,
+0.2889,
+0.3124
+],
+"fair": [
+0.4563,
+0.2471,
+0.2966
+],
+"home": "Manchester United",
+"lg": "soccer_epl",
+"result": null,
+"sig": null,
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-08T16:30:00Z",
+"verdict": {
+"ev": null,
+"i": null,
+"odds": null,
+"p": null,
+"total": null,
+"type": "skip"
+}
+},
 "b2557f74f4d7675ed3b76a4a064e0bc9": {
 "away": "Minnesota Timberwolves",
 "best": [
@@ -2311,6 +3876,94 @@
 "p": 0.7101,
 "total": null,
 "type": "fav"
+}
+},
+"b5934d2ce05af5dac632f1e8b7ce5fb6": {
+"away": "Tampa Bay Lightning",
+"best": [
+[
+2.23,
+"Pinnacle"
+],
+[
+1.74,
+"Pinnacle"
+]
+],
+"blend": [
+0.4362,
+0.5638
+],
+"books": {
+"Pinnacle": [
+2.23,
+1.74
+]
+},
+"coupon": null,
+"draw": false,
+"fair": [
+0.4362,
+0.5638
+],
+"home": "Minnesota Wild",
+"lg": "icehockey_nhl",
+"result": null,
+"sig": null,
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-08T01:10:00Z",
+"verdict": {
+"ev": null,
+"i": null,
+"odds": null,
+"p": null,
+"total": null,
+"type": "skip"
+}
+},
+"b7da08b293b1ae703c71b26ad69eb52b": {
+"away": "Montréal Canadiens",
+"best": [
+[
+2.08,
+"Pinnacle"
+],
+[
+1.84,
+"Pinnacle"
+]
+],
+"blend": [
+0.4683,
+0.5317
+],
+"books": {
+"Pinnacle": [
+2.08,
+1.84
+]
+},
+"coupon": null,
+"draw": false,
+"fair": [
+0.4683,
+0.5317
+],
+"home": "Toronto Maple Leafs",
+"lg": "icehockey_nhl",
+"result": null,
+"sig": null,
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-08T00:10:00Z",
+"verdict": {
+"ev": null,
+"i": null,
+"odds": null,
+"p": null,
+"total": null,
+"type": "skip"
 }
 },
 "b945b7133224c704b734e04becd109f0": {
@@ -2393,6 +4046,72 @@
 "snap": "2026-11-06T15:18+00:00",
 "src": "Pinnacle",
 "time": "2026-11-07T01:10:00Z",
+"verdict": {
+"ev": null,
+"i": null,
+"odds": null,
+"p": null,
+"total": null,
+"type": "skip"
+}
+},
+"c35673eb1e889309d6985c091a43a3f5": {
+"away": "Real Betis",
+"best": [
+[
+3.56,
+"1xBet"
+],
+[
+3.9,
+"Pinnacle"
+],
+[
+2.12,
+"1xBet"
+]
+],
+"blend": [
+0.2772,
+0.2458,
+0.477
+],
+"books": {
+"1xBet": [
+3.56,
+3.82,
+2.12
+],
+"Marathon Bet": [
+3.46,
+3.72,
+2.06
+],
+"Pinnacle": [
+3.47,
+3.9,
+2.05
+]
+},
+"coupon": null,
+"draw": true,
+"elo": [
+0.3047,
+0.288,
+0.4073
+],
+"fair": [
+0.2772,
+0.2458,
+0.477
+],
+"home": "Elche CF",
+"lg": "soccer_spain_la_liga",
+"result": null,
+"sig": null,
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-08T13:00:00Z",
 "verdict": {
 "ev": null,
 "i": null,
@@ -2603,6 +4322,75 @@
 "type": "skip"
 }
 },
+"dd247b356d8fc53e4b4f9bfcfe09c924": {
+"away": "Barcelona",
+"best": [
+[
+4.0,
+"1xBet"
+],
+[
+4.51,
+"1xBet"
+],
+[
+1.84,
+"1xBet"
+]
+],
+"blend": [
+0.2425,
+0.2158,
+0.5417
+],
+"books": {
+"1xBet": [
+4.0,
+4.51,
+1.84
+],
+"Marathon Bet": [
+3.95,
+4.45,
+1.81
+],
+"Pinnacle": [
+3.94,
+4.41,
+1.81
+]
+},
+"coupon": null,
+"draw": true,
+"elo": [
+0.2968,
+0.2868,
+0.4164
+],
+"fair": [
+0.2425,
+0.2158,
+0.5417
+],
+"home": "Atlético Madrid",
+"lg": "soccer_spain_la_liga",
+"result": null,
+"sig": null,
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-08T20:00:00Z",
+"verdict": {
+"ev": null,
+"i": null,
+"odds": null,
+"p": null,
+"total": {
+"p": 0.6541,
+"side": "over"
+},
+"type": "skip"
+}
+},
 "de935794b7d93f3607ac9ad54d18f4c7": {
 "away": "Real Racing Club de Santander",
 "best": [
@@ -2682,6 +4470,110 @@
 "p": 0.2749,
 "total": null,
 "type": "value"
+}
+},
+"e76682ca6c25a37b0a53cec226b91aab": {
+"away": "Denver Nuggets",
+"best": [
+[
+3.52,
+"Pinnacle"
+],
+[
+1.38,
+"1xBet"
+]
+],
+"blend": [
+0.2654,
+0.7346
+],
+"books": {
+"1xBet": [
+3.21,
+1.38
+],
+"Marathon Bet": [
+3.3,
+1.35
+],
+"Pinnacle": [
+3.52,
+1.34
+]
+},
+"coupon": null,
+"draw": false,
+"fair": [
+0.2654,
+0.7346
+],
+"home": "Indiana Pacers",
+"lg": "basketball_nba",
+"result": null,
+"sig": null,
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-07T22:10:00Z",
+"verdict": {
+"ev": null,
+"i": 1,
+"odds": 1.38,
+"p": 0.7346,
+"total": null,
+"type": "fav"
+}
+},
+"ee45341df802cfb42dd48f1ad60c8b81": {
+"away": "Brooklyn Nets",
+"best": [
+[
+1.38,
+"1xBet"
+],
+[
+3.23,
+"1xBet"
+]
+],
+"blend": [
+0.711,
+0.289
+],
+"books": {
+"1xBet": [
+1.38,
+3.23
+],
+"Marathon Bet": [
+1.38,
+3.12
+],
+"Pinnacle": [
+1.38,
+3.23
+]
+},
+"coupon": null,
+"draw": false,
+"fair": [
+0.711,
+0.289
+],
+"home": "Atlanta Hawks",
+"lg": "basketball_nba",
+"result": null,
+"sig": null,
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-08T00:40:00Z",
+"verdict": {
+"ev": null,
+"i": 0,
+"odds": 1.38,
+"p": 0.711,
+"total": null,
+"type": "fav"
 }
 },
 "eefdb55d84dd6a95ef53b76d3935f3c9": {
@@ -2778,38 +4670,38 @@
 "away": "Sassuolo",
 "best": [
 [
-1.32,
+1.35,
 "1xBet"
 ],
 [
-6.41,
-"Pinnacle"
+6.1,
+"1xBet"
 ],
 [
-9.75,
+8.9,
 "1xBet"
 ]
 ],
 "blend": [
-0.7668,
-0.1414,
-0.0918
+0.7429,
+0.1555,
+0.1016
 ],
 "books": {
 "1xBet": [
-1.32,
-6.4,
-9.75
+1.35,
+6.1,
+8.9
 ],
 "Marathon Bet": [
-1.3,
-6.3,
-9.6
+1.33,
+6.0,
+8.8
 ],
 "Pinnacle": [
-1.29,
-6.41,
-9.51
+1.34,
+5.96,
+8.86
 ]
 },
 "coupon": null,
@@ -2820,24 +4712,24 @@
 0.0769
 ],
 "fair": [
-0.7649,
-0.1416,
-0.0935
+0.7384,
+0.1573,
+0.1043
 ],
 "home": "AS Roma",
 "lg": "soccer_italy_serie_a",
 "result": null,
 "sig": null,
-"snap": "2026-11-06T15:18+00:00",
+"snap": "2026-11-07T14:18+00:00",
 "src": "Pinnacle",
 "time": "2026-11-07T19:45:00Z",
 "verdict": {
 "ev": null,
 "i": 0,
-"odds": 1.32,
-"p": 0.7668,
+"odds": 1.35,
+"p": 0.7429,
 "total": {
-"p": 0.7055,
+"p": 0.6609,
 "side": "over"
 },
 "type": "fav"
@@ -2961,6 +4853,58 @@
 "i": 0,
 "odds": null,
 "p": 0.7968,
+"total": null,
+"type": "fav"
+}
+},
+"fdf3b77f50b2fad3988193af5ef4b00e": {
+"away": "New York Knicks",
+"best": [
+[
+2.82,
+"Marathon Bet"
+],
+[
+1.53,
+"1xBet"
+]
+],
+"blend": [
+0.3483,
+0.6517
+],
+"books": {
+"1xBet": [
+2.62,
+1.53
+],
+"Marathon Bet": [
+2.82,
+1.45
+],
+"Pinnacle": [
+2.76,
+1.51
+]
+},
+"coupon": null,
+"draw": false,
+"fair": [
+0.3483,
+0.6517
+],
+"home": "Cleveland Cavaliers",
+"lg": "basketball_nba",
+"result": null,
+"sig": null,
+"snap": "2026-11-07T14:18+00:00",
+"src": "Pinnacle",
+"time": "2026-11-08T01:10:00Z",
+"verdict": {
+"ev": null,
+"i": 1,
+"odds": 1.53,
+"p": 0.6517,
 "total": null,
 "type": "fav"
 }
