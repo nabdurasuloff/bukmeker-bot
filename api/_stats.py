@@ -1,5 +1,5 @@
 # Avtomatik yaratiladi (scripts/track.py). Qo'lda o'zgartirmang.
-STATS = {'updated': '2026-11-07T00:51+00:00',
+STATS = {'updated': '2026-11-07T13:55+00:00',
  'bookies': ['1xBet', 'Marathon Bet'],
  'signals': ['[🏴 Angliya Premer-ligasi]\n'
              '⚽ Arsenal — Hull City · 07.11 20:00\n'
@@ -53,34 +53,14 @@ STATS = {'updated': '2026-11-07T00:51+00:00',
  'fav': {'n': 27, 'hit': 18, 'p': 17.4826, 'profit': -0.4600000000000004, 'bets': 16},
  'value': {'n': 0, 'hit': 0, 'profit': 0.0},
  'kelly': {'bank': 100000, 'bets': 0, 'peak': 100000, 'low': 100000},
- 'clv': {'n': 1, 'avg': 0.4346, 'pos': 1},
+ 'clv': {'n': 2, 'avg': 0.2297, 'pos': 2},
  'elo': {'n': 0, 'brier_elo': None, 'brier_mkt': None, 'hit_elo': 0, 'hit_mkt': 0},
  'verdicts': {'fav': {'n': 17, 'ok': 12, 'p': 11.9421},
               'value': {'n': 0, 'ok': 0, 'profit': 0.0},
               'total': {'n': 0, 'ok': 0},
               'skip': 10},
  'coupon': {'n': 0, 'won': 0, 'staked': 0, 'profit': 0, 'last': []},
- 'coupon_open': [{'label': 'Milwaukee Bucks — Toronto Raptors · 07.11 06:10\n'
-                           "   Milwaukee Bucks g'alabasi @3.50 (Marathon) → 800 so'm",
-                  'stake': 800,
-                  'win': 2000,
-                  'time': '2026-11-07T01:10:00Z'},
-                 {'label': 'Sacramento Kings — San Antonio Spurs · 07.11 08:10\n'
-                           "   Sacramento Kings g'alabasi @11.00 (Marathon) → 200 so'm",
-                  'stake': 200,
-                  'win': 2000,
-                  'time': '2026-11-07T03:10:00Z'},
-                 {'label': 'Leeds United — Tottenham Hotspur · 07.11 17:30\n'
-                           "   Leeds United g'alabasi @2.78 (1xBet) → 300 so'm",
-                  'stake': 300,
-                  'win': 534,
-                  'time': '2026-11-07T12:30:00Z'},
-                 {'label': 'Málaga — Real Racing Club de Santander · 07.11 18:00\n'
-                           "   durang @3.72 (1xBet) → 200 so'm",
-                  'stake': 200,
-                  'win': 544,
-                  'time': '2026-11-07T13:00:00Z'},
-                 {'label': 'Fulham — Newcastle United · 07.11 20:00\n'
+ 'coupon_open': [{'label': 'Fulham — Newcastle United · 07.11 20:00\n'
                            "   durang @3.90 (1xBet) → 200 so'm",
                   'stake': 200,
                   'win': 580,
