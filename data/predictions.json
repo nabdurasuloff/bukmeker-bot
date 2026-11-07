@@ -216,18 +216,19 @@
 ],
 "books": {
 "1xBet": [
-3.14,
-1.39
+2.38,
+1.62
 ],
 "Marathon Bet": [
-3.5,
-1.32
+2.41,
+1.59
 ],
 "Pinnacle": [
-3.04,
-1.42
+2.38,
+1.67
 ]
 },
+"closed": true,
 "coupon": {
 "at": "2026-11-06T15:18+00:00",
 "book": "Marathon Bet",
@@ -238,8 +239,8 @@
 },
 "draw": false,
 "fair": [
-0.3093,
-0.6907
+0.4099,
+0.5901
 ],
 "home": "Milwaukee Bucks",
 "lg": "basketball_nba",
@@ -252,7 +253,7 @@
 "i": 0,
 "odds": 3.5
 },
-"snap": "2026-11-06T15:18+00:00",
+"snap": "2026-11-07T00:51+00:00",
 "src": "Pinnacle",
 "time": "2026-11-07T01:10:00Z",
 "verdict": {
