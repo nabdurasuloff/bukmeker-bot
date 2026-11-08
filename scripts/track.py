@@ -88,7 +88,7 @@ def snapshot(preds, key):
             names = [a["home"], "Durang", a["away"]] if a["draw"] else [a["home"], a["away"]]
             pb = blend(ei["p"], a["fair"], ei["w"]) if ei else a["fair"]
             mo, mb = my_best(a, my_bookies())
-            vd = verdict_core(pb, pb, names, mo, a.get("over25"), mb or "")
+            vd = verdict_core(pb, a["fair"], names, mo, a.get("over25"), mb or "")
             vd.pop("text", None)
             rec["blend"] = [round(x, 4) for x in pb]
             rec["coupon"] = old.get("coupon")
@@ -97,6 +97,7 @@ def snapshot(preds, key):
                 f = min(max((q * o - 1) / (o - 1), 0) * 0.25, 0.05)
                 stake = max(round(BANK * f / 100) * 100, 100)
                 rec["coupon"] = {"i": vd["i"], "odds": o, "p": q, "stake": stake, "book": vd.get("book", ""),
+                                 "ver": vd.get("ver", 1),
                                  "at": NOW.isoformat(timespec="minutes")}
                 NEW_COUPON.append(gid_label(rec))
             rec["verdict"] = vd  # o'yin boshlanishiga eng yaqin xulosa saqlanadi
@@ -293,6 +294,14 @@ def compute_stats(preds, signals=None):
         cst["last"].append(f"{'✅' if won else '❌'} {p['home']} — {p['away']} {p.get('score')} · "
                            f"{names[p['coupon']['i']]} @{p['coupon']['odds']:.2f} → {'+' if pr > 0 else ''}{money(pr)}")
     cst["profit"] = round(cst["profit"])
+    c2 = [p for p in cp if (p["coupon"].get("ver") or 1) >= 2]
+    cst2 = {"n": len(c2), "won": 0, "staked": 0, "profit": 0.0}
+    for p in c2:
+        won, pr = coupon_result(p)
+        cst2["won"] += won
+        cst2["staked"] += p["coupon"]["stake"]
+        cst2["profit"] += pr
+    cst2["profit"] = round(cst2["profit"])
     opened = [p for p in preds.values() if p.get("coupon") and p.get("result") is None
               and parse(p["time"]) > NOW]
     copen = [{"label": gid_label(p), "stake": p["coupon"]["stake"],
@@ -316,7 +325,7 @@ def compute_stats(preds, signals=None):
         "pending": sum(1 for p in preds.values() if p.get("result") is None),
         "brier": round(brier / len(done), 4) if done else None,
         "fav": fav, "value": val, "kelly": kelly, "clv": clv, "elo": elo_cmp, "verdicts": vs,
-        "coupon": cst, "coupon_open": copen, "bank": BANK, "jackpots": JSTATS,
+        "coupon": cst, "coupon_v2": cst2, "coupon_open": copen, "bank": BANK, "jackpots": JSTATS,
         "upcoming": UPCOMING, "upcoming_at": META["upcoming_at"],
         "buckets": [b for b in bstat if b["n"]],
         "recent": [{"m": f"{p['home']} — {p['away']}", "score": p.get("score"),

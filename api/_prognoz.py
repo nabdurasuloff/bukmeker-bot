@@ -206,6 +206,8 @@ def fmt_time(iso):
 
 
 VALUE_EV, FAV_P, TOTAL_P = 0.02, 0.60, 0.60
+MAX_VALUE_ODDS = 8.0   # 8 dan katta koeffitsiyentlar qiymatli tikishga kiritilmaydi (xato ehtimoli katta)
+RULES_VERSION = 2      # 2-versiya (08.11.2026): foydali narx faqat bozor (Pinnacle) bahosi bo'yicha
 
 
 def short_book(b):
@@ -216,9 +218,10 @@ def verdict_core(probs, fair, names, my_odds=None, over25=None, book="1xBet"):
     """book — bitta nom yoki har natija uchun nomlar ro'yxati (eng yaxshi narx qaysi bukmekerda)."""
     """Bitta aniq xulosa: qiymatli tikish / prognoz / o'tkazib yuborish (+ total)."""
     n = len(probs)
-    v = {"type": "skip", "i": None, "p": None, "odds": None, "ev": None, "total": None}
+    v = {"type": "skip", "i": None, "p": None, "odds": None, "ev": None, "total": None, "ver": RULES_VERSION}
     if my_odds:
-        evs = [fair[i] * my_odds[i] - 1 for i in range(n)]
+        # fair — bozor (Pinnacle) bahosi; model bu yerda ishlatilmaydi
+        evs = [fair[i] * my_odds[i] - 1 if my_odds[i] <= MAX_VALUE_ODDS else -1 for i in range(n)]
         j = max(range(n), key=lambda i: evs[i])
         if evs[j] > VALUE_EV:
             v.update(type="value", i=j, p=round(fair[j], 4), odds=my_odds[j], ev=round(evs[j], 4),

@@ -263,7 +263,7 @@ def value_legs(st=None, max_legs=5):
             ei = elo_info(lg, m["home"], m["away"], elo) if draw else None
             pr = blend(ei["p"] if ei else None, m["fair"], ei["w"] if ei else 0.5)
             mo, mb = [x[0] for x in m["mine"]], [x[1] for x in m["mine"]]
-            v = verdict_core(pr, pr, names, mo, None, mb)
+            v = verdict_core(pr, m["fair"], names, mo, None, mb)
             if v["type"] == "value":
                 legs.append({"id": m.get("id"), "lg": lg, "m": f"{m['home']} — {m['away']}", "time": m["time"],
                              "i": v["i"], "pick": "durang" if names[v["i"]] == "Durang" else names[v["i"]],
@@ -411,6 +411,11 @@ def coupon_text():
                    f"Hammasi o'tsa: +{money(sum(c['win'] for c in op))}")
     else:
         out.append("Hozir ochiq kupon yo'q — 1xBet va Marathon'da foydali narx topilmadi. Bu normal holat.")
+    c2 = st.get("coupon_v2") or {}
+    if c2.get("n"):
+        roi2 = c2["profit"] / c2["staked"] * 100 if c2["staked"] else 0
+        out.append(f"\n🆕 Yangi qoida (08.11 dan): {c2['won']}/{c2['n']} o'tdi · natija "
+                   f"{'+' if c2['profit'] > 0 else ''}{money(c2['profit'])} ({roi2:+.1f}%)")
     c = st.get("coupon") or {}
     if c.get("n"):
         roi = c["profit"] / c["staked"] * 100 if c["staked"] else 0
@@ -577,7 +582,7 @@ def analysis_item(lg, m, elo):
     mo = [x[0] for x in m["mine"]] if m.get("mine") else None
     mb = [x[1] for x in m["mine"]] if m.get("mine") else ""
     probs = " · ".join(f"{'durang' if names[i] == 'Durang' else names[i]} {pct(comb[i])}" for i in range(len(comb)))
-    v = verdict_core(comb, comb, names, mo if pm else None, m.get("o25"), mb)
+    v = verdict_core(comb, pm or comb, names, mo if pm else None, m.get("o25"), mb)
     icon = "⚽" if draw else ("🏒" if lg.startswith("icehockey") else "🏀")
     return (f"{icon} {m['home']} — {m['away']} · {fmt_time(m['time'])}\n"
             f"{probs}\n{verdict_short(v, names)}")
