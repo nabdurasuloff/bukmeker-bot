@@ -3,6 +3,8 @@ name: Kunlik prognoz va natijalar
 on:
   schedule:
     - cron: "37 7 * * *"   # har kuni 12:37 (Toshkent) — prognoz, natija, hisobot
+    - cron: "17 10 * * *"  # zaxira: GitHub kechiktirsa yoki o'tkazib yuborsa (bugun bajarilgan bo'lsa — hech narsa qilmaydi)
+    - cron: "47 13 * * *"  # zaxira
     - cron: "10 * * * *"   # har soat — signal berilgan o'yinlarning yopilish narxi (CLV); kerak bo'lmasa kredit sarflamaydi
   workflow_dispatch:
 

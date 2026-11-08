@@ -309,6 +309,7 @@ def compute_stats(preds, signals=None):
     recent = sorted(done, key=lambda p: p["time"], reverse=True)[:8]
     return {
         "updated": NOW.isoformat(timespec="minutes"),
+        "daily_at": META.get("daily_at"),
         "bookies": my_bookies(),
         "signals": signals or [],
         "matches": len(done),
@@ -477,15 +478,22 @@ def main():
             UPCOMING.update(previous("upcoming", {}))
             META["upcoming_at"] = previous("upcoming_at", None)
             JSTATS.update(previous("jackpots", {}))
+            META["daily_at"] = previous("daily_at", None)
             st = write_stats(preds, previous_signals())
         return
 
     # Natijalar 2 kunda bir marta tekshiriladi (har liga so'rovi 2 kredit) — kredit tejash uchun.
     # daysFrom=3 bo'lgani uchun hech qaysi o'yin tushib qolmaydi.
     settle_day = NOW.date().toordinal() % 2 == 0 or os.environ.get("FORCE_SETTLE")
+    # Zaxira ishga tushishlar: bugungi kunlik ish bajarilgan bo'lsa, qayta qilinmaydi (kredit sarflanmaydi)
+    last = previous("daily_at", "") or ""
+    if last[:10] == NOW.date().isoformat() and not os.environ.get("FORCE_DAILY"):
+        print("Bugungi kunlik ish allaqachon bajarilgan — o'tkazib yuborildi")
+        return
     newly = settle(preds, key) if settle_day else []
     signals = snapshot(preds, key)
     save(preds)
+    META["daily_at"] = NOW.isoformat(timespec="minutes")
     jacks = load_jack()
     jdone = jack_settle(jacks, preds)
     JSTATS.update(jack_stats(jacks))
