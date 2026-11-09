@@ -43,6 +43,59 @@
 "type": "skip"
 }
 },
+"07361a8381206817e27bd2697fad7479": {
+"away": "Los Angeles Lakers",
+"best": [
+[
+1.84,
+"Pinnacle"
+],
+[
+2.09,
+"Marathon Bet"
+]
+],
+"blend": [
+0.5294,
+0.4706
+],
+"books": {
+"1xBet": [
+1.81,
+2.06
+],
+"Marathon Bet": [
+1.77,
+2.09
+],
+"Pinnacle": [
+1.84,
+2.06
+]
+},
+"coupon": null,
+"draw": false,
+"fair": [
+0.5294,
+0.4706
+],
+"home": "Atlanta Hawks",
+"lg": "basketball_nba",
+"result": null,
+"sig": null,
+"snap": "2026-11-09T17:45+00:00",
+"src": "Pinnacle",
+"time": "2026-11-10T00:10:00Z",
+"verdict": {
+"ev": null,
+"i": null,
+"odds": null,
+"p": null,
+"total": null,
+"type": "skip",
+"ver": 2
+}
+},
 "08d47dd5e50e83839e395e49870d6a0d": {
 "away": "San Antonio Spurs",
 "best": [
@@ -625,6 +678,59 @@
 "type": "fav"
 }
 },
+"1df5ff8fe9c6d2dbff1d0ae176063b37": {
+"away": "Cleveland Cavaliers",
+"best": [
+[
+3.82,
+"Pinnacle"
+],
+[
+1.3,
+"Pinnacle"
+]
+],
+"blend": [
+0.2423,
+0.7577
+],
+"books": {
+"1xBet": [
+3.73,
+1.3
+],
+"Marathon Bet": [
+3.72,
+1.29
+],
+"Pinnacle": [
+3.82,
+1.3
+]
+},
+"coupon": null,
+"draw": false,
+"fair": [
+0.2423,
+0.7577
+],
+"home": "Charlotte Hornets",
+"lg": "basketball_nba",
+"result": null,
+"sig": null,
+"snap": "2026-11-09T17:45+00:00",
+"src": "Pinnacle",
+"time": "2026-11-10T00:10:00Z",
+"verdict": {
+"ev": null,
+"i": 1,
+"odds": 1.3,
+"p": 0.7577,
+"total": null,
+"type": "fav",
+"ver": 2
+}
+},
 "1f21bf798afede04880e7a391f3990ed": {
 "away": "San Jose Sharks",
 "best": [
@@ -1153,6 +1259,59 @@
 "type": "skip"
 }
 },
+"3619e1cf4b0a325c3e0ba5b1fb7f3d91": {
+"away": "New Orleans Pelicans",
+"best": [
+[
+1.27,
+"1xBet"
+],
+[
+4.05,
+"1xBet"
+]
+],
+"blend": [
+0.775,
+0.225
+],
+"books": {
+"1xBet": [
+1.27,
+4.05
+],
+"Marathon Bet": [
+1.26,
+3.98
+],
+"Pinnacle": [
+1.27,
+4.05
+]
+},
+"coupon": null,
+"draw": false,
+"fair": [
+0.775,
+0.225
+],
+"home": "Golden State Warriors",
+"lg": "basketball_nba",
+"result": null,
+"sig": null,
+"snap": "2026-11-09T17:45+00:00",
+"src": "Pinnacle",
+"time": "2026-11-10T03:10:00Z",
+"verdict": {
+"ev": null,
+"i": 0,
+"odds": 1.27,
+"p": 0.775,
+"total": null,
+"type": "fav",
+"ver": 2
+}
+},
 "38fdb396939e8aabebd93cb509618927": {
 "away": "Cleveland Cavaliers",
 "best": [
@@ -1630,6 +1789,51 @@
 "type": "fav"
 }
 },
+"4b345990c8a04ff88ce31d233a406011": {
+"away": "New York Islanders",
+"best": [
+[
+2.26,
+"Pinnacle"
+],
+[
+1.72,
+"Pinnacle"
+]
+],
+"blend": [
+0.4298,
+0.5702
+],
+"books": {
+"Pinnacle": [
+2.26,
+1.72
+]
+},
+"coupon": null,
+"draw": false,
+"fair": [
+0.4298,
+0.5702
+],
+"home": "San Jose Sharks",
+"lg": "icehockey_nhl",
+"result": null,
+"sig": null,
+"snap": "2026-11-09T17:45+00:00",
+"src": "Pinnacle",
+"time": "2026-11-10T03:10:00Z",
+"verdict": {
+"ev": null,
+"i": null,
+"odds": null,
+"p": null,
+"total": null,
+"type": "skip",
+"ver": 2
+}
+},
 "50bdc20ea9ea3c88d4bfa261b9b2307e": {
 "away": "Toronto Raptors",
 "best": [
@@ -1739,6 +1943,59 @@
 "p": null,
 "total": null,
 "type": "skip"
+}
+},
+"56efae2815b3a18850f07a3781d652a2": {
+"away": "Memphis Grizzlies",
+"best": [
+[
+1.7,
+"Pinnacle"
+],
+[
+2.3,
+"Marathon Bet"
+]
+],
+"blend": [
+0.5739,
+0.4261
+],
+"books": {
+"1xBet": [
+1.68,
+2.27
+],
+"Marathon Bet": [
+1.64,
+2.3
+],
+"Pinnacle": [
+1.7,
+2.26
+]
+},
+"coupon": null,
+"draw": false,
+"fair": [
+0.5739,
+0.4261
+],
+"home": "Toronto Raptors",
+"lg": "basketball_nba",
+"result": null,
+"sig": null,
+"snap": "2026-11-09T17:45+00:00",
+"src": "Pinnacle",
+"time": "2026-11-10T00:40:00Z",
+"verdict": {
+"ev": null,
+"i": null,
+"odds": null,
+"p": null,
+"total": null,
+"type": "skip",
+"ver": 2
 }
 },
 "586bec023ee8ac2f0645d963bd2c9d25": {
@@ -3935,6 +4192,59 @@
 "type": "fav"
 }
 },
+"929b863acedecaf614c6312e28a44837": {
+"away": "Washington Wizards",
+"best": [
+[
+1.22,
+"Marathon Bet"
+],
+[
+5.0,
+"Pinnacle"
+]
+],
+"blend": [
+0.8272,
+0.1728
+],
+"books": {
+"1xBet": [
+1.21,
+4.79
+],
+"Marathon Bet": [
+1.22,
+4.45
+],
+"Pinnacle": [
+1.19,
+5.0
+]
+},
+"coupon": null,
+"draw": false,
+"fair": [
+0.8272,
+0.1728
+],
+"home": "Detroit Pistons",
+"lg": "basketball_nba",
+"result": null,
+"sig": null,
+"snap": "2026-11-09T17:45+00:00",
+"src": "Pinnacle",
+"time": "2026-11-10T00:10:00Z",
+"verdict": {
+"ev": null,
+"i": 0,
+"odds": 1.22,
+"p": 0.8272,
+"total": null,
+"type": "fav",
+"ver": 2
+}
+},
 "94142b31815d8bfcef178b16cadfe92f": {
 "away": "San Jose Sharks",
 "best": [
@@ -4022,6 +4332,59 @@
 "p": null,
 "total": null,
 "type": "skip"
+}
+},
+"9866fa22adc8509d487522ef4cf0fc24": {
+"away": "Indiana Pacers",
+"best": [
+[
+1.65,
+"1xBet"
+],
+[
+2.39,
+"Marathon Bet"
+]
+],
+"blend": [
+0.5925,
+0.4075
+],
+"books": {
+"1xBet": [
+1.65,
+2.32
+],
+"Marathon Bet": [
+1.6,
+2.39
+],
+"Pinnacle": [
+1.65,
+2.36
+]
+},
+"coupon": null,
+"draw": false,
+"fair": [
+0.5925,
+0.4075
+],
+"home": "Dallas Mavericks",
+"lg": "basketball_nba",
+"result": null,
+"sig": null,
+"snap": "2026-11-09T17:45+00:00",
+"src": "Pinnacle",
+"time": "2026-11-10T01:10:00Z",
+"verdict": {
+"ev": null,
+"i": null,
+"odds": null,
+"p": null,
+"total": null,
+"type": "skip",
+"ver": 2
 }
 },
 "98eae523edadc7d4d42ab37222eb2c88": {
@@ -4661,6 +5024,51 @@
 "type": "skip"
 }
 },
+"c0de79c9c801e5fc0d1bb3873b10a164": {
+"away": "New York Rangers",
+"best": [
+[
+1.64,
+"Pinnacle"
+],
+[
+2.42,
+"Pinnacle"
+]
+],
+"blend": [
+0.5993,
+0.4007
+],
+"books": {
+"Pinnacle": [
+1.64,
+2.42
+]
+},
+"coupon": null,
+"draw": false,
+"fair": [
+0.5993,
+0.4007
+],
+"home": "Edmonton Oilers",
+"lg": "icehockey_nhl",
+"result": null,
+"sig": null,
+"snap": "2026-11-09T17:45+00:00",
+"src": "Pinnacle",
+"time": "2026-11-10T01:10:00Z",
+"verdict": {
+"ev": null,
+"i": null,
+"odds": null,
+"p": null,
+"total": null,
+"type": "skip",
+"ver": 2
+}
+},
 "c205d8d8102fbb0e72929fff3c1fd089": {
 "away": "New Orleans Pelicans",
 "best": [
@@ -4921,6 +5329,51 @@
 "type": "skip"
 }
 },
+"cfa503c66cd505776a910921875ef7dd": {
+"away": "Boston Celtics",
+"best": [
+[
+2.04,
+"1xBet"
+],
+[
+1.83,
+"1xBet"
+]
+],
+"blend": [
+0.4714,
+0.5286
+],
+"books": {
+"1xBet": [
+2.04,
+1.83
+]
+},
+"coupon": null,
+"draw": false,
+"fair": [
+0.4714,
+0.5286
+],
+"home": "Philadelphia 76ers",
+"lg": "basketball_nba",
+"result": null,
+"sig": null,
+"snap": "2026-11-09T17:45+00:00",
+"src": "1 ta bukmeker o'rtachasi",
+"time": "2026-11-11T01:10:00Z",
+"verdict": {
+"ev": null,
+"i": null,
+"odds": null,
+"p": null,
+"total": null,
+"type": "skip",
+"ver": 2
+}
+},
 "d24eb5492983d6e28be3b96df396fa12": {
 "away": "San Antonio Spurs",
 "best": [
@@ -5031,6 +5484,157 @@
 "p": null,
 "total": null,
 "type": "skip"
+}
+},
+"d6c28acaab1a3d7db58968f5f33fbf3a": {
+"away": "Philadelphia Flyers",
+"best": [
+[
+2.2,
+"Pinnacle"
+],
+[
+1.75,
+"Pinnacle"
+]
+],
+"blend": [
+0.4408,
+0.5592
+],
+"books": {
+"Pinnacle": [
+2.2,
+1.75
+]
+},
+"coupon": null,
+"draw": false,
+"fair": [
+0.4408,
+0.5592
+],
+"home": "Vancouver Canucks",
+"lg": "icehockey_nhl",
+"result": null,
+"sig": null,
+"snap": "2026-11-09T17:45+00:00",
+"src": "Pinnacle",
+"time": "2026-11-10T02:40:00Z",
+"verdict": {
+"ev": null,
+"i": null,
+"odds": null,
+"p": null,
+"total": null,
+"type": "skip",
+"ver": 2
+}
+},
+"dc4eb6ae9979b3d3418c35b4210f0c72": {
+"away": "San Antonio Spurs",
+"best": [
+[
+4.01,
+"Pinnacle"
+],
+[
+1.29,
+"Marathon Bet"
+]
+],
+"blend": [
+0.2259,
+0.7741
+],
+"books": {
+"1xBet": [
+3.9,
+1.28
+],
+"Marathon Bet": [
+3.75,
+1.29
+],
+"Pinnacle": [
+4.01,
+1.27
+]
+},
+"coupon": null,
+"draw": false,
+"fair": [
+0.2259,
+0.7741
+],
+"home": "Phoenix Suns",
+"lg": "basketball_nba",
+"result": null,
+"sig": null,
+"snap": "2026-11-09T17:45+00:00",
+"src": "Pinnacle",
+"time": "2026-11-10T02:10:00Z",
+"verdict": {
+"ev": null,
+"i": 1,
+"odds": 1.29,
+"p": 0.7741,
+"total": null,
+"type": "fav",
+"ver": 2
+}
+},
+"dc61de43b5db9de357f48f44c8022494": {
+"away": "Denver Nuggets",
+"best": [
+[
+1.31,
+"Pinnacle"
+],
+[
+3.8,
+"Marathon Bet"
+]
+],
+"blend": [
+0.7504,
+0.2496
+],
+"books": {
+"1xBet": [
+1.3,
+3.77
+],
+"Marathon Bet": [
+1.28,
+3.8
+],
+"Pinnacle": [
+1.31,
+3.69
+]
+},
+"coupon": null,
+"draw": false,
+"fair": [
+0.7504,
+0.2496
+],
+"home": "Houston Rockets",
+"lg": "basketball_nba",
+"result": null,
+"sig": null,
+"snap": "2026-11-09T17:45+00:00",
+"src": "Pinnacle",
+"time": "2026-11-10T01:40:00Z",
+"verdict": {
+"ev": null,
+"i": 0,
+"odds": 1.3,
+"p": 0.7504,
+"total": null,
+"type": "fav",
+"ver": 2
 }
 },
 "dd247b356d8fc53e4b4f9bfcfe09c924": {
