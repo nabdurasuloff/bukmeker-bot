@@ -67,6 +67,10 @@
 "k": 4,
 "odds": 3592.01,
 "p": 0.00036,
-"ev": 0.2982
+"ev": 0.2982,
+"express_ret": 0,
+"system_ret": 0,
+"hits": 0,
+"done": true
 }
 ]
