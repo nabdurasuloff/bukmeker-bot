@@ -495,7 +495,7 @@ def format_stats(st):
     else:
         out.append(f"  {bk} narxi bor o'yinlar hali yakunlanmagan")
     if v["n"]:
-        out.append(f"  Faqat ✅ signallarga: {v['hit']}/{v['n']} yutdi, {v['profit']:+.1f} birlik "
+        out.append(f"  ✅ kuponlarga (1X2): {v['hit']}/{v['n']} yutdi, {v['profit']:+.1f} birlik "
                    f"(ROI {v['profit']/v['n']*100:+.1f}%)")
     else:
         out.append("  ✅ signallar hali yakunlanmagan")

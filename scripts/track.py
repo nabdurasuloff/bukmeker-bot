@@ -183,14 +183,21 @@ def record(lg, a):
     }
 
 
+def sig_of(p):
+    """Statistika uchun yagona ta'rif: kuponga yozilgan 1X2 tikish (signal = kupon)."""
+    c = p.get("coupon")
+    return {"i": c["i"], "odds": c["odds"], "fair": c["p"]} if c else None
+
+
 def closing(preds, key):
-    """O'yin boshlanishiga ~70 daqiqa qolganda signal berilgan o'yinlarning yakuniy (yopilish) narxini yozadi.
+    """O'yin boshlanishiga ~2.5 soat qolganda kupon berilgan o'yinlarning yakuniy (yopilish) narxini yozadi.
     Faqat shunday o'yin bo'lsa API so'raladi — aks holda kredit sarflanmaydi."""
     due = {}
     for gid, p in preds.items():
-        if p.get("sig") and not p.get("closed") and p.get("result") is None:
+        if p.get("coupon") and not p.get("closed") and p.get("result") is None:
             t = parse(p["time"])
-            if NOW < t <= NOW + timedelta(minutes=70):
+            # GitHub soatlik ishlarni kechiktiradi/o'tkazib yuboradi — oyna keng olingan
+            if NOW < t <= NOW + timedelta(minutes=150):
                 due.setdefault(p["lg"], []).append(gid)
     changed = 0
     for lg, ids in due.items():
@@ -278,7 +285,7 @@ def compute_stats(preds, signals=None):
         if mo:  # virtual tikish faqat sizning bukmekeringiz narxida
             fav["bets"] = fav.get("bets", 0) + 1
             fav["profit"] += (mo[k] - 1) if win else -1
-        sg = p.get("sig")
+        sg = sig_of(p)
         if sg:  # signal berilgan paytdagi narxda
             val["n"] += 1
             val["hit"] += sg["i"] == res
@@ -286,7 +293,7 @@ def compute_stats(preds, signals=None):
     # Kelly mezoni: virtual bank 100 000 so'm, chorak-Kelly, bitta tikish bankning 5% idan oshmaydi
     bank, peak, low, kb = 100000.0, 100000.0, 100000.0, 0
     for p in sorted(done, key=lambda p: p["time"]):
-        sg = p.get("sig")
+        sg = sig_of(p)
         if not sg:
             continue
         o, q = sg["odds"], sg["fair"]
@@ -298,8 +305,8 @@ def compute_stats(preds, signals=None):
         peak, low, kb = max(peak, bank), min(low, bank), kb + 1
     kelly = {"bank": round(bank), "bets": kb, "peak": round(peak), "low": round(low)}
     # CLV: signal narxi yopilish paytidagi adolatli narxdan yaxshi bo'lganmi
-    clvs = [p["sig"]["odds"] * p["fair"][p["sig"]["i"]] - 1
-            for p in preds.values() if p.get("sig") and p.get("closed")]
+    clvs = [p["coupon"]["odds"] * p["fair"][p["coupon"]["i"]] - 1
+            for p in preds.values() if p.get("coupon") and p.get("closed")]
     clv = {"n": len(clvs), "avg": round(sum(clvs) / len(clvs), 4) if clvs else None,
            "pos": sum(1 for c in clvs if c > 0)}
     vs = {"fav": {"n": 0, "ok": 0, "p": 0.0}, "value": {"n": 0, "ok": 0, "profit": 0.0},
