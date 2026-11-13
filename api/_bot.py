@@ -367,34 +367,33 @@ def sure_text(min_p=0.70, top=10):
 def jackpot_text():
     st = load_stats()
     if not st:
-        return "💎 Jekpot hali tayyor emas (kunlik tahlil 12:37 da)."
+        return "💎 Jekpot hali tayyor emas (bot har kuni 12:37 da yangilanadi)."
     legs = value_legs(st)
-    out = ["💎 Jekpot (keyingi 7 kun, faqat ✅ foydali narxlar)", ""]
+    out = ["💎 Jekpot — katta yutuqli kupon", ""]
     if len(legs) >= 2:
         for i, l in enumerate(legs, 1):
             out.append(f"{i}. {l['m']} · {fmt_time(l['time'])}\n   {l['pick']} @{l['odds']:.2f} ({short_book(l['book'])})")
         odds, p, ev = combo_stats(legs)
-        out += ["", f"🎰 Ekspress ({len(legs)} ta): koeffitsiyent {odds:.1f}",
-                f"   O'tish ehtimoli: {p*100:.2f}% (~{1/p:.0f} tadan 1)",
-                f"   Kutilgan natija: {ev*100:+.0f}% {'✅ plyus' if ev > 0 else ''}"]
+        out += ["", f"🎰 Hammasi bitta kuponda (ekspress): 1 000 so'm tiksangiz, o'tsa {money(1000 * odds)} olasiz.",
+                f"   O'tish imkoniyati: taxminan {max(round(1/p), 1)} tadan 1."]
         if len(legs) >= 3:
             k = len(legs) - 1
             nc, pa, sev = system_stats(legs, k)
-            out += [f"🎲 Sistema {k}/{len(legs)} ({nc} ta ekspress): kamida {k} tasi o'tsa yutadi",
-                    f"   Yutish ehtimoli: {pa*100:.1f}% · kutilgan natija: {sev*100:+.0f}%"]
-        out.append("   Tavsiya summa: bankning 0.5–1% idan oshmasin (yo'qotish ehtimoli juda yuqori).")
+            out.append(f"🎲 Sistema {k}/{len(legs)}: bittasi o'tmasa ham yutadi. "
+                       f"Imkoniyat: taxminan {max(round(1/pa), 1)} tadan 1.")
+        out.append("⚠️ Bu lotereyaga o'xshaydi — deyarli har doim kuyadi. Faqat achinmaydigan mayda pul.")
     else:
-        out.append(f"Hozir ✅ tanlovlar yetarli emas ({len(legs)} ta, kamida 2 ta kerak) — jekpot tuzilmadi.")
+        out.append("Hozir jekpot yo'q: bot foydali narx topmadi. Yomon kupon tuzgandan ko'ra tuzmagan yaxshi.")
     fl = fav_legs(st)
     if len(fl) >= 3:
         odds, p, ev = combo_stats(fl)
-        out += ["", f"📉 Taqqoslash — eng ishonchli {len(fl)} favorit ekspressi: koeffitsiyent {odds:.2f}, "
-                    f"o'tish {p*100:.0f}%, kutilgan natija {ev*100:+.0f}% (marja ko'payadi)"]
+        out += ["", f"📉 Misol: hozirgi eng kuchli {len(fl)} jamoani bitta kuponga qo'ysangiz — "
+                    f"10 ta shunday kupondan taxminan {round(p*10)} tasi o'tadi, lekin oxirida "
+                    f"har 100 so'mdan {abs(ev)*100:.0f} so'm {'foyda' if ev > 0 else 'zarar'} qolasiz."]
     jk = st.get("jackpots") or {}
     if jk.get("n"):
-        out += ["", f"📒 Oldingi jekpotlar: {jk['won']}/{jk['n']} o'tdi · natija "
-                    f"{'+' if jk['profit'] > 0 else ''}{money(jk['profit'])}"]
-        out += jk.get("last", [])
+        out += ["", f"📒 Oldingi jekpotlar: {jk['n']} tadan {jk['won']} tasi o'tdi, natija: "
+                    f"{money(abs(jk['profit']))} {'foyda' if jk['profit'] > 0 else 'zarar'}."]
     return "\n".join(out)
 
 
@@ -410,7 +409,7 @@ def coupon_text():
         out.append(f"\nJami: {len(op)} ta, {money(sum(c['stake'] for c in op))}. "
                    f"Hammasi o'tsa: +{money(sum(c['win'] for c in op))}")
     else:
-        out.append("Hozir ochiq kupon yo'q — 1xBet va Marathon'da foydali narx topilmadi. Bu normal holat.")
+        out.append("Hozir kupon yo'q: 1xBet va Marathon'da tikishga arziydigan narx topilmadi. Bu normal.")
     c2 = st.get("coupon_v2") or {}
     if c2.get("n"):
         roi2 = c2["profit"] / c2["staked"] * 100 if c2["staked"] else 0
@@ -426,8 +425,8 @@ def coupon_text():
         out.append(f"\n📒 Oldingi kuponlar: {c['won']}/{c['n']} o'tdi · tikilgan {money(c['staked'])} · "
                    f"natija {'+' if c['profit'] > 0 else ''}{money(c['profit'])} ({roi:+.1f}%)")
         out += c.get("last", [])
-    out.append("\nℹ️ Summalar Kelly bo'yicha (bitta tikish bankning 5% idan oshmaydi). Kupon har kuni 12:37 da yangilanadi. "
-               "Qiymatli tikishlar ko'pincha o'tmaydi — natijani 50+ kupondan keyin baholang.")
+    out.append("\nℹ️ Har bir qator — alohida tikish (ekspress emas). Summani bot bankka qarab o'zi hisoblaydi. "
+               "Bunday tikishlarning ko'pi o'tmaydi, foyda faqat ko'p marta takrorlanganda ko'rinadi.")
     return "\n".join(out)
 
 
@@ -455,79 +454,58 @@ def format_short(st):
 
 
 def format_stats(st):
-    """Kuzatuv statistikasini o'qiladigan matnga aylantiradi."""
+    """Natijalar — oddiy tilda."""
     if not st or not st.get("matches"):
-        pend = st.get("pending", 0) if st else 0
-        h = elo_history()
-        return ("📊 Hali yakunlangan o'yinlar yo'q. Bot har kuni prognozlarni yozib boradi, "
-                f"o'yinlar tugagach natija shu yerda chiqadi. (Kutilmoqda: {pend})" + (f"\n\n{h}" if h else ""))
-    f, v = st["fav"], st["value"]
-    out = [f"📊 Prognozlar natijasi — {st['matches']} ta o'yin (kutilmoqda: {st['pending']})", ""]
-    vd = st.get("verdicts")
-    if vd:
-        out.append("🎯 Bot xulosalari qanchalik to'g'ri chiqdi:")
-        a = vd["fav"]
-        if a["n"]:
-            out.append(f"  Prognoz (kim yutadi): {a['ok']}/{a['n']} to'g'ri — {a['ok']/a['n']*100:.0f}% "
-                       f"(bot kutgani {a['p']/a['n']*100:.0f}%)")
-        b = vd["value"]
-        if b["n"]:
-            out.append(f"  Qiymatli tikishlar: {b['ok']}/{b['n']} yutdi, natija {b['profit']:+.1f} birlik "
-                       f"(ROI {b['profit']/b['n']*100:+.1f}%)")
-        c = vd["total"]
-        if c["n"]:
-            out.append(f"  Total (2.5): {c['ok']}/{c['n']} to'g'ri — {c['ok']/c['n']*100:.0f}%")
-        if vd["skip"]:
-            out.append(f"  O'tkazib yuborilgan: {vd['skip']} ta")
-        out.append("")
-    out.append(f"🎯 Favorit (eng yuqori ehtimolli natija) {f['hit']}/{f['n']} marta to'g'ri chiqdi: "
-               f"{f['hit']/f['n']*100:.0f}% (bot kutgani: {f['p']/f['n']*100:.0f}%)")
-    out.append("\nEhtimollar to'g'riligi (kalibrovka):")
-    for b in st["buckets"]:
-        out.append(f"  {b['lo']*100:.0f}–{b['hi']*100:.0f}%: kutilgan {b['p']/b['n']*100:.0f}%, "
-                   f"haqiqatda {b['hit']/b['n']*100:.0f}% ({b['n']} ta)")
-    out.append(f"\nBrier ko'rsatkichi: {st['brier']} (qancha kichik bo'lsa, shuncha aniq)")
-    bk = ", ".join(st.get("bookies") or my_bookies())
-    out.append(f"\n💡 Virtual tikish ({bk} narxida, 1 birlikdan, pul tikilmagan):")
+        return "📊 Hali tugagan o'yin yo'q. Bot har kuni o'yinlarni yozib boradi, natija shu yerda chiqadi."
+    out = [f"📊 Bot natijalari — {st['matches']} ta o'yin tekshirildi", ""]
+    vd = st.get("verdicts") or {}
+    a = vd.get("fav") or {}
+    if a.get("n"):
+        r = a["ok"] / a["n"]
+        mark = "yaxshi 👍" if r >= 0.7 else ("o'rtacha" if r >= 0.6 else "yomon 👎")
+        out.append(f"🎯 Bot \"kim yutadi\" deb {a['n']} marta aytdi — {a['ok']} tasi to'g'ri chiqdi "
+                   f"({r*100:.0f}%). Baho: {mark}")
+    t = vd.get("total") or {}
+    if t.get("n"):
+        out.append(f"⚽ Gollar soni (total) bo'yicha {t['n']} ta taxmin — {t['ok']} tasi to'g'ri.")
+    c = st.get("coupon") or {}
+    out.append("")
+    if c.get("n"):
+        res = "foyda" if c["profit"] > 0 else "zarar"
+        out.append(f"📝 Kuponlar: {c['n']} ta tikishdan {c['won']} tasi o'tdi. "
+                   f"Jami {money(c['staked'])} tikilgan bo'lardi, natija: {money(abs(c['profit']))} {res}.")
+        c2 = st.get("coupon_v2") or {}
+        if c2.get("n"):
+            res2 = "foyda" if c2["profit"] > 0 else "zarar"
+            out.append(f"   Shundan yangi qoida bilan (08.11 dan): {c2['won']}/{c2['n']} o'tdi, "
+                       f"{money(abs(c2['profit']))} {res2}.")
+        else:
+            out.append("   Bularning hammasi eski qoida davrida tuzilgan. Yangi qoida hali kupon bermadi.")
+    else:
+        out.append("📝 Kuponlar: hali tugagan kupon yo'q.")
+    k = st.get("kelly") or {}
+    if k.get("bets"):
+        out.append(f"🏦 100 000 so'm bilan boshlab, bot aytgandek tikilganda hozir "
+                   f"{money(k['bank'])} bo'lardi.")
+    f = st.get("fav") or {}
     nb = f.get("bets", 0)
     if nb:
-        out.append(f"  Har doim favoritga: {f['profit']:+.1f} birlik (ROI {f['profit']/nb*100:+.1f}%, {nb} ta)")
+        v = f["profit"] / nb * 100
+        out.append(f"\n💡 Har o'yinda shunchaki kuchli jamoaga tikilganda: har 100 so'mdan "
+                   f"{abs(v):.0f} so'm {'foyda' if v > 0 else 'zarar'} ({nb} ta o'yin"
+                   + (" — bu hozircha omad bo'lishi mumkin)." if v > 0 else ")."))
+    out.append("")
+    if c.get("n") and c["profit"] <= 0:
+        out.append("📌 Xulosa: bot kim yutishini yaxshi topyapti, lekin tikishdan hozircha foyda yo'q. "
+                   "Real pul tikishga hali erta.")
+    elif c.get("n", 0) >= 50:
+        out.append("📌 Xulosa: kuponlar plyusda. Kichik summadan boshlash haqida o'ylash mumkin.")
     else:
-        out.append(f"  {bk} narxi bor o'yinlar hali yakunlanmagan")
-    if v["n"]:
-        out.append(f"  ✅ kuponlarga (1X2): {v['hit']}/{v['n']} yutdi, {v['profit']:+.1f} birlik "
-                   f"(ROI {v['profit']/v['n']*100:+.1f}%)")
-    else:
-        out.append("  ✅ signallar hali yakunlanmagan")
-    k = st.get("kelly")
-    if k:
-        if k["bets"]:
-            sp = lambda x: f"{x:,}".replace(",", " ")
-            out.append(f"\n🏦 Kelly bank (100 000 so'mdan boshlangan, chorak-Kelly): {sp(k['bank'])} so'm "
-                       f"({k['bets']} ta tikish; eng yuqori {sp(k['peak'])}, eng past {sp(k['low'])})")
-        else:
-            out.append("\n🏦 Kelly bank: 100 000 so'm (hali signal yakunlanmagan)")
-    c = st.get("clv")
-    if c:
-        if c["n"]:
-            out.append(f"📈 CLV (signal narxi yopilish narxidan yaxshimi): o'rtacha {c['avg']*100:+.1f}%, "
-                       f"{c['pos']}/{c['n']} tasida yaxshi. Musbat CLV — haqiqiy ustunlik belgisi.")
-        else:
-            out.append("📈 CLV: signal berilgan o'yinlar boshlanishi bilan hisoblanadi")
-    e = st.get("elo")
-    if e and e.get("n"):
-        better = "Model" if e["brier_elo"] < e["brier_mkt"] else "Bozor"
-        out.append(f"\n🧠 Elo modeli vs bozor ({e['n']} ta futbol o'yini): favoritni topdi {e['hit_elo']} vs "
-                   f"{e['hit_mkt']}; Brier {e['brier_elo']} vs {e['brier_mkt']} → aniqroq: {better}")
-    ev = elo_history()
-    if ev:
-        out.append(ev)
+        out.append("📌 Xulosa: ma'lumot hali kam. Kamida 50 ta kupon yig'ilguncha kuzatamiz.")
     if st.get("recent"):
-        out.append("\nOxirgi o'yinlar:")
-        for r in st["recent"]:
-            out.append(f"  {'✅' if r['fav'] == r['res'] else '❌'} {r['m']} {r['score']} "
-                       f"(favorit {r['p']*100:.0f}%)")
-    out.append(f"\nYangilangan: {fmt_time(st['updated'])} · Kamida 100+ o'yindan keyin xulosa qiling.")
+        out.append("\nOxirgi o'yinlar (✅ kuchli jamoa yutdi, ❌ yutqazdi):")
+        for r in st["recent"][:6]:
+            out.append(f"  {'✅' if r['fav'] == r['res'] else '❌'} {r['m']} {r['score']}")
     return "\n".join(out)
 
 
