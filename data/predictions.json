@@ -66,6 +66,7 @@
 ]
 },
 "coupon": null,
+"coupon_t": null,
 "draw": false,
 "fair": [
 0.3303,
@@ -75,7 +76,7 @@
 "lg": "icehockey_nhl",
 "result": null,
 "sig": null,
-"snap": "2026-11-13T15:38+00:00",
+"snap": "2026-11-13T16:18+00:00",
 "src": "Pinnacle",
 "time": "2026-11-14T02:10:00Z",
 "verdict": {
@@ -1071,7 +1072,7 @@
 "Pinnacle"
 ],
 [
-6.05,
+5.93,
 "1xBet"
 ]
 ],
@@ -1082,7 +1083,7 @@
 "books": {
 "1xBet": [
 1.15,
-6.05
+5.93
 ],
 "Marathon Bet": [
 1.16,
@@ -1094,6 +1095,7 @@
 ]
 },
 "coupon": null,
+"coupon_t": null,
 "draw": false,
 "fair": [
 0.8421,
@@ -1103,7 +1105,7 @@
 "lg": "basketball_nba",
 "result": null,
 "sig": null,
-"snap": "2026-11-13T15:38+00:00",
+"snap": "2026-11-13T16:18+00:00",
 "src": "Pinnacle",
 "time": "2026-11-14T02:40:00Z",
 "verdict": {
@@ -1238,6 +1240,7 @@
 ]
 },
 "coupon": null,
+"coupon_t": null,
 "draw": false,
 "fair": [
 0.5876,
@@ -1247,7 +1250,7 @@
 "lg": "icehockey_nhl",
 "result": null,
 "sig": null,
-"snap": "2026-11-13T15:38+00:00",
+"snap": "2026-11-13T16:18+00:00",
 "src": "Pinnacle",
 "time": "2026-11-14T03:10:00Z",
 "verdict": {
@@ -2747,17 +2750,17 @@
 "away": "Oklahoma City Thunder",
 "best": [
 [
-3.22,
+3.36,
 "Pinnacle"
 ],
 [
-1.39,
-"Pinnacle"
+1.38,
+"1xBet"
 ]
 ],
 "blend": [
-0.2926,
-0.7074
+0.2809,
+0.7191
 ],
 "books": {
 "1xBet": [
@@ -2765,32 +2768,33 @@
 1.38
 ],
 "Marathon Bet": [
-3.18,
-1.37
+3.3,
+1.35
 ],
 "Pinnacle": [
-3.22,
-1.39
+3.36,
+1.37
 ]
 },
 "coupon": null,
+"coupon_t": null,
 "draw": false,
 "fair": [
-0.2926,
-0.7074
+0.2809,
+0.7191
 ],
 "home": "Los Angeles Clippers",
 "lg": "basketball_nba",
 "result": null,
 "sig": null,
-"snap": "2026-11-13T15:38+00:00",
+"snap": "2026-11-13T16:18+00:00",
 "src": "Pinnacle",
 "time": "2026-11-14T03:40:00Z",
 "verdict": {
 "ev": null,
 "i": 1,
 "odds": 1.38,
-"p": 0.7074,
+"p": 0.7191,
 "total": null,
 "type": "fav",
 "ver": 2
@@ -3002,6 +3006,7 @@
 ]
 },
 "coupon": null,
+"coupon_t": null,
 "draw": false,
 "fair": [
 0.5601,
@@ -3011,7 +3016,7 @@
 "lg": "basketball_nba",
 "result": null,
 "sig": null,
-"snap": "2026-11-13T15:38+00:00",
+"snap": "2026-11-13T16:18+00:00",
 "src": "Pinnacle",
 "time": "2026-11-14T01:10:00Z",
 "verdict": {
@@ -3656,6 +3661,7 @@
 ]
 },
 "coupon": null,
+"coupon_t": null,
 "draw": false,
 "fair": [
 0.2564,
@@ -3665,7 +3671,7 @@
 "lg": "basketball_nba",
 "result": null,
 "sig": null,
-"snap": "2026-11-13T15:38+00:00",
+"snap": "2026-11-13T16:18+00:00",
 "src": "Pinnacle",
 "time": "2026-11-14T00:10:00Z",
 "verdict": {
@@ -4167,6 +4173,7 @@
 ]
 },
 "coupon": null,
+"coupon_t": null,
 "draw": false,
 "fair": [
 0.7691,
@@ -4176,7 +4183,7 @@
 "lg": "basketball_nba",
 "result": null,
 "sig": null,
-"snap": "2026-11-13T15:38+00:00",
+"snap": "2026-11-13T16:18+00:00",
 "src": "Pinnacle",
 "time": "2026-11-14T00:10:00Z",
 "verdict": {
@@ -4798,50 +4805,51 @@
 "away": "Atlanta Hawks",
 "best": [
 [
-3.19,
+3.38,
 "1xBet"
 ],
 [
-1.41,
-"Marathon Bet"
+1.36,
+"Pinnacle"
 ]
 ],
 "blend": [
-0.2941,
-0.7059
+0.2786,
+0.7214
 ],
 "books": {
 "1xBet": [
-3.19,
-1.38
+3.38,
+1.35
 ],
 "Marathon Bet": [
-2.98,
-1.41
+3.3,
+1.35
 ],
 "Pinnacle": [
-3.18,
-1.39
+3.33,
+1.36
 ]
 },
 "coupon": null,
+"coupon_t": null,
 "draw": false,
 "fair": [
-0.2941,
-0.7059
+0.2786,
+0.7214
 ],
 "home": "Chicago Bulls",
 "lg": "basketball_nba",
 "result": null,
 "sig": null,
-"snap": "2026-11-13T15:38+00:00",
+"snap": "2026-11-13T16:18+00:00",
 "src": "Pinnacle",
 "time": "2026-11-14T01:10:00Z",
 "verdict": {
 "ev": null,
 "i": 1,
-"odds": 1.41,
-"p": 0.7059,
+"odds": 1.35,
+"p": 0.7214,
 "total": null,
 "type": "fav",
 "ver": 2
@@ -5436,17 +5444,17 @@
 "away": "Memphis Grizzlies",
 "best": [
 [
-2.2,
+2.18,
 "Pinnacle"
 ],
 [
-1.75,
-"1xBet"
+1.76,
+"Pinnacle"
 ]
 ],
 "blend": [
-0.4408,
-0.5592
+0.4446,
+0.5554
 ],
 "books": {
 "1xBet": [
@@ -5458,21 +5466,22 @@
 1.71
 ],
 "Pinnacle": [
-2.2,
-1.75
+2.18,
+1.76
 ]
 },
 "coupon": null,
+"coupon_t": null,
 "draw": false,
 "fair": [
-0.4408,
-0.5592
+0.4446,
+0.5554
 ],
 "home": "New Orleans Pelicans",
 "lg": "basketball_nba",
 "result": null,
 "sig": null,
-"snap": "2026-11-13T15:38+00:00",
+"snap": "2026-11-13T16:18+00:00",
 "src": "Pinnacle",
 "time": "2026-11-14T01:10:00Z",
 "verdict": {
@@ -6384,8 +6393,8 @@
 ]
 ],
 "blend": [
-0.1972,
-0.8028
+0.198,
+0.802
 ],
 "books": {
 "1xBet": [
@@ -6397,28 +6406,29 @@
 1.21
 ],
 "Pinnacle": [
-4.62,
+4.57,
 1.23
 ]
 },
 "coupon": null,
+"coupon_t": null,
 "draw": false,
 "fair": [
-0.1972,
-0.8028
+0.198,
+0.802
 ],
 "home": "Sacramento Kings",
 "lg": "basketball_nba",
 "result": null,
 "sig": null,
-"snap": "2026-11-13T15:38+00:00",
+"snap": "2026-11-13T16:18+00:00",
 "src": "Pinnacle",
 "time": "2026-11-14T03:10:00Z",
 "verdict": {
 "ev": null,
 "i": 1,
 "odds": 1.22,
-"p": 0.8028,
+"p": 0.802,
 "total": null,
 "type": "fav",
 "ver": 2
@@ -7410,8 +7420,8 @@
 ]
 ],
 "blend": [
-0.9173,
-0.0827
+0.9172,
+0.0828
 ],
 "books": {
 "1xBet": [
@@ -7420,31 +7430,32 @@
 ],
 "Marathon Bet": [
 1.08,
-8.3
+8.2
 ],
 "Pinnacle": [
 1.08,
-9.23
+9.2
 ]
 },
 "coupon": null,
+"coupon_t": null,
 "draw": false,
 "fair": [
-0.9173,
-0.0827
+0.9172,
+0.0828
 ],
 "home": "Houston Rockets",
 "lg": "basketball_nba",
 "result": null,
 "sig": null,
-"snap": "2026-11-13T15:38+00:00",
+"snap": "2026-11-13T16:18+00:00",
 "src": "Pinnacle",
 "time": "2026-11-14T01:40:00Z",
 "verdict": {
 "ev": null,
 "i": 0,
 "odds": 1.08,
-"p": 0.9173,
+"p": 0.9172,
 "total": null,
 "type": "fav",
 "ver": 2
