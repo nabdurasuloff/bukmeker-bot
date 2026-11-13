@@ -416,6 +416,10 @@ def coupon_text():
         roi2 = c2["profit"] / c2["staked"] * 100 if c2["staked"] else 0
         out.append(f"\n🆕 Yangi qoida (08.11 dan): {c2['won']}/{c2['n']} o'tdi · natija "
                    f"{'+' if c2['profit'] > 0 else ''}{money(c2['profit'])} ({roi2:+.1f}%)")
+    ct = st.get("coupon_tot") or {}
+    if ct.get("n"):
+        out.append(f"⚽ Total tikishlari: {ct['won']}/{ct['n']} o'tdi · natija "
+                   f"{'+' if ct['profit'] > 0 else ''}{money(ct['profit'])}")
     c = st.get("coupon") or {}
     if c.get("n"):
         roi = c["profit"] / c["staked"] * 100 if c["staked"] else 0
@@ -582,10 +586,15 @@ def analysis_item(lg, m, elo):
     mo = [x[0] for x in m["mine"]] if m.get("mine") else None
     mb = [x[1] for x in m["mine"]] if m.get("mine") else ""
     probs = " · ".join(f"{'durang' if names[i] == 'Durang' else names[i]} {pct(comb[i])}" for i in range(len(comb)))
-    v = verdict_core(comb, pm or comb, names, mo if pm else None, m.get("o25"), mb)
+    tv = m.get("tv")
+    v = verdict_core(comb, pm or comb, names, mo if pm else None, None if tv else m.get("o25"), mb)
+    extra = ""
+    if tv:
+        extra = (f"\n🎯 ✅ Total {tv['point']} {'ko‘p' if tv['side'] == 'over' else 'kam'} @{tv['odds']:.2f} "
+                 f"({short_book(tv['book'])}) — foydali narx (+{tv['ev']*100:.0f}%), ehtimol {tv['p']*100:.0f}%")
     icon = "⚽" if draw else ("🏒" if lg.startswith("icehockey") else "🏀")
     return (f"{icon} {m['home']} — {m['away']} · {fmt_time(m['time'])}\n"
-            f"{probs}\n{verdict_short(v, names)}")
+            f"{probs}\n{verdict_short(v, names)}{extra}")
 
 
 def analysis_text(lg, live=False, limit=10):

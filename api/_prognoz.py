@@ -210,6 +210,44 @@ MAX_VALUE_ODDS = 8.0   # 8 dan katta koeffitsiyentlar qiymatli tikishga kiritilm
 RULES_VERSION = 2      # 2-versiya (08.11.2026): foydali narx faqat bozor (Pinnacle) bahosi bo'yicha
 
 
+def totals_lines(event):
+    """{bukmeker: {chiziq: (ko'p, kam)}} — faqat ikkala narx bor chiziqlar."""
+    res = {}
+    for b in event.get("bookmakers", []):
+        for mk in b.get("markets", []):
+            if mk.get("key") != "totals":
+                continue
+            d = {}
+            for o in mk.get("outcomes", []):
+                d.setdefault(o.get("point"), {})[o.get("name")] = net_odds(b.get("title", ""), o.get("price", 0))
+            res[b.get("title", "?")] = {pt: (v["Over"], v["Under"]) for pt, v in d.items()
+                                        if pt is not None and "Over" in v and "Under" in v}
+    return res
+
+
+def totals_value(event, mine=None):
+    """Total bozorida foydali narx: Pinnacle bahosi vs sizning bukmekerlaringiz (faqat .5 chiziqlar)."""
+    mine = mine or MINE
+    lines = totals_lines(event)
+    pin = lines.get("Pinnacle") or {}
+    best = None
+    for book, pts in lines.items():
+        if not any(m.lower() in book.lower() for m in mine):
+            continue
+        for pt, (ov, un) in pts.items():
+            if pt not in pin or round(pt * 2) % 2 != 1:
+                continue
+            fo, fu = devig_power(list(pin[pt]))
+            for side, odd, p in (("over", ov, fo), ("under", un, fu)):
+                if odd > MAX_VALUE_ODDS:
+                    continue
+                ev = p * odd - 1
+                if ev > VALUE_EV and (best is None or ev > best["ev"]):
+                    best = {"point": pt, "side": side, "odds": odd, "book": book,
+                            "p": round(p, 4), "ev": round(ev, 4)}
+    return best
+
+
 def short_book(b):
     return {"Marathon Bet": "Marathon"}.get(b, b)
 
@@ -337,9 +375,9 @@ BOOKMAKERS = os.environ.get("ODDS_BOOKMAKERS", "pinnacle,onexbet,marathonbet")
 MINE = [x.strip() for x in (os.environ.get("MY_BOOKIES") or "1xBet,Marathon Bet").split(",") if x.strip()]
 
 
-def fetch(key, league, region):
+def fetch(key, league, region, markets="h2h"):
     import requests
-    params = {"apiKey": key, "markets": "h2h", "oddsFormat": "decimal"}
+    params = {"apiKey": key, "markets": markets, "oddsFormat": "decimal"}
     if BOOKMAKERS:
         params["bookmakers"] = BOOKMAKERS
     else:

@@ -18,10 +18,12 @@ import requests
 ROOT = os.path.join(os.path.dirname(__file__), "..")
 sys.path.insert(0, os.path.join(ROOT, "api"))
 from _bot import LEAGUES, MIN_EV, combo_stats, env, format_short, is_signal, my_bookies, send, value_legs  # noqa: E402
-from _prognoz import API, analyse, check_verdict, fetch, fmt_time, my_best, report, short_book, verdict_core  # noqa: E402
+from _prognoz import API, analyse, check_verdict, fetch, fmt_time, my_best, report, short_book, totals_value, verdict_core  # noqa: E402
 from _model import blend, elo_info, load as load_elo  # noqa: E402
 
 # Kuzatiladigan ligalar (har biri kuniga ~1 kredit + natija uchun ~2 kredit)
+# Total bozori ham olinadigan ligalar (har so'rov +1 kredit)
+TOTALS_LEAGUES = ["soccer_epl", "soccer_spain_la_liga"]
 TRACK = ["soccer_epl", "soccer_spain_la_liga", "soccer_italy_serie_a", "basketball_nba", "icehockey_nhl"]
 DATA = os.path.join(ROOT, "data", "predictions.json")
 STATS_PY = os.path.join(ROOT, "api", "_stats.py")
@@ -56,7 +58,7 @@ def snapshot(preds, key):
     signals = []
     elo = load_elo()
     for lg in TRACK:
-        events, _ = fetch(key, lg, "eu")
+        events, _ = fetch(key, lg, "eu", "h2h,totals" if lg in TOTALS_LEAGUES else "h2h")
         up = UPCOMING.setdefault(lg, [])
         META["upcoming_at"] = NOW.isoformat(timespec="minutes")
         for e in events:
@@ -71,11 +73,13 @@ def snapshot(preds, key):
                 continue
             mine = analyse(e, only=my_bookies())
             ei = elo_info(lg, a["home"], a["away"], elo) if a["draw"] else None
+            tv = totals_value(e, my_bookies()) if lg in TOTALS_LEAGUES else None
             if ei is None and a["draw"]:
                 print(f"Elo nomi topilmadi: {lg}: {a['home']} / {a['away']}")
             up.append({"id": e["id"], "home": a["home"], "away": a["away"], "time": a["time"], "draw": a["draw"],
                        "fair": [round(x, 4) for x in a["fair"]],
                        "o25": round(a["over25"], 4) if a.get("over25") is not None else None,
+                       "tv": tv,
                        "mine": [[b["odds"], b["book"]] for b in mine["best"]] if mine else None,
                        "elo": [round(x, 4) for x in ei["p"]] if ei else None})
             if not (t <= NOW + timedelta(hours=36)):
@@ -99,8 +103,15 @@ def snapshot(preds, key):
                 rec["coupon"] = {"i": vd["i"], "odds": o, "p": q, "stake": stake, "book": vd.get("book", ""),
                                  "ver": vd.get("ver", 1),
                                  "at": NOW.isoformat(timespec="minutes")}
-                NEW_COUPON.append(gid_label(rec))
+                NEW_COUPON.append(bet_label(rec, "1x2", rec["coupon"]))
             rec["verdict"] = vd  # o'yin boshlanishiga eng yaqin xulosa saqlanadi
+            rec["coupon_t"] = old.get("coupon_t")
+            if tv and not rec["coupon_t"]:
+                o, q = tv["odds"], tv["p"]
+                f = min(max((q * o - 1) / (o - 1), 0) * 0.25, 0.05)
+                rec["coupon_t"] = dict(tv, stake=max(round(BANK * f / 100) * 100, 100), ver=2,
+                                       at=NOW.isoformat(timespec="minutes"))
+                NEW_COUPON.append(bet_label(rec, "tot", rec["coupon_t"]))
             if mine and is_signal(mine):
                 signals.append(f"[{LEAGUES.get(lg, lg)}]\n" + report(mine))
                 if not rec["sig"]:
@@ -113,22 +124,52 @@ def snapshot(preds, key):
     return signals
 
 
-def gid_label(p):
+def bets_of(p):
+    """Bitta o'yindagi kupon tikishlari: 1X2 va total."""
+    out = []
+    if p.get("coupon"):
+        out.append(("1x2", p["coupon"]))
+    if p.get("coupon_t"):
+        out.append(("tot", p["coupon_t"]))
+    return out
+
+
+def bet_desc(p, kind, c):
+    if kind == "tot":
+        return f"Total {c['point']} {'ko‘p' if c['side'] == 'over' else 'kam'} @{c['odds']:.2f}"
     names = [p["home"], "Durang", p["away"]] if p["draw"] else [p["home"], p["away"]]
-    c = p["coupon"]
     nm = "durang" if names[c["i"]] == "Durang" else f"{names[c['i']]} g'alabasi"
+    return f"{nm} @{c['odds']:.2f}"
+
+
+def bet_label(p, kind, c):
     return (f"{p['home']} — {p['away']} · {fmt_time(p['time'])}\n"
-            f"   {nm} @{c['odds']:.2f} ({short_book(c.get('book') or '1xBet')}) → {money(c['stake'])}")
+            f"   {bet_desc(p, kind, c)} ({short_book(c.get('book') or '1xBet')}) → {money(c['stake'])}")
+
+
+def gid_label(p):
+    return bet_label(p, "1x2", p["coupon"])
 
 
 def money(x):
     return f"{int(round(x)):,} so'm".replace(",", " ")
 
 
-def coupon_result(p):
-    c = p["coupon"]
-    won = c["i"] == p["result"]
+def bet_result(p, kind, c):
+    """(o'tdimi, foyda) yoki None — natijani aniqlab bo'lmasa."""
+    if kind == "tot":
+        try:
+            g = sum(int(x) for x in p["score"].split(":"))
+        except Exception:
+            return None
+        won = g > c["point"] if c["side"] == "over" else g < c["point"]
+    else:
+        won = c["i"] == p["result"]
     return won, (c["stake"] * (c["odds"] - 1) if won else -c["stake"])
+
+
+def coupon_result(p):
+    return bet_result(p, "1x2", p["coupon"])
 
 
 def record(lg, a):
@@ -281,32 +322,29 @@ def compute_stats(preds, signals=None):
         if tok is not None:
             vs["total"]["n"] += 1
             vs["total"]["ok"] += bool(tok)
-    cp = [p for p in done if p.get("coupon")]
-    cst = {"n": len(cp), "won": 0, "staked": 0, "profit": 0.0, "last": []}
-    for p in sorted(cp, key=lambda p: p["time"]):
-        won, pr = coupon_result(p)
-        cst["won"] += won
-        cst["staked"] += p["coupon"]["stake"]
-        cst["profit"] += pr
-    for p in sorted(cp, key=lambda p: p["time"], reverse=True)[:6]:
-        won, pr = coupon_result(p)
-        names = [p["home"], "Durang", p["away"]] if p["draw"] else [p["home"], p["away"]]
+    bets = [(p, k, c) for p in done for k, c in bets_of(p)]
+    res = [(p, k, c, bet_result(p, k, c)) for p, k, c in bets]
+    res = [x for x in res if x[3] is not None]
+    def agg(rows):
+        a = {"n": len(rows), "won": 0, "staked": 0, "profit": 0.0}
+        for p, k, c, (won, pr) in rows:
+            a["won"] += won
+            a["staked"] += c["stake"]
+            a["profit"] += pr
+        a["profit"] = round(a["profit"])
+        return a
+    cst = agg(res)
+    cst["last"] = []
+    for p, k, c, (won, pr) in sorted(res, key=lambda x: x[0]["time"], reverse=True)[:6]:
         cst["last"].append(f"{'✅' if won else '❌'} {p['home']} — {p['away']} {p.get('score')} · "
-                           f"{names[p['coupon']['i']]} @{p['coupon']['odds']:.2f} → {'+' if pr > 0 else ''}{money(pr)}")
-    cst["profit"] = round(cst["profit"])
-    c2 = [p for p in cp if (p["coupon"].get("ver") or 1) >= 2]
-    cst2 = {"n": len(c2), "won": 0, "staked": 0, "profit": 0.0}
-    for p in c2:
-        won, pr = coupon_result(p)
-        cst2["won"] += won
-        cst2["staked"] += p["coupon"]["stake"]
-        cst2["profit"] += pr
-    cst2["profit"] = round(cst2["profit"])
-    opened = [p for p in preds.values() if p.get("coupon") and p.get("result") is None
-              and parse(p["time"]) > NOW]
-    copen = [{"label": gid_label(p), "stake": p["coupon"]["stake"],
-              "win": round(p["coupon"]["stake"] * (p["coupon"]["odds"] - 1)), "time": p["time"]}
-             for p in sorted(opened, key=lambda p: p["time"])]
+                           f"{bet_desc(p, k, c)} → {'+' if pr > 0 else ''}{money(pr)}")
+    cst2 = agg([x for x in res if (x[2].get("ver") or 1) >= 2])
+    cst_t = agg([x for x in res if x[1] == "tot"])
+    opened = [(p, k, c) for p in preds.values() if p.get("result") is None and parse(p["time"]) > NOW
+              for k, c in bets_of(p)]
+    copen = [{"label": bet_label(p, k, c), "stake": c["stake"],
+              "win": round(c["stake"] * (c["odds"] - 1)), "time": p["time"]}
+             for p, k, c in sorted(opened, key=lambda x: x[0]["time"])]
     eb = [p for p in done if p.get("elo")]
     def brier_of(pr, res):
         return sum((pr[i] - (1 if i == res else 0)) ** 2 for i in range(len(pr)))
@@ -325,7 +363,7 @@ def compute_stats(preds, signals=None):
         "pending": sum(1 for p in preds.values() if p.get("result") is None),
         "brier": round(brier / len(done), 4) if done else None,
         "fav": fav, "value": val, "kelly": kelly, "clv": clv, "elo": elo_cmp, "verdicts": vs,
-        "coupon": cst, "coupon_v2": cst2, "coupon_open": copen, "bank": BANK, "jackpots": JSTATS,
+        "coupon": cst, "coupon_v2": cst2, "coupon_tot": cst_t, "coupon_open": copen, "bank": BANK, "jackpots": JSTATS,
         "upcoming": UPCOMING, "upcoming_at": META["upcoming_at"],
         "buckets": [b for b in bstat if b["n"]],
         "recent": [{"m": f"{p['home']} — {p['away']}", "score": p.get("score"),
@@ -519,9 +557,9 @@ def main():
     msg = ["📊 Kunlik hisobot" + ("" if settle_day else " (natijalar ertaga tekshiriladi)")]
     if newly:
         msg.append("\n" + "\n".join(result_line(p) for p in sorted(newly, key=lambda p: p["time"])[:20]))
-    settled_c = [p for p in newly if p.get("coupon")]
-    if settled_c:
-        res = [coupon_result(p) for p in settled_c]
+    settled_c = [(p, k, c) for p in newly for k, c in bets_of(p)]
+    res = [r for r in (bet_result(p, k, c) for p, k, c in settled_c) if r is not None]
+    if res:
         msg.append(f"\n📝 Kupon: {sum(w for w, _ in res)}/{len(res)} o'tdi, natija "
                    f"{'+' if sum(x for _, x in res) > 0 else ''}{money(sum(x for _, x in res))}")
     for j in jdone:

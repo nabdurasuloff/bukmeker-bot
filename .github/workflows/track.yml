@@ -28,6 +28,7 @@ jobs:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
           MY_BOOKIES: ${{ secrets.MY_BOOKIES }}
+          FORCE_DAILY: ${{ github.event_name == 'workflow_dispatch' && '1' || '' }}
         run: |
           if [ "${{ github.event.schedule }}" != "10 * * * *" ]; then python scripts/elo_build.py; fi
           python scripts/track.py ${{ github.event.schedule == '10 * * * *' && 'closing' || 'daily' }}
