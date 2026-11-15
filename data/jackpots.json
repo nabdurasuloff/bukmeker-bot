@@ -72,5 +72,51 @@
 "system_ret": 0,
 "hits": 0,
 "done": true
+},
+{
+"at": "2026-11-15T14:56+00:00",
+"legs": [
+{
+"id": "ebe638278f4d70eaf211ad5be9795fa0",
+"lg": "soccer_spain_la_liga",
+"m": "Rayo Vallecano — Valencia",
+"time": "2026-11-21T15:15:00Z",
+"i": 0,
+"pick": "Rayo Vallecano",
+"odds": 2.07,
+"book": "1xBet",
+"p": 0.4978,
+"ev": 0.0304
+},
+{
+"id": "b8d6ab6ecc8bb356c6335d3f417d0ecf",
+"lg": "soccer_epl",
+"m": "Aston Villa — Sunderland",
+"time": "2026-11-21T15:00:00Z",
+"i": 1,
+"pick": "durang",
+"odds": 4.16,
+"book": "1xBet",
+"p": 0.2469,
+"ev": 0.0271
+},
+{
+"id": "5bc13c44b33981f3185400163388267e",
+"lg": "soccer_italy_serie_a",
+"m": "Bologna — Udinese",
+"time": "2026-11-22T14:00:00Z",
+"i": 0,
+"pick": "Bologna",
+"odds": 1.8,
+"book": "1xBet",
+"p": 0.568,
+"ev": 0.0224
+}
+],
+"stake": 500,
+"k": 2,
+"odds": 15.5,
+"p": 0.06981,
+"ev": 0.0821
 }
 ]
