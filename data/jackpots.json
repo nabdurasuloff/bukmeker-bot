@@ -118,5 +118,39 @@
 "odds": 15.5,
 "p": 0.06981,
 "ev": 0.0821
+},
+{
+"at": "2026-11-18T16:40+00:00",
+"legs": [
+{
+"id": "90af957b2f622a5cf805e60b151c54b9",
+"lg": "soccer_spain_la_liga",
+"m": "Real Madrid — Celta Vigo",
+"time": "2026-11-21T20:00:00Z",
+"i": 0,
+"pick": "Real Madrid",
+"odds": 1.24,
+"book": "1xBet",
+"p": 0.8366,
+"ev": 0.0374
+},
+{
+"id": "7a62fe738bd20cfff6027c52fec05d51",
+"lg": "soccer_spain_la_liga",
+"m": "Getafe — Atlético Madrid",
+"time": "2026-11-22T20:00:00Z",
+"i": 2,
+"pick": "Atlético Madrid",
+"odds": 1.7,
+"book": "1xBet",
+"p": 0.6021,
+"ev": 0.0236
+}
+],
+"stake": 500,
+"k": null,
+"odds": 2.11,
+"p": 0.50372,
+"ev": 0.0618
 }
 ]
