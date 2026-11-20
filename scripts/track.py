@@ -18,7 +18,7 @@ import requests
 ROOT = os.path.join(os.path.dirname(__file__), "..")
 sys.path.insert(0, os.path.join(ROOT, "api"))
 from _bot import LEAGUES, MIN_EV, combo_stats, env, format_short, is_signal, my_bookies, send, value_legs  # noqa: E402
-from _prognoz import API, analyse, check_verdict, fetch, fmt_time, my_best, report, short_book, totals_value, verdict_core  # noqa: E402
+from _prognoz import API, analyse, check_verdict, fetch, fmt_time, my_best, report, short_book, totals_lines, totals_value, verdict_core  # noqa: E402
 from _model import blend, elo_info, load as load_elo  # noqa: E402
 
 # Kuzatiladigan ligalar (har biri kuniga ~1 kredit + natija uchun ~2 kredit)
@@ -74,6 +74,12 @@ def snapshot(preds, key):
             mine = analyse(e, only=my_bookies())
             ei = elo_info(lg, a["home"], a["away"], elo) if a["draw"] else None
             tv = totals_value(e, my_bookies()) if lg in TOTALS_LEAGUES else None
+            if lg in TOTALS_LEAGUES:
+                tl = totals_lines(e)
+                META["tot_games"] = META.get("tot_games", 0) + 1
+                META["tot_pin"] = META.get("tot_pin", 0) + bool(tl.get("Pinnacle"))
+                META["tot_mine"] = META.get("tot_mine", 0) + any(
+                    v and any(m.lower() in b.lower() for m in my_bookies()) for b, v in tl.items())
             if ei is None and a["draw"]:
                 print(f"Elo nomi topilmadi: {lg}: {a['home']} / {a['away']}")
             up.append({"id": e["id"], "home": a["home"], "away": a["away"], "time": a["time"], "draw": a["draw"],
@@ -364,6 +370,7 @@ def compute_stats(preds, signals=None):
     return {
         "updated": NOW.isoformat(timespec="minutes"),
         "daily_at": META.get("daily_at"),
+        "tot_check": {k: META.get(k, 0) for k in ("tot_games", "tot_pin", "tot_mine")},
         "bookies": my_bookies(),
         "signals": signals or [],
         "matches": len(done),
