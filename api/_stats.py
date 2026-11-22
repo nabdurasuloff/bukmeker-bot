@@ -1,7 +1,7 @@
 # Avtomatik yaratiladi (scripts/track.py). Qo'lda o'zgartirmang.
-STATS = {'updated': '2026-11-21T15:31+00:00',
+STATS = {'updated': '2026-11-22T11:09+00:00',
  'daily_at': '2026-11-21T15:31+00:00',
- 'tot_check': {'tot_games': 17, 'tot_pin': 17, 'tot_mine': 17},
+ 'tot_check': {'tot_games': 0, 'tot_pin': 0, 'tot_mine': 0},
  'bookies': ['1xBet', 'Marathon Bet'],
  'signals': ['[🇪🇸 La Liga]\n'
              '⚽ Real Madrid — Celta Vigo · 22.11 01:00\n'
@@ -65,7 +65,7 @@ STATS = {'updated': '2026-11-21T15:31+00:00',
          'bets': 149},
  'value': {'n': 19, 'hit': 5, 'profit': -5.48},
  'kelly': {'bank': 98482, 'bets': 19, 'peak': 100000, 'low': 97688},
- 'clv': {'n': 3, 'avg': 0.1371, 'pos': 2},
+ 'clv': {'n': 4, 'avg': 0.1129, 'pos': 3},
  'elo': {'n': 30, 'brier_elo': 0.5577, 'brier_mkt': 0.5319, 'hit_elo': 16, 'hit_mkt': 16},
  'verdicts': {'fav': {'n': 120, 'ok': 87, 'p': 86.97430000000003},
               'value': {'n': 14, 'ok': 2, 'profit': -7.210000000000001},
@@ -83,12 +83,7 @@ STATS = {'updated': '2026-11-21T15:31+00:00',
                      "❌ Ipswich Town — Bournemouth 1:2 · durang @3.96 → -200 so'm"]},
  'coupon_v2': {'n': 0, 'won': 0, 'staked': 0, 'profit': 0},
  'coupon_tot': {'n': 0, 'won': 0, 'staked': 0, 'profit': 0},
- 'coupon_open': [{'label': 'Real Madrid — Celta Vigo · 22.11 01:00\n'
-                           "   Real Madrid g'alabasi @1.21 (1xBet) → 3 900 so'm",
-                  'stake': 3900,
-                  'win': 819,
-                  'time': '2026-11-21T20:00:00Z'},
-                 {'label': 'Barcelona — Villarreal · 22.11 18:00\n'
+ 'coupon_open': [{'label': 'Barcelona — Villarreal · 22.11 18:00\n'
                            "   Barcelona g'alabasi @1.25 (1xBet) → 2 800 so'm",
                   'stake': 2800,
                   'win': 700,
