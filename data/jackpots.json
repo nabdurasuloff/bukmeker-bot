@@ -222,5 +222,75 @@
 "odds": 106.54,
 "p": 0.01109,
 "ev": 0.1814
+},
+{
+"at": "2026-11-26T17:52+00:00",
+"legs": [
+{
+"id": "40d95e660c301c2d8a5a7a6317017b65",
+"lg": "soccer_epl",
+"m": "Nottingham Forest — Chelsea",
+"time": "2026-11-27T20:00:00Z",
+"i": 1,
+"pick": "durang",
+"odds": 3.7,
+"book": "1xBet",
+"p": 0.2847,
+"ev": 0.0534
+},
+{
+"id": "b8a455b28ca30fd95640228161c7c5c5",
+"lg": "soccer_spain_la_liga",
+"m": "Barcelona — Atlético Madrid",
+"time": "2026-12-02T20:30:00Z",
+"i": 0,
+"pick": "Barcelona",
+"odds": 1.47,
+"book": "1xBet",
+"p": 0.7136,
+"ev": 0.049
+},
+{
+"id": "80c92a163a81b69fef76530221e2edd0",
+"lg": "soccer_spain_la_liga",
+"m": "Levante — Real Racing Club de Santander",
+"time": "2026-11-27T20:00:00Z",
+"i": 0,
+"pick": "Levante",
+"odds": 2.18,
+"book": "1xBet",
+"p": 0.4795,
+"ev": 0.0453
+},
+{
+"id": "f45e9062c2f755b977c98d496c22697b",
+"lg": "soccer_epl",
+"m": "Everton — Liverpool",
+"time": "2026-11-29T12:00:00Z",
+"i": 1,
+"pick": "durang",
+"odds": 4.16,
+"book": "1xBet",
+"p": 0.2511,
+"ev": 0.0446
+},
+{
+"id": "10abd18165c999264777913e42c9f96c",
+"lg": "soccer_epl",
+"m": "Manchester City — Leeds United",
+"time": "2026-12-02T19:30:00Z",
+"i": 2,
+"pick": "Leeds United",
+"odds": 5.86,
+"book": "1xBet",
+"p": 0.1771,
+"ev": 0.0378
+}
+],
+"stake": 500,
+"k": 4,
+"odds": 289.05,
+"p": 0.00433,
+"ev": 0.2522
 }
 ]
