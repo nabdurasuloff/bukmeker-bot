@@ -1,7 +1,7 @@
 # Avtomatik yaratiladi (scripts/track.py). Qo'lda o'zgartirmang.
-STATS = {'updated': '2026-11-27T17:37+00:00',
+STATS = {'updated': '2026-11-27T18:52+00:00',
  'daily_at': '2026-11-27T17:37+00:00',
- 'tot_check': {'tot_games': 32, 'tot_pin': 32, 'tot_mine': 32},
+ 'tot_check': {'tot_games': 0, 'tot_pin': 0, 'tot_mine': 0},
  'bookies': ['1xBet', 'Marathon Bet'],
  'signals': ['[🏴 Angliya Premer-ligasi]\n'
              '⚽ Nottingham Forest — Chelsea · 28.11 01:00\n'
@@ -63,7 +63,7 @@ STATS = {'updated': '2026-11-27T17:37+00:00',
  'fav': {'n': 348, 'hit': 220, 'p': 218.61150000000012, 'profit': -3.0000000000000018, 'bets': 204},
  'value': {'n': 24, 'hit': 7, 'profit': -8.02},
  'kelly': {'bank': 97233, 'bets': 24, 'peak': 100000, 'low': 96329},
- 'clv': {'n': 6, 'avg': 0.0935, 'pos': 5},
+ 'clv': {'n': 9, 'avg': 0.0737, 'pos': 7},
  'elo': {'n': 51, 'brier_elo': 0.5464, 'brier_mkt': 0.5369, 'hit_elo': 28, 'hit_mkt': 28},
  'verdicts': {'fav': {'n': 161, 'ok': 118, 'p': 116.5419},
               'value': {'n': 19, 'ok': 4, 'profit': -9.750000000000002},
