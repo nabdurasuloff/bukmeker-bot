@@ -1368,18 +1368,19 @@
 ],
 "books": {
 "1xBet": [
-1.45,
-2.88
+1.43,
+2.98
 ],
 "Marathon Bet": [
-1.45,
-3.22
+1.39,
+3.08
 ],
 "Pinnacle": [
-1.45,
-2.91
+1.49,
+2.76
 ]
 },
+"closed": true,
 "coupon": {
 "at": "2026-11-27T17:37+00:00",
 "book": "Marathon Bet",
@@ -1392,8 +1393,8 @@
 "coupon_t": null,
 "draw": false,
 "fair": [
-0.6758,
-0.3242
+0.6569,
+0.3431
 ],
 "home": "San Antonio Spurs",
 "lg": "basketball_nba",
@@ -1406,7 +1407,7 @@
 "i": 1,
 "odds": 3.22
 },
-"snap": "2026-11-27T17:37+00:00",
+"snap": "2026-11-28T01:54+00:00",
 "src": "Pinnacle",
 "time": "2026-11-28T02:40:00Z",
 "verdict": {
